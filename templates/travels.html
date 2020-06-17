@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}{% trans "Travels" %}{% endblock %}
+
+{% block content %}
+  <main>
+    <div class="container">
+      <section class="mb-4">
+        <div class="row wow fadeIn">
+          <div class='col-6 offset-3'>
+            <h1>{% trans "Book your car" %}</h1>
+            <form class="signup" method="post" action=".">
+              {% csrf_token %}
+              <input type="text" name="name" placeholder="Your Name"><br>
+              <input type="text" name="spoint" placeholder="Starting Point"><br>
+              <input type="text" name="epoint" placeholder="Ending Point"><br>
+              <input type="email" name="email" placeholder="example@gmail.com"><br>
+              <input type="text" name="phonenumber" placeholder="9876543210"><br>
+              <input type="text" name="carmodel" placeholder="Swift"><br>
+              <input type="text" name="carcapacity" placeholder="2,4,6,7"><br>
+              <button class='btn btn-primary' type="submit">{% trans "Book" %} &raquo;</button>
+            </form>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+{% endblock %}

@@ -1,0 +1,35 @@
+<nav class="navbar" style="background-color:#002366;border-radius:10px;">
+      <form action="." method="POST" class="form-inline" size="50" style="display: flex;justify-content: space-between;"  >
+          {% csrf_token %}
+        <input class="form-control" style="display:inline-block;" name="search" type="search" placeholder="Search" aria-label="Search">
+      </form>
+    </nav>
+      <nav class="navbar navbar-expand-lg mt-3 mb-5" style="background-color:#002366;border-radius:10px;">
+
+        <!-- 
+        <div class="collapse navbar-collapse"  id="basicExampleNav">Collapsible content -->
+
+          <!-- Links -->
+          <a class="btn dropdown-toggle mr-4" type="button" data-toggle="dropdown" aria-haspopup="true"
+  aria-expanded="false" style="background-color:#002366">Catagories</a>
+          
+          <div class="dropdown-menu" style="color:white">
+            <a class="dropdown-item" href="/">All</a>
+            <a class="dropdown-item" href="{%url 'core:grossery' %}">Grossery</a>
+            <a class="dropdown-item" href="{%url 'core:sarees' %}">Sarees</a>
+            <a class="dropdown-item" href="{%url 'core:handicrafts' %}">Handicrafts</a>
+            <a class="dropdown-item" href="{%url 'core:dailyneeds' %}">DailyNeeds</a>
+            <a class="dropdown-item" href="{%url 'core:fashionwear' %}">FashionWear</a>
+            <a class="dropdown-item" href="{%url 'core:footwear' %}">FootWear</a>
+            <a class="dropdown-item" href="{%url 'core:menswear' %}">MensWear</a>
+            <a class="dropdown-item" href="{%url 'core:beautycare' %}">BeautyCare</a>
+            <a class="dropdown-item" href="{%url 'core:furniture' %}">Furniture</a>
+            <a class="dropdown-item" href="{%url 'core:electronics' %}">Electronics</a>
+            <div class="dropdown-divider"></div>
+          </div>
+          <!-- Links -->
+         <!--</div>
+        Collapsible content -->
+        
+      </nav>
+      <!--/.Navbar-->

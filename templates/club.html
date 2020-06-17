@@ -1,0 +1,451 @@
+{% extends "base.html" %}
+
+
+{% block extra_head %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href='https://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'> 
+<style>
+#inline,#inline1,#inline2{
+display:inline-block;
+}
+.sizh:hover{
+font-size:30px;
+color:black;
+}
+</style>
+{% endblock %}
+
+
+{% block content %}
+     {%if user.userprofile.Isclubmem %}
+<div class="container-for-admin">
+
+  <!--Main layout-->
+  <main class="pt-5 mx-lg-5">
+    <div class="container-fluid mt-5">
+
+      <!-- Heading -->
+      <div class="card mb-4 wow fadeIn">
+
+        <!--Card content-->
+        <div class="card-body d-sm-flex justify-content-between">
+
+          <h4>
+            <a href="/">Home Page</a>
+            <span>/</span>
+            <span>Dashboard</span>
+          </h4>
+
+        </div>
+
+      </div>
+      <!-- Heading -->
+
+      <!--Grid row-->
+      <div class="row wow fadeIn">
+
+        <!--Grid column-->
+        <div class="col-md-9 mb-4">
+
+          <!--Card-->
+          <div class="card">
+
+            <!--Card content-->
+            <div class="card-body">
+
+              <!-- Sidebar -->
+    <div class="sidebar">
+      {%for mem in club_member%}
+      <a class="logo-wrapper waves-effect">
+        <img src={{ user.userprofile.userphoto.url }} style="border-radius: 50%;height: 145px;width: 145px;">
+      </a><br>
+      <div class="list-group list-group-flush">
+       <a href="#" class="list-group-item list-group-item-action waves-effect sizh">
+      <h3 id="inline1" style="font-size: 20px;color:#002366">Referalcode : {{ mem.refer }}</h3></a><a style="font-size:20px;margin-left:20px;" class="fab fa-whatsapp" href="whatsapp://send?text=Please join in PRESIMAX CLUB with my &Referal code :#x26a0;&#xfe0f; {{ mem.refer }} &#x26a0;&#xfe0f;
+    PRESIMAX
+   Link for registration:
+   https://www.presimax.online/
+
+                                  Make in india products....
+ 
+  Objectives of presimax are 2 types:
+               1)Online shoping.
+               2)Tours and Travels.
+
+First: Online shoping.....
+=>100% quality products ..
+=>Great discount on every products..
+=>Safe and secure deliviery by our courier partner..
+=>Easy exchange and returns policy on damaged products....
+=>Max. products are make in india products....
+=>And main reasion for this company is to grow GDP of india and its yours turn...
+=>100% Guarented cash back on each and every products
+
+Second:Tours and Travels......
+=>We can book cabs based on reuirement..
+=>The charges are calculated 2 types
+             1)pre KM  some amount.
+             2)per hour some amount.
+=>Here we will provide load vechiles for carrying logistics....
+=>You can enjoy the safe ride with our presimax travels....
+=>We will provide tour packges yearly
+                           {Vacction tour and devotional tour}
+=>Get adventours tour on great discount...
+
+EARN MONEY:
+ =>In this platform not only shopping and travel =>booking, u can earn money too... 
+=>There are 10 income sources in presimax...
+=> U can earn income based on ur performance..
+INCOME SOURCES ARE REGISTRATION PROCESS:
+=> GO TO official portal for PRESIMAX.. 
+=>Enter ur details and submit. pay registration fee.
+=>After this ur profile is created.
+=>u can get training and tips for earning money in our portal .
+=>Reference income: we add income to ur wallet based on references. 
+=>purchase income/cash back: 100% assured cash back on every product. 
+=>performance income: This income is added on ur monthly performance. 
+ =>Level up income: Every register's performance is denoted by levels. when they complete the level, level up income is added. 
+ =>Gratis products: Every month u will get free products on ur purchase and performance.
+=>Travel fund : This is monthly income is added on the basis of travel booking. 
+=>professional/position bonus : It's a bonus income added to ur wallet based on ur postion in presimax.
+=> Team lead up income: it's a group income,added on the basis of team work.. 
+ =>Downline income: We add % of amount from ur downline references by our own fund. 
+=>Premament income : This income is added to perm anent job holders in presimax.
+PERMANENT POSITION IN PRESIMAX:
+ =>These permanent posts are selected on the basis of ur completed levels and total refers. 
+=>These job holders are freely provided ID cards and tablets by presimax..
+[Image 65.jpg]
+
+REGISTRATION PROCESS:
+=> GO TO official portal for PRESIMAX.. 
+=>Enter ur details and submit. pay registration fee.
+=>After this ur profile is created.
+=>u can get training and tips for earning money in our portal .
+
+https://www.presimax.online/" data-action="share/whatsapp/share" onClick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false;" target="_blank" title="Share on whatsapp">Share on Whatsapp</a>
+        
+        <a href="#" class="list-group-item list-group-item-action waves-effect">
+          <i class="fa fa-user mr-3"></i><h3 class="mr-5" style="font-size: 20px;color:#002366" >Level : {{ mem.level }}</h3></a>
+        <a href="#" class="list-group-item list-group-item-action waves-effect">
+          <i class="fa fa-table mr-3"></i><h3 class="mr-5" style="font-size: 20px;color:#002366" >Designation : {{ mem.desig }}</h3></a>
+        <!--{% for vid in trainvid %}
+        <a href="{{ vid }}" class="list-group-item list-group-item-action waves-effect">
+          <i class="fa fa-table mr-3"></i><h3 class="mr-5" style="font-size: 20px;color:#002366" >Training</h3></a>
+        {% endfor %}
+        <a href="#" class="list-group-item list-group-item-action waves-effect">
+          <i class="fa fa-map mr-3"></i>Maps</a>
+        <a href="#" class="list-group-item list-group-item-action waves-effect">
+          <i class="fa fa-money mr-3"></i>Orders</a>
+      </div> -->
+      {% endfor %}
+    </div>
+    <!-- Sidebar -->
+    
+            </div>
+
+          </div>
+          <!--/.Card-->
+
+        </div>
+        <!--Grid column-->
+
+        <!--Grid column-->
+        <div class="col">
+
+          <!--Card-->
+          <div class="card mb-4">
+
+            <!--Card content-->
+            <div class="card-body">
+              {%for mem in club_member%}
+              <!-- List group links -->
+              <div class="list-group list-group-flush">
+                <a href="#" class="list-group-item list-group-item-action waves-effect">
+                    <i class="fas fa-wallet"></i><h3 class="mr-5" style="font-size: 20px;color:#002366" >Presimax Wallet</h3></a>
+                <a class="list-group-item list-group-item-action waves-effect">Travelfund
+                  <span class="badge badge-success badge-pill pull-right">{{ mem.travelfund }}
+                  </span>
+                </a>
+                <a class="list-group-item list-group-item-action waves-effect">Teamincome
+                  <span class="badge badge-danger badge-pill pull-right">{{ mem.teamincome }}
+                  </span>
+                </a>
+                <a class="list-group-item list-group-item-action waves-effect">Downlineincome
+                  <span class="badge badge-primary badge-pill pull-right">{{ mem.downlineincome }}</span>
+                </a>
+                <a class="list-group-item list-group-item-action waves-effect">Referalincome
+                  <span class="badge badge-success badge-pill pull-right">{{ mem.referincome }}</span>
+                </a>
+                <a class="list-group-item list-group-item-action waves-effect">Cashback on Orders
+                  <span class="badge badge-danger badge-pill pull-right">{{ mem.orderincome }}</span>
+                </a>
+                <a class="list-group-item list-group-item-action waves-effect">Totalincome
+                  <span class="badge badge-primary badge-pill pull-right">{{ mem.usermoney }}</span>
+                </a>
+                {% endfor %}
+              </div>
+              <!-- List group links -->
+
+            </div>
+
+          </div>
+          <!--/.Card-->
+
+        </div>
+        <!--Grid column-->
+
+      </div>
+      <!--Grid row-->
+
+      <!--Grid row-->
+      <div class="row wow fadeIn">
+
+        <!--Grid column-->
+        <div class="col-md-6 mb-4">
+
+          <!--Card-->
+          <div class="card">
+
+            <!--Card content-->
+            <div class="card-body">
+
+              <!-- Table  -->
+              <table class="table table-hover">
+                <!-- Table head -->
+                <thead class="blue lighten-4">
+                  <tr>
+                    <th>Downline Member</th>
+                    <th>Income</th>
+                  </tr>
+                </thead>
+                <!-- Table head -->
+
+                <!-- Table body -->
+                {%for dlr in downliners%}
+                <tbody>
+                  <tr>
+                    <td>{{ dlr.user.user.username }}</td>
+                    <td>{{ dlr.usermoney }}</td>
+                  </tr>
+                </tbody>
+                <!-- Table body -->
+                {% endfor %}
+              </table>
+              <!-- Table  -->
+
+            </div>
+
+          </div>
+          <!--/.Card-->
+
+        </div>
+        <!--Grid column-->
+
+        <!--Grid column-->
+        <div class="col-md-6 mb-4">
+
+          <!--Card-->
+          <div class="card">
+
+            <!--Card content-->
+            <div class="card-body">
+
+              <!-- Table  -->
+              <table class="table table-hover">
+                <!-- Table head -->
+                <thead class="blue lighten-4">
+                  <tr>
+                    <th>Team Member</th>
+                    <th>Team Income</th>
+                  </tr>
+                </thead>
+                <!-- Table head -->
+
+                <!-- Table body -->
+                {%for tm in team%}
+                <tbody>
+                  <tr>
+                    <td>{{ tm.user.user.username }}</td>
+                    <td>{{ tm.teamincome }}</td>
+                  </tr>
+                </tbody>
+                {% endfor %}
+                <!-- Table body -->
+              </table>
+              <!-- Table  -->
+
+            </div>
+
+          </div>
+          <!--/.Card-->
+
+        </div>
+        <!--Grid column-->
+
+      </div>
+      <!--Grid row-->
+
+      <!--Grid row-->
+      <div class="row wow fadeIn">
+
+        <!--Grid column-->
+        <div class="col">
+
+          <!--Card-->
+          <div class="card">
+
+            <!-- Card header -->
+            <div class="card-header">Google map</div>
+
+            <!--Card content-->
+            <div class="card-body">
+
+              <!--Google map-->
+              <div id="map-container" class="map-container" style="height: 500px; width:320px">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d498024.49834275816!2d78.0393894!3d12.790427!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae1670c9b44e6d%3A0xf8dfc3e8517e4fe0!2sBengaluru%2C%20Karnataka!5e0!3m2!1sen!2sin!4v1592235724201!5m2!1sen!2sin" width="600" height="450" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
+              </div>
+
+            </div>
+
+          </div>
+          <!--/.Card-->
+
+        </div>
+        <!--Grid column-->
+
+  </main>
+  <!--Main layout-->
+
+</div>
+
+    {%else%}
+        <!-- Material form login -->
+        <div style="margin-left: 10px;margin-right: 10px;">
+          <div class="card">
+          
+            <h5 class="card-header info-color white-text text-center py-4">
+              <strong>Club</strong>
+            </h5>
+          
+            <!--Card content-->
+            <div class="card-body px-lg-5 pt-0">
+          
+              <!-- Form -->
+              <form class="text-center" style="color: #757575;" action="." method="POST" enctype="multipart/form-data">
+                {%csrf_token%}
+                <div class="md-form">
+                  <input name="image" accept=".png,.jpg,.jpeg" type="file" class="form-control" required>
+                </div>
+                <label>ProfilePic</label>
+          
+                
+                <div class="md-form">
+                  <input name="userphonenumber" type="text" class="form-control" required>
+                  <label>PhoneNumber</label>
+                </div>
+                
+                <div class="md-form">
+                  <input name="referalcode" type="text" class="form-control">
+                  <label>ReferalCode(ifany)</label>
+                </div>
+                
+                <div class="md-form">
+                  <input name="acno" type="text" class="form-control">
+                  <label>Account Number</label>
+                </div>
+                
+                <div class="md-form">
+                  <input name="ifsc" type="text" class="form-control">
+                  <label>IFSC Code</label>
+                </div>
+                <hr>
+                <div class="md-form">
+                  <input name="paytm" type="text" class="form-control">
+                  <label>Paytm Number</label>
+                </div>
+          
+                <!-- Sign in button -->
+                <button class="btn btn-outline-info btn-rounded btn-block my-4 waves-effect z-depth-0" style="padding:10px" type="submit">Join</button>
+              </form>
+              <!-- Form -->
+          
+            </div>
+            
+          </div>
+          
+        </div>
+          <!-- 
+        <div class="container">
+            <form action="." method="POST" enctype="multipart/form-data">
+                {%csrf_token%}
+                <b>Register:<br><br></b>
+                Profile Pic:
+                <input name="image" accept=".png,.jpg,.jpeg" type="file" value=selectimage><br><br>
+                Phonenumber:
+                <input name="userphonenumber" type="number" placeholder="+91 9876543210" ><br><br>
+                Referal code(if any):
+                <input name="referalcode" type="text" placeholder="Some<ode" ><br><br>
+                <input type="submit" value="submit" class="btn btn-success">
+            </form>
+        </div>Material form login -->
+    {%endif%}
+{% endblock content %}
+  
+{% block extra_scripts %}
+<script>
+  
+ new WOW().init();
+
+        // Regular map
+        function regular_map() {
+            var var_location = new google.maps.LatLng(40.725118, -73.997699);
+
+            var var_mapoptions = {
+                center: var_location,
+                zoom: 14
+            };
+
+            var var_map = new google.maps.Map(document.getElementById("map-container"),
+                var_mapoptions);
+
+            var var_marker = new google.maps.Marker({
+                position: var_location,
+                map: var_map,
+                title: "New York"
+            });
+        }
+
+        // Initialize maps
+        google.maps.event.addDomListener(window, 'load', regular_map);
+
+        new Chart(document.getElementById("horizontalBar"), {
+            "type": "horizontalBar",
+            "data": {
+                "labels": ["Red", "Orange", "Yellow", "Green", "Blue", "Purple", "Grey"],
+                "datasets": [{
+                    "label": "My First Dataset",
+                    "data": [22, 33, 55, 12, 86, 23, 14],
+                    "fill": false,
+                    "backgroundColor": ["rgba(255, 99, 132, 0.2)", "rgba(255, 159, 64, 0.2)",
+                        "rgba(255, 205, 86, 0.2)", "rgba(75, 192, 192, 0.2)",
+                        "rgba(54, 162, 235, 0.2)",
+                        "rgba(153, 102, 255, 0.2)", "rgba(201, 203, 207, 0.2)"
+                    ],
+                    "borderColor": ["rgb(255, 99, 132)", "rgb(255, 159, 64)", "rgb(255, 205, 86)",
+                        "rgb(75, 192, 192)", "rgb(54, 162, 235)", "rgb(153, 102, 255)",
+                        "rgb(201, 203, 207)"
+                    ],
+                    "borderWidth": 1
+                }]
+            },
+            "options": {
+                "scales": {
+                    "xAxes": [{
+                        "ticks": {
+                            "beginAtZero": true
+                        }
+                    }]
+                }
+            }
+</script>
+{% endblock extra_scripts %}

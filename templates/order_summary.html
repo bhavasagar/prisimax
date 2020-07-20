@@ -13,7 +13,9 @@
             <th scope="col">Item title</th>
             <th scope="col">Price</th>
             <th scope="col">Quantity</th>
-            <th scope="col">Total Item Price</th>
+            <th scope="col">Discount Price</th>
+            <th scope="col">Shipping charge</th>
+            <th scope="col">Total Item Price(shipping charges included)</th>
         </tr>
         </thead>
         <tbody>
@@ -27,10 +29,25 @@
                 {{ order_item.quantity }}
                 <a href="{% url 'core:add-to-cart' order_item.item.slug %}"><i class="fas fa-plus ml-2"></i></a>
             </td>
+            {% if order_item.item.discount_price %}
+            {% if request.user.userprofile.Isclubmem %}
+             <td>Rs. {{ order_item.item.club_discount_price }}</td>
+            {% else %}
+             <td>Rs. {{ order_item.item.discount_price }}</td>
+            {% endif %}
+            {% else %}
+             <td>Rs. {{ order_item.item.price }}</td>
+            {% endif %}
+             <td>Rs. {{ order_item.get_shipping_charges }} </td>
             <td>
             {% if order_item.item.discount_price %}
+            {% if request.user.userprofile.Isclubmem %}
+                Rs. {{ order_item.get_total_club_discount_item_price }}
+                <span class="badge badge-primary">Saving Rs. {{ order_item.get_club_amount_saved }}</span>
+            {% else %}
                 Rs. {{ order_item.get_total_discount_item_price }}
                 <span class="badge badge-primary">Saving Rs. {{ order_item.get_amount_saved }}</span>
+            {% endif %}
             {% else %}
                 Rs. {{ order_item.get_total_item_price }}
             {% endif %}
@@ -45,20 +62,24 @@
         </tr>
         <tr>
             <td colspan="5">
-            <a class='btn btn-primary float-right' href='/'>Continue shopping</a>
+            <a class='btn btn-primary float-right' href="{%url 'core:home' %}">Continue shopping</a>
             </td>
         </tr>
         {% endfor %}
         {% if object.coupon %}
         <tr>
-            <td colspan="4"><b>Coupon</b></td>
+            <td colspan="5"><b>Coupon</b></td>
             <td><b>-Rs. {{ object.coupon.amount }}</b></td>
         </tr>
         {% endif %}
         {% if object.get_total %}
         <tr>
-            <td colspan="4"><b>Order Total</b></td>
+            <td colspan="6"><b>Order Total</b></td>
+            {% if request.user.userprofile.Isclubmem %}
+            <td><b>Rs. {{ object.get_club_total }}</b></td>
+            {% else %}
             <td><b>Rs. {{ object.get_total }}</b></td>
+            {% endif %}
         </tr>
         <tr>
             <td colspan="5">

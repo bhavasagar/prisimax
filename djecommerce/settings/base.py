@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     'django_countries',
     'django.contrib.postgres',
 
+
     'core'
 ]
 
@@ -76,7 +77,9 @@ AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend'
 )
 SITE_ID = 1
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/ecommerce/'
+
+ACCOUNT_EMAIL_REQUIRED = True
 
 # CRISPY FORMS
 
@@ -92,10 +95,10 @@ EMAIL_HOST = 'smtp.gmail.com'
 
 EMAIL_PORT = 587
 
-EMAIL_HOST_USER = 'prisimax2020@gmail.com'
+EMAIL_HOST_USER = 'presimaxinfo@gmail.com'
 
-DEFAULT_FROM_EMAIL = 'prisimax2020@gmail.com'
+DEFAULT_FROM_EMAIL = 'presimaxinfo@gmail.com'
 
-SERVER_EMAIL = 'prisimax2020@gmail.com'
+SERVER_EMAIL = 'presimaxinfo@gmail.com'
 
-EMAIL_HOST_PASSWORD = 'agar.9154792300'
+EMAIL_HOST_PASSWORD = 'Mama_presimax_bagundi'

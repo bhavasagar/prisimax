@@ -7,11 +7,12 @@
 
 {% block content %}
   <main>
-    <div class="container">
+    <div class="container rounded" style="background-image:url('https://www.presimax.online/media/images/WhatsApp_Image_2020-07-10_at_11.05.45_AM.jpeg');background-position: center;background-size: cover;">
       <section class="mb-4">
-        <div class="row wow fadeIn">
-          <div class='col-6 offset-3'>
-          <h1>{% trans "Sign In" %}</h1>
+        <div class="row wow fadeIn mr-1">
+          <div class='offset-1'>
+          <h3>{% trans "Sign In" %}</h3>
+          
 
           {% get_providers as socialaccount_providers %}
 
@@ -33,16 +34,17 @@
           {% include "socialaccount/snippets/login_extra.html" %}
 
           {% else %}
-          <p>{% blocktrans %}If you have not created an account yet, then please
-          <a href="{{ signup_url }}">sign up</a> first.{% endblocktrans %}</p>
+          
           {% endif %}
 
           <form class="login" method="POST" action="{% url 'account_login' %}">
             {% csrf_token %}
             {{ form|crispy }}
             {% if redirect_field_value %}
-            <input type="text" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
             {% endif %}
+            <p style="font-size:1em">{% blocktrans %}If you have not created an account yet, then please
+          <a style="font-size:1.5em" href="{{ signup_url }}">sign up</a> first.{% endblocktrans %}</p>
             <a class="btn btn-default" href="{% url 'account_reset_password' %}">{% trans "ForgotPassword?" %}</a>
             <button class="btn btn-primary" type="submit">{% trans "Sign In" %}</button>
           </form>

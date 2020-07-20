@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{%load static%}
+{% block extra_head %}
+<link href="{% static 'css/editprofile.css' %}" rel="stylesheet">
+{% endblock extra_head%}
+{% block content %}
+<main>
+      
+  <div class="container">
+  {% include "nav.html" %}
+     
+<!--our content goes here-->
+<div class="container content">
+    <div class="row profile">
+      <div class="col-md-3">
+        <div class="profile-sidebar position-fixed">
+          <!-- SIDEBAR USERPIC -->
+          <div class="profile-userpic">
+            <img src="https://media.rockstargames.com/chinatownwars/global/downloads/avatars/zhou_256x256.jpg" class="img-responsive" alt="">
+          </div>
+          <!-- END SIDEBAR USERPIC -->
+          <!-- SIDEBAR USER TITLE -->
+          <div class="profile-usertitle">
+            <div class="profile-usertitle-name">
+              name
+            </div>
+            <div class="profile-usertitle-job">
+              desig
+            </div>
+          </div>
+          <!-- END SIDEBAR USER TITLE -->
+          <!-- SIDEBAR MENU -->
+          <div class="profile-usermenu sidebar-sticky">
+            <ul class="nav flex-column">
+              <li class="active nav-item">
+                <a href="#" class="nav-link active">
+							<i class="fa fa-home"></i>
+							Overview </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">
+							<i class="fa fa-user"></i>
+							Account Settings </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#" target="_blank">
+							<i class="fa fa-check"></i>
+							Tasks </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">
+							<i class="fa fa-flag"></i>
+							Help </a>
+              </li>
+            </ul>
+          </div>
+          <!-- END MENU -->
+        </div>
+      </div>
+      <div class="col-md-9">
+        <div class="profile-content">
+          Some user related content goes here...
+          <h1>test</h1>
+          <h1>test</h1>
+          <h1>test</h1>
+          <h1>test</h1>
+          <h1>test</h1>
+          <h1>test</h1>
+          <h1>test</h1>
+          <h1>test</h1>
+          <h1>test</h1>
+          <h1>test</h1>
+          <h1>test</h1>
+          <h1>test</h1>
+          <h1>test</h1>
+          <h1>test</h1>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+</main>
+
+{% endblock content %}

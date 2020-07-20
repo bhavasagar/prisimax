@@ -1,0 +1,220 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=0.6, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge"> 
+  <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/gif" sizes="16x16">
+  <title>FAQs | Presimax</title>
+  {% block extra_head %}{% endblock extra_head%}
+  <!-- Compiled and minified CSS -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+  <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'css/mdb.min.css' %}" rel="stylesheet">
+  <link href="{% static 'css/style.min.css' %}" rel="stylesheet">
+  <style>
+  body{
+  background-color: #fff;
+  }
+  .spinner {
+  width: 70px;
+  height: 70px;
+  position: relative;
+  margin: 250px auto;
+}
+
+.double-bounce1, .double-bounce2 {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  
+  -webkit-animation: sk-bounce 1.5s infinite ease-in-out;
+  animation: sk-bounce 1.5s infinite ease-in-out;
+}
+
+.double-bounce2 {
+  -webkit-animation-delay: -1.0s;
+  animation-delay: -1.0s;
+}
+
+@-webkit-keyframes sk-bounce {
+  0%, 100% { -webkit-transform: translateX(-100px); }
+  50% { -webkit-transform: translateX(100px); }
+}
+
+@keyframes sk-bounce {
+  0%, 100% {
+    transform: translateX(-100px);
+    -webkit-transform: translateX(-100px);
+  } 50% { 
+    transform: translateX(100px);
+    -webkit-transform: translateX(100px);
+  }
+}
+
+.comment-box {
+    padding: 5px
+}
+
+.comment-area textarea {
+    resize: none;
+    border: 1px solid #ad9f9f
+}
+
+.form-control:focus {
+    color: #495057;
+    background-color: #fff;
+    border-color: #ffffff;
+    outline: 0;
+    box-shadow: 0 0 0 1px rgb(255, 0, 0) !important
+}
+
+.send {
+    color: #fff;
+    background-color: #ff0000;
+    border-color: #ff0000
+}
+
+.send:hover {
+    color: #fff;
+    background-color: #f50202;
+    border-color: #f50202
+}
+.checked {
+    color: orange;
+}
+.rating:hover{
+    color: orange;
+}
+
+.shfooter .collapse {
+  display: inherit;
+}
+@media (max-width:767px) {
+  .shfooter ul {
+    margin-bottom: 0;
+  }
+
+  .shfooter .collapse {
+    display: none;
+  }
+
+  .shfooter .collapse.show {
+    display: block;
+  }
+
+  .shfooter .title .fa-angle-up,
+  .shfooter .title[aria-expanded=true] .fa-angle-down {
+    display: none;
+  }
+
+  .shfooter .title[aria-expanded=true] .fa-angle-up {
+    display: block;
+  }
+
+  .shfooter .navbar-toggler {
+    display: inline-block;
+    padding: 0;
+  }
+
+}
+
+.resize {
+  text-align: center;
+}
+.resize {
+  margin-top: 3rem;
+  font-size: 1.25rem;
+}
+/*RESIZESCREEN ANIMATION*/
+.fa-angle-double-right {
+  animation: rightanime 1s linear infinite;
+}
+
+.fa-angle-double-left {
+  animation: leftanime 1s linear infinite;
+}
+@keyframes rightanime {
+  50% {
+    transform: translateX(10px);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateX(10px);
+    opacity: 0;
+  }
+}
+@keyframes leftanime {
+  50% {
+    transform: translateX(-10px);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateX(-10px);
+    opacity: 0;
+  }
+}
+.col-centered {
+    float: none;
+    margin: 0 auto;
+}
+
+  </style>
+</head>
+{% include "navbar.html" %}
+
+<body onload="myFunction()">
+    <center>
+    <div class="spinner" id="loader" >
+       <div class="spinner">
+         <i class="fas fa-shopping-cart fa-7x double-bounce1" style="color:#18246e"></i>
+      </div>
+    </center>
+    <div style="display:none;" id="myDiv">
+    <div class="mt-5 pt-4">
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        {% endfor %}
+    {% endif %}
+    </div>
+    
+    
+    <div class="container mb-1 p-1">
+    <h3 class="ml-2 text-dark mb-3">Frequently asked questions <i class="fas fa-question ml-3 text-info"></i></h3>
+    {% for q in faq %}
+    <div class="card mb-1 p-2">
+      <h6 class="font-weight-bolder ml-1">{{ q.question }}</h6>
+      <a href="" class="list-group-item list-group-item-action waves-effect">
+          <p class="mb-0 text-justify ml-3">{{ q.answer }}</p></a>
+    </div>
+    {% endfor %}
+    </div>
+    
+    
+    <script>
+    var myVar;
+    
+    function myFunction() {
+      myVar = setTimeout(showPage, 3000);
+    }
+    
+    function showPage() {
+      document.getElementById("loader").style.display = "none";
+      document.getElementById("myDiv").style.display = "block";
+    }
+    </script>
+    {% include "footer.html" %}
+    {% include "scripts.html" %}
+    </div>
+</body>
+</html>

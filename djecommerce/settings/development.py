@@ -1,10 +1,9 @@
 from .base import *
 import os
 
-DEBUG = True
-ALLOWED_HOSTS = ['167.71.238.234','presimax.online','www.presimax.online']
+DEBUG = False
+ALLOWED_HOSTS = ['167.71.238.234','*','presimax.online','www.presimax.online']
 
-SESSION_COOKIE_AGE = 60 * 60 * 24 * 30 # One month
 
 DATABASES = {
     'default': {

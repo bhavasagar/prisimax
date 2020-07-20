@@ -1,56 +1,645 @@
 {% extends "base.html" %}
 {%load static%}
+{% block head_title %}Presimax | Online Store{% endblock %}
+{% block extra_head %}
+<link href="https://fonts.googleapis.com/css2?family=Fondamento&display=swap" rel="stylesheet"> 
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap" rel="stylesheet"> 
+<style>
+.scrolling-wrapper{
+	overflow-x: auto;
+   margin-top:-30px;
+   padding:10px;
+}
+
+
+.subtitle{
+	font-size: 1.25em;
+	opacity: 0.65;
+}
+
+.card-block{
+	transition: all 0.2s ease-in-out !important;
+  text-align: center;
+	&:hover{
+		transform: translateY(-5px);
+		box-shadow: none;
+	}
+}
+.caption
+{
+text-align:center;
+color:#0092cc;
+opacity:0.8;
+font-weight:1000;
+font-family: 'Fondamento', cursive;
+margin-top:3px;
+}
+.cat{
+width:100px;
+height:100px;
+border-radius:50% !important;
+}
+
+.c1{
+width:180px;
+height:180px;
+}
+
+h5{
+margin-left:10px !important;
+}
+.scrolltext{
+  font-size:1.5em;
+  }
+@media only screen and (max-width: 1000px) {
+
+  body{
+  background-color:#f0f0f0 !important;
+  }
+  .scrolltext{
+  font-size:0.965em;
+  }
+  .mytext{
+  text-transform: capitalize !important;
+  font-size:1.45em;}
+  .mytext1{
+  text-transform: capitalize !important;
+  font-size:0.986em}
+  .mytext2{
+  text-transform: capitalize !important;
+  font-size:2.15em}
+  
+  .card-block{
+  transition: all 0.2s ease-in-out !important;
+  text-align: center;
+  object-fit: fill !important;
+  }
+ .colx > .caption
+{
+text-align:center !important;
+margin-left:-2px;
+color:#373c3d;
+text-transform: capitalize !important;
+opacity:1;
+font-weight:1000;
+font-family: 'Fondamento', cursive;
+font-size:0.765em !important;
+margin-top:3px;
+}
+.c1{
+  width:120px;
+  height:120px;
+  color:#f0f;
+  background-color: #000 !important;
+  transition: all 0.2s ease-in-out !important;
+  text-align: center;
+  margin-right:-15px !important;
+  }
+  
+.cat{
+width:79px;
+height:79px;
+border-radius:50% !important;
+margin-left:-15px !important;
+}
+.mycard{
+width:170px !important;
+height:320px !important;
+display:block;
+overflow: hidden;
+font-size: 0.5em !important;
+margin-right:-15px !important;
+margin-bottom:-15px !important;
+} 
+.img-responsive{
+object-fit: fill !important;
+}
+}
+.mycard{
+width:auto;
+height:520px;
+display:block;
+overflow: hidden;
+} 
+.img-responsive{
+width:100% !important;
+height:100% !important;
+object-fit: fill !important;
+}
+.gradient_line{ 
+    margin: 0 0 50px 0;
+    display: block;
+    border: none;
+    height: 1px;
+    background: #0071B9;
+    background: linear-gradient(to right, white, #0071B9, #26ABFF, #0071B9, white);
+}
+
+.card-body
+{
+font-family: 'Fondamento';
+}
+a.disabled {
+  pointer-events: none;
+  cursor: default;
+}
+.scroll-left {
+height: 50px; 
+overflow: hidden;
+position: relative;
+}
+.scroll-left p {
+position: absolute;
+width: 100%;
+height: 100%;
+margin: 0;
+line-height: 20px;
+
+-moz-transform:translateX(100%);
+-webkit-transform:translateX(100%); 
+transform:translateX(100%);
+
+-moz-animation: scroll-left 20s linear infinite;
+-webkit-animation: scroll-left 20s linear infinite;
+animation: scroll-left 20s linear infinite;
+}
+@-moz-keyframes scroll-left {
+0% { -moz-transform: translateX(100%); }
+100% { -moz-transform: translateX(-100%); }
+}
+@-webkit-keyframes scroll-left {
+0% { -webkit-transform: translateX(100%); }
+100% { -webkit-transform: translateX(-100%); }
+}
+@keyframes scroll-left {
+0% { 
+-moz-transform: translateX(100%); 
+-webkit-transform: translateX(100%);
+transform: translateX(100%); 
+}
+100% { 
+-moz-transform: translateX(-100%); 
+-webkit-transform: translateX(-100%);
+transform: translateX(-100%); 
+}
+}
+</style>
+{% endblock extra_head%}
+
 {% block content %}
-  <main>
-    <div class="container">
-      <!--
-      <ul class="nav lighten-4 py-4" style="background-color:#002366;border-radius:10px;">
-        <li class="nav-item">
-          <form action="." method="POST" class="form-inline">
-              {% csrf_token %}
-              <input style="margin-left:70px;color:white;" name="search" class="form-control mr-sm-2" type="text" placeholder="Search"> 
-              <input type="submit" style="margin-left:70px;" value="&#xe114;">
-          </form>
-        </li>
-      </ul>Navbar-->
-      {% include "nav.html" %}
+<main>
+<div class="container-fluid" style="margin-top:3px;margin-bottom:10px">
+<nav class="navbar" style="background-color:#8dbbe0;border-radius:10px;margin-bottom:-35px">
+      <form action="." method="POST" class="form-inline" size="50" style="display: flex;justify-content: space-between;"  >
+          {% csrf_token %}
+          
+        <input class="form-control" style="display:inline-block;background-color:#d7eafa;" name="search" type="search" placeholder="Search" aria-label="Search">
+      </form>
+      <!-- Button trigger modal -->
+<button type="button" class="btn-sm btn" style="position:absolute;left:73%;font-size:1em;color:#fff" data-toggle="modal" data-target="#fullHeightModalRight">
+  <i class="fas fa-filter mr-3"></i>Filters
+</button>
+<form action="." method="POST" >
+{% csrf_token %}
+<!-- Full Height Modal Right -->
+<div class="modal fade right" id="fullHeightModalRight" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+
+  <div class="modal-dialog modal-full-height modal-right" role="document">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title w-100" id="myModalLabel" >Filters</h4>
+        <button type="button" style="opacity:0" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" style="padding-left:10px">
+      <div class="d-flex justify-content-center my-4 p-3 card">
+        <h5 class="ml-1">Price</h5>
+        <div class="row">
+        <div class="col mr-1">
+        <h6 class="ml-2">Min Price</h6>
+        <div class="w-60">
+          <br><input type="range" name="min_price" class="custom-range mt-3" id="customRange11" min="30" max="90000">
+        </div>
+        <span class="font-weight-bold valueSpan2 " style="position:absolute;top:27%;left:70%;"></span>
+      </div>
+      <div class="col">
+      <h6 class="ml-2">Max Price</h6>
+      <br><input type="range" name="max_price" class="custom-range mt-3" id="customRange10" min="30" max="90000">
+        </div>
+        <span class="font-weight-bold valueSpan" style="position:absolute;top:50%;left:80%;right:0"></span>
+      </div>
+      </div>
+      <div class="d-flex justify-content-center my-4 p-3 card">
+        <h5 class="ml-1">Discount Percent</h5>
+        <div class="row">
+        <div class="col mr-1">
+        <h6 class="ml-2">Min Percent</h6>
+        <div class="w-60">
+          <br><input type="range" name="min_dis_price" class="custom-range mt-3" id="customRange12" min="0" max="100">
+        </div>
+        <span class="font-weight-bold valueSpan3 " style="position:absolute;top:27%;left:70%;"></span>
+        </div>
+        <div class="col">
+        <h6 class="ml-2">Max Percent</h6>
+        <div class="w-60">
+          <br><input type="range" name="max_dis_price" class="custom-range mt-3" id="customRange14" min="0" max="100">
+        </div>
+        <span class="font-weight-bold valueSpan5" style="position:absolute;top:27%;left:70%;"></span>
+        </div>
+        </div>
+
+      </div>
+      <div class="d-flex my-4 p-3 card">
+        <h5 class="ml-1">Types</h5>
+        <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input " name="new" id="new">
+            <label class="custom-control-label" style="margin-left:0px" for="new">New</label>
+        </div>
+        <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input " name="bestseller" id="bestseller">
+            <label class="custom-control-label" style="margin-left:0px" for="bestseller">Bestseller</label>
+        </div>
+      </div>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Apply Filters</button>
+      </div>
+    </div>
+  </div>
+</div>
+</form>
+    </nav>
+    
+    <h5 class="mt-5 center" style="margin-top:-30px;margin-bottom:-25px;font-weight:600;font-size:1em;font-family: 'Roboto Slab', serif;">Categories</h5>
+    <div style="margin-top:-30px;margin-left:2px;" class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-1">
+			<a href="/ecommerce/" >
+			<div class="col colx">
+				<img class="card card-block cat" src="https://www.presimax.online/media/images/PicsArt_07-09-10.36.46.jpg">
+        <p class="caption">All</p>
+			</div>
+      </a>
+      {% for catg in cat %}
+      <a href="{{ catg.get_absolute_url }}" >
+			<div class="col colx">
+				<img class="card card-block cat" src="{{ catg.image.url }}">
+        <p class="caption" style="text-transform: capitalize">{{ catg.name }}</p>
+			</div>
+      </a>
+      {% endfor %}
+    </div>
+    
+</div>
+
+<hr class="gradient_line" />
+<div style="margin-top:-9px;margin-bottom:15px" class="scroll-left">
+<p style="color#373c3d;font-weight:750" class="scrolltext">The price indicated like this <i class="fas fa-crown" style="color:#eec64f;">Rs.XXX</i> is only for our club membership holders.</p>
+</div>
+<hr style="margin-top:0px" class="gradient_line" />
+
+<!--Section: Products v.3-->
+<h5 class="mt-5" style="margin-bottom:-30px;font-weight:600;font-size:1.2em;font-family: 'Roboto Slab', serif;">Deals of the Day </h5>
+      <section class="text-center mb-4" >
+
+        <div style="margin-left:5px;margin-top:-20px" class="row wow fadeIn">
+           <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4">
+          <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4">
+			{% for item in object_list9 %}
+      <a href="{{ item.item.get_absolute_url }}" >
+			<div class="col">
+				<img class="card card-block c1" src="{{ item.item.image.url }}">
+        <p class="caption ">{{item.item.title|truncatechars:15}} | {{item.item.dis_per}}% off</p>
+			</div>
+      </a>
+      {% endfor %}
+    </div>
+          </div>
+        </div>
+
+      </section>
       <!--Section: Products v.3-->
+<hr class="gradient_line" />
+<!--Section: Products v.3-->
+<h5 class="mt-5" style="font-weight:600;font-size:1.2em;font-family: 'Roboto Slab', serif;">New Arrivals</h5>
       <section class="text-center mb-4">
 
-        <div class="row wow fadeIn">
-
+        <div style="margin-left:5px;margin-top:-20px" class="row wow fadeIn">
+           <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4">
           {% for item in object_list %}
-          <div class="col-lg-3 col-md-6 mb-4">
+          <div class="col-lg-3 col-md-6">
 
-            <div class="card" style="border:solid 2px orange">
+            <div class="card mycard rounded">
 
-              <div class="view overlay">
-                <img src="{{ item.image.url }}" class="card-img-top">
+              <div class="view overlay" style="padding:2px">
+                <img style="width:360px;height:360px" src="{{ item.image.url }}" class="card-img-top img-responsive rounded">
                 <a href="{{ item.get_absolute_url }}">
                   <div class="mask rgba-white-slight"></div>
                 </a>
               </div>
 
-              <div class="card-body text-center">
-                <a href="" class="grey-text">
-                  <h5>{{ item.get_category_display }}</h5>
+              <div class="card-body text-center" >
+                <a href="" class="mytext grey-text">
+                  <h5 class="mytext">{{ item.get_category_display|truncatechars:14 }}</h5>
                 </a>
                 <h5>
                   <strong>
-                    <a href="{{ item.get_absolute_url }}" class="dark-grey-text">{{ item.title }}
-                      <span class="badge badge-pill {{ item.get_label_display }}-color">{{item.tag}}</span>
+                    <a href="{{ item.get_absolute_url }}" class="dark-grey-text mytext1">{{ item.title|truncatechars:7 }}
                     </a>
                   </strong>
                 </h5>
 
-                <h4 class="font-weight-bold black-text">
+                <h5 class="mytext2 blue-text">
                   <strong>
                   {% if item.discount_price %}
-                  <del>Rs. {{ item.price }}</del><br>
+                  <i class="fas fa-crown" style="color:#eec64f;">Rs. {{ item.club_discount_price }}</i><br>
                   Rs. {{ item.discount_price }}
                   <span class="badge badge-pill danger-color">{{item.dis_per}}% off</span>
                   {% else %}
                   {{ item.price }}
+                  {% endif %}
+                  </strong>
+                </h5>
+
+              </div>
+
+            </div>
+
+          </div>
+          {% endfor %}
+          </div>
+        </div>
+
+     
+        <div style="margin-left:5px;margin-top:-20px" class="row wow fadeIn">
+           <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4">
+          {% for item in object_list1 %}
+          <div class="col-lg-3 col-md-6">
+
+            <div class="card mycard rounded">
+
+              <div class="view overlay" style="padding:2px">
+                <img style="width:360px;height:360px" src="{{ item.image.url }}" class="card-img-top img-responsive rounded">
+                <a href="{{ item.get_absolute_url }}">
+                  <div class="mask rgba-white-slight"></div>
+                </a>
+              </div>
+
+              <div class="card-body text-center" >
+                <a href="" class="mytext grey-text">
+                  <h5 class="mytext">{{ item.get_category_display|truncatechars:14 }}</h5>
+                </a>
+                <h5>
+                  <strong>
+                    <a href="{{ item.get_absolute_url }}" class="dark-grey-text mytext1">{{ item.title|truncatechars:7 }}
+                    </a>
+                  </strong>
+                </h5>
+
+                <h5 class="mytext2 blue-text">
+                  <strong>
+                  {% if item.discount_price %}
+                  <i class="fas fa-crown" style="color:#eec64f;">Rs. {{ item.club_discount_price }}</i><br>
+                  Rs. {{ item.discount_price }}
+                  <span class="badge badge-pill danger-color">{{item.dis_per}}% off</span>
+                  {% else %}
+                  {{ item.price }}
+                  {% endif %}
+                  </strong>
+                </h5>
+
+              </div>
+
+            </div>
+
+          </div>
+          {% endfor %}
+          </div>
+        </div>
+
+      </section>
+      <!--Section: Products v.3-->
+<hr class="gradient_line" />
+<!--Section: Products v.3-->
+<style>
+
+#clockdiv{
+	font-family: sans-serif;
+	color: #fff;
+	display: inline-block;
+	font-weight: 100;
+	text-align: center;
+	font-size: 1.2em;
+}
+
+#clockdiv > div{
+	padding: 5px;
+	border-radius: 3px;
+	background: #00ced9;
+	display: inline-block;
+}
+
+#clockdiv div > span{
+	padding: 5px;
+	border-radius: 3px;
+	background: #009fab;
+	display: inline-block;
+}
+
+.smalltext{
+	padding-top: 5px;
+	font-size: 0.5em;
+}
+</style>
+<h5 class="mt-5" style="font-weight:600;font-size:1.2em;font-family: 'Roboto Slab', serif;">FlashSale On </h5>
+<center>
+<div style="margin-top:-9%" id="clockdiv">
+  <h6 style="color:#009fab;font-weight:600">{{ fmsg }}</h6>
+  <div>
+    <span class="days"></span>
+    <div class="smalltext">Days</div>
+  </div>
+  <div>
+    <span class="hours"></span>
+    <div class="smalltext">Hours</div>
+  </div>
+  <div>
+    <span class="minutes"></span>
+    <div class="smalltext">Minutes</div>
+  </div>
+  <div>
+    <span class="seconds"></span>
+    <div class="smalltext">Seconds</div>
+  </div>
+</div>
+</center>
+      <section class="text-center mb-1"  style="margin-top:-15px" >
+
+        <div style="margin-left:5px;" class="row wow fadeIn">
+           <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4">
+          <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4">
+			
+			{% for item in object_list10 %}
+      <a class="{{ fstatus }}" href="{{ item.item.get_absolute_url }}" >
+			<div class="col">
+				<img class="card card-block c1" src="{{ item.item.image.url }}">
+        <p class="caption ">{{item.item.title|truncatechars:15}} | {{item.item.dis_per}}% off</p>
+			</div>
+      </a>
+      {% endfor %}
+    </div>
+          </div>
+        </div>
+
+      </section>
+      <!--Section: Products v.3-->
+<hr class="gradient_line" />
+
+<!--Section: Products v.3-->
+<h5 class="mt-5" style="font-weight:600;font-size:1.2em;font-family: 'Roboto Slab', serif;">Our BestSeller's Products</h5>
+      <section class="text-center " >
+
+        <div style="margin-left:5px;margin-top:-20px" class="row wow fadeIn">
+           <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4">
+          {% for item in object_list6 %}
+          <div class="col-lg-3 col-md-6">
+
+            <div class="card mycard rounded">
+
+              <div class="view overlay" style="padding:2px">
+                <img style="width:360px;height:360px" src="{{ item.image.url }}" class="card-img-top img-responsive rounded">
+                <a href="{{ item.get_absolute_url }}">
+                  <div class="mask rgba-white-slight"></div>
+                </a>
+              </div>
+
+              <div class="card-body text-center" >
+                <a href="" class="mytext grey-text">
+                  <h5 class="mytext">{{ item.get_category_display|truncatechars:14 }}</h5>
+                </a>
+                <h5>
+                  <strong>
+                    <a href="{{ item.get_absolute_url }}" class="dark-grey-text mytext1">{{ item.title|truncatechars:7 }}
+                    </a>
+                  </strong>
+                </h5>
+
+                <h5 class="mytext2 blue-text">
+                  <strong>
+                  {% if item.discount_price %}
+                  <i class="fas fa-crown" style="color:#eec64f;">Rs. {{ item.club_discount_price }}</i><br>
+                  Rs. {{ item.discount_price }}
+                  <span class="badge badge-pill danger-color">{{item.dis_per}}% off</span>
+                  {% else %}
+                  {{ item.price }}
+                  {% endif %}
+                  </strong>
+                </h5>
+
+              </div>
+
+            </div>
+
+          </div>
+          {% endfor %}
+          </div>
+        </div>
+
+      </section>
+      <!--Section: Products v.3-->
+      <!--Section: Products v.3-->
+      <section class="text-center mb-4" >
+
+        <div style="margin-left:5px;margin-top:-20px" class="row wow fadeIn">
+           <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4">
+          {% for item in object_list7 %}
+          <div class="col-lg-3 col-md-6">
+
+            <div class="card mycard rounded">
+
+              <div class="view overlay" style="padding:2px">
+                <img style="width:360px;height:360px" src="{{ item.image.url }}" class="card-img-top img-responsive rounded">
+                <a href="{{ item.get_absolute_url }}">
+                  <div class="mask rgba-white-slight"></div>
+                </a>
+              </div>
+
+              <div class="card-body text-center" >
+                <a href="" class="mytext grey-text">
+                  <h5 class="mytext">{{ item.get_category_display|truncatechars:14 }}</h5>
+                </a>
+                <h5>
+                  <strong>
+                    <a href="{{ item.get_absolute_url }}" class="dark-grey-text mytext1">{{ item.title|truncatechars:7 }}
+                    </a>
+                  </strong>
+                </h5>
+
+                <h5 class="mytext2 blue-text">
+                  <strong>
+                  {% if item.discount_price %}
+                  <i class="fas fa-crown" style="color:#eec64f;">Rs. {{ item.club_discount_price }}</i><br>
+                  Rs. {{ item.discount_price }}
+                  <span class="badge badge-pill danger-color">{{item.dis_per}}% off</span>
+                  {% else %}
+                  {{ item.price }}
+                  {% endif %}
+                  </strong>
+                </h5>
+
+              </div>
+
+            </div>
+
+          </div>
+          {% endfor %}
+          </div>
+        </div>
+
+      </section>
+      <!--Section: Products v.3-->
+
+<hr class="gradient_line" />
+<!--Section: Products v.3-->
+<h5 class="mt-5" style="font-weight:600;font-size:1.2em;font-family: 'Roboto Slab', serif;">Sunday Sale</h5>
+<h6 class="ml-2" style="font-weight:500;font-size:1em;font-family: 'Roboto Slab', serif;">{{msg}}</h6>
+      <section class="text-center" >
+      
+        <div style="margin-left:5px;margin-top:-20px" class="row wow fadeIn">
+           <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4">
+          {% for item in object_list11 %}
+         <div class="col-lg-3 col-md-6 ">
+
+            <div class="card mycard rounded">
+
+              <div class="view overlay" style="padding:2px">
+                <img style="width:360px;height:360px" src="{{ item.item.image.url }}" class="card-img-top img-responsive rounded">
+                <a class="{{ status }}" href="{{ item.item.get_absolute_url }}">
+                  <div class="mask rgba-white-slight"></div>
+                </a>
+              </div>
+
+              <div class="card-body text-center">
+                <a href="" class="grey-text mytext {{ status }}">
+                  <h5 class="mytext">{{ item.item.get_category_display|truncatechars:14 }}</h5>
+                </a>
+                <h5>
+                  <strong>
+                    <a href="{{ item.item.get_absolute_url }}" class="dark-grey-text mytext1 {{ status }}">{{ item.item.title|truncatechars:7 }}
+                    </a>
+                  </strong>
+                </h5>
+
+                <h4 class="mytext2 blue-text">
+                  <strong>
+                  {% if item.item.discount_price %}
+                  <i class="fas fa-crown" style="color:#eec64f;">Rs. {{ item.item.club_discount_price }}</i><br>
+                  Rs. {{ item.item.discount_price }}
+                  <span class="badge badge-pill danger-color">{{item.item.dis_per}}% off</span>
+                  {% else %}
+                  {{ item.item.price }}
                   {% endif %}
                   </strong>
                 </h4>
@@ -61,44 +650,326 @@
 
           </div>
           {% endfor %}
+          </div>
+        </div>
+
+      
+
+        <div style="margin-left:5px;margin-top:-20px" class="row wow fadeIn ">
+           <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4">
+          {% for item in object_list12 %}
+          <div class="col-lg-3 col-md-6 ">
+
+            <div class="card mycard rounded">
+
+              <div class="view overlay" style="padding:2px">
+                <img style="width:360px;height:360px" src="{{ item.item.image.url }}" class="card-img-top img-responsive rounded">
+                <a class="{{ status }}" href="{{ item.item.get_absolute_url }}">
+                  <div class="mask rgba-white-slight"></div>
+                </a>
+              </div>
+
+              <div class="card-body text-center">
+                <a href="" class="grey-text mytext {{ status }}">
+                  <h5 class="mytext">{{ item.item.get_category_display|truncatechars:14 }}</h5>
+                </a>
+                <h5>
+                  <strong>
+                    <a href="{{ item.item.get_absolute_url }}" class="dark-grey-text mytext1 {{ status }}">{{ item.item.title|truncatechars:7 }}
+                    </a>
+                  </strong>
+                </h5>
+
+                <h4 class="mytext2 blue-text">
+                  <strong>
+                  {% if item.item.discount_price %}
+                  <i class="fas fa-crown" style="color:#eec64f;">Rs. {{ item.item.club_discount_price }}</i><br>
+                  Rs. {{ item.item.discount_price }}
+                  <span class="badge badge-pill danger-color">{{item.item.dis_per}}% off</span>
+                  {% else %}
+                  {{ item.item.price }}
+                  {% endif %}
+                  </strong>
+                </h4>
+
+              </div>
+
+            </div>
+
+          </div>
+          {% endfor %}
+          </div>
         </div>
 
       </section>
       <!--Section: Products v.3-->
+<hr class="gradient_line" />
+<!--Section: Products v.3-->
+<h5 class="mt-5" style="margin-left:5px;margin-top:-20;font-weight:600;font-size:1.2em;font-family: 'Roboto Slab', serif;">Deals of this Week </h5>
+      <section class="text-center mb-4" >
 
-      <!--Pagination-->
-
-      {% if is_paginated %}
-      <nav class="navbar white" style="margin-left:0px;margin-right:10px;">
-        <ul class="pagination" style="margin-left:105px;padding-bottom:5px;">
-
-          {% if page_obj.has_previous %}
-          <li class="page-item center">
-            <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
-              <span aria-hidden="true">&laquo;Prev</span>
-              <span class="sr-only">Previous</span>
-            </a>
-          </li>
-          {% endif %}
-
-          <li class="page-item active white text-center" >
-            <a class="page-link" href="?page={{ page_obj.number }}">{{ page_obj.number }}
-              <span class="sr-only">(current)</span>
-            </a>
-          </li>
-
-          {% if page_obj.has_next %}
-          <li class="page-item center">
-            <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
-              <span aria-hidden="true">Next&raquo;</span>
-              <span class="sr-only">Next</span>
-            </a>
-          </li>
-          {% endif %}
-        </ul>
-      </nav>
-      {% endif %}
+        <div style="margin-left:5px;margin-top:-20px" class="row wow fadeIn">
+           <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4">
+          <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4">
+			
+		{% for item in object_list8 %}
+     <a href="{{ item.item.get_absolute_url }}" >
+			<div class="col">
+				<img class="card card-block c1" src="{{ item.item.image.url }}">
+        <p class="caption ">{{item.item.title|truncatechars:15}} | {{item.item.dis_per}}% off</p>
+			</div>
+      </a>
+      {% endfor %}
     </div>
-  </main>
+          </div>
+        </div>
+
+      </section>
+      <!--Section: Products v.3-->
+<hr class="gradient_line" />
+<!--Section: Products v.3-->
+<h5 class="mt-5" style="font-weight:600;font-size:1.2em;font-family: 'Roboto Slab', serif;">More than 30% Off on discount price</h5>
+      <section class="text-center mb-4">
+
+        <div style="margin-left:5px;margin-top:-20px" class="row wow fadeIn">
+           <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4">
+          {% for item in object_list2 %}
+          <div class="col-lg-3 col-md-6">
+
+            <div class="card mycard rounded">
+
+              <div class="view overlay" style="padding:2px">
+                <img style="width:360px;height:360px" src="{{ item.image.url }}" class="card-img-top img-responsive rounded">
+                <a href="{{ item.get_absolute_url }}">
+                  <div class="mask rgba-white-slight"></div>
+                </a>
+              </div>
+
+              <div class="card-body text-center" >
+                <a href="" class="mytext grey-text">
+                  <h5 class="mytext">{{ item.get_category_display|truncatechars:14 }}</h5>
+                </a>
+                <h5>
+                  <strong>
+                    <a href="{{ item.get_absolute_url }}" class="dark-grey-text mytext1">{{ item.title|truncatechars:7 }}
+                    </a>
+                  </strong>
+                </h5>
+
+                <h5 class="mytext2 blue-text">
+                  <strong>
+                  {% if item.discount_price %}
+                  <i class="fas fa-crown" style="color:#eec64f;">Rs. {{ item.club_discount_price }}</i><br>
+                  Rs. {{ item.discount_price }}
+                  <span class="badge badge-pill danger-color">{{item.dis_per}}% off</span>
+                  {% else %}
+                  {{ item.price }}
+                  {% endif %}
+                  </strong>
+                </h5>
+
+              </div>
+
+            </div>
+
+          </div>
+          {% endfor %}
+          </div>
+        </div>
+
+        <div style="margin-left:5px;margin-top:-20px" class="row wow fadeIn">
+           <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4">
+          {% for item in object_list3 %}
+          <div class="col-lg-3 col-md-6">
+
+            <div class="card mycard rounded">
+
+              <div class="view overlay" style="padding:2px">
+                <img style="width:360px;height:360px" src="{{ item.image.url }}" class="card-img-top img-responsive rounded">
+                <a href="{{ item.get_absolute_url }}">
+                  <div class="mask rgba-white-slight"></div>
+                </a>
+              </div>
+
+              <div class="card-body text-center" >
+                <a href="" class="mytext grey-text">
+                  <h5 class="mytext">{{ item.get_category_display|truncatechars:14 }}</h5>
+                </a>
+                <h5>
+                  <strong>
+                    <a href="{{ item.get_absolute_url }}" class="dark-grey-text mytext1">{{ item.title|truncatechars:7 }}
+                    </a>
+                  </strong>
+                </h5>
+
+                <h5 class="mytext2 blue-text">
+                  <strong>
+                  {% if item.discount_price %}
+                  <i class="fas fa-crown" style="color:#eec64f;">Rs. {{ item.club_discount_price }}</i><br>
+                  Rs. {{ item.discount_price }}
+                  <span class="badge badge-pill danger-color">{{item.dis_per}}% off</span>
+                  {% else %}
+                  {{ item.price }}
+                  {% endif %}
+                  </strong>
+                </h5>
+
+              </div>
+
+            </div>
+
+          </div>
+          {% endfor %}
+          </div>
+        </div>
+
+      </section>
+      <!--Section: Products v.3-->
+<hr class="gradient_line" />
+<!--Section: Products v.3-->
+<h5 class="mt-5" style="font-weight:600;font-size:1.2em;font-family: 'Roboto Slab', serif;">Great Discounts on</h5>
+      <section class="text-center mb-4">
+
+        <div style="margin-left:5px;margin-top:-20px" class="row wow fadeIn">
+           <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4">
+          {% for item in object_list4 %}
+          <div class="col-lg-3 col-md-6">
+
+            <div class="card mycard rounded">
+
+              <div class="view overlay" style="padding:2px">
+                <img style="width:360px;height:360px" src="{{ item.image.url }}" class="card-img-top img-responsive rounded">
+                <a href="{{ item.get_absolute_url }}">
+                  <div class="mask rgba-white-slight"></div>
+                </a>
+              </div>
+
+              <div class="card-body text-center" >
+                <a href="" class="mytext grey-text">
+                  <h5 class="mytext">{{ item.get_category_display|truncatechars:14 }}</h5>
+                </a>
+                <h5>
+                  <strong>
+                    <a href="{{ item.get_absolute_url }}" class="dark-grey-text mytext1">{{ item.title|truncatechars:7 }}
+                    </a>
+                  </strong>
+                </h5>
+
+                <h5 class="mytext2 blue-text">
+                  <strong>
+                  {% if item.discount_price %}
+                  <i class="fas fa-crown" style="color:#eec64f;">Rs. {{ item.club_discount_price }}</i><br>
+                  Rs. {{ item.discount_price }}
+                  <span class="badge badge-pill danger-color">{{item.dis_per}}% off</span>
+                  {% else %}
+                  {{ item.price }}
+                  {% endif %}
+                  </strong>
+                </h5>
+
+              </div>
+
+            </div>
+
+          </div>
+          {% endfor %}
+          </div>
+        </div>
+
+      </section>
+      <!--Section: Products v.3-->
+          <script>!function(e,t,a){var c=e.head||e.getElementsByTagName("head")[0],n=e.createElement("script");n.async=!0,n.defer=!0, n.type="text/javascript",n.src=t+"/static/js/chat_widget.js?config="+JSON.stringify(a),c.appendChild(n)}(document,"https://app.engati.com",{bot_key:"81661c3093914988",welcome_msg:true,branding_key:"default",server:"https://app.engati.com",e:"p" });</script>
+</div>
+</main>
 
 {% endblock content %}
+{% block extra_scripts %}
+<script>
+      $(document).ready(function() {
+
+  const $valueSpan = $('.valueSpan2');
+  const $value = $('#customRange11');
+  $valueSpan.html($value.val());
+  $value.on('input change', () => {
+
+    $valueSpan.html($value.val());
+  });
+});
+$(document).ready(function() {
+
+  const $valueSpan = $('.valueSpan3');
+  const $value = $('#customRange12');
+  $valueSpan.html($value.val()+"%");
+  $value.on('input change', () => {
+
+    $valueSpan.html($value.val()+"%");
+  });
+});
+$(document).ready(function() {
+
+  const $valueSpan = $('.valueSpan5');
+  const $value = $('#customRange14');
+  $valueSpan.html($value.val()+"%");
+  $value.on('input change', () => {
+
+    $valueSpan.html($value.val()+"%");
+  });
+});
+$(document).ready(function() {
+
+  const $valueSpan = $('.valueSpan');
+  const $value = $('#customRange10');
+  $valueSpan.html($value.val());
+  $value.on('input change', () => {
+
+    $valueSpan.html($value.val());
+  });
+});
+
+function getTimeRemaining(endtime) {
+  var t = Date.parse(endtime) - Date.parse(new Date());
+  var seconds = Math.floor((t / 1000) % 60);
+  var minutes = Math.floor((t / 1000 / 60) % 60);
+  var hours = Math.floor((t / (1000 * 60 * 60)) % 24);
+  var days = Math.floor(t / (1000 * 60 * 60 * 24));
+  return {
+    'total': t,
+    'days': days,
+    'hours': hours,
+    'minutes': minutes,
+    'seconds': seconds
+  };
+}
+
+function initializeClock(id, endtime) {
+  var clock = document.getElementById(id);
+  var daysSpan = clock.querySelector('.days');
+  var hoursSpan = clock.querySelector('.hours');
+  var minutesSpan = clock.querySelector('.minutes');
+  var secondsSpan = clock.querySelector('.seconds');
+
+  function updateClock() {
+    var t = getTimeRemaining(endtime);
+
+    daysSpan.innerHTML = t.days;
+    hoursSpan.innerHTML = ('0' + t.hours).slice(-2);
+    minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
+    secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
+
+    if (t.total <= 0) {
+      clearInterval(timeinterval);
+    }
+  }
+
+  updateClock();
+  var timeinterval = setInterval(updateClock, 1000);
+}
+var d = new Date();
+d.setDate(d.getDate()+parseInt({{ day }}));
+d.setHours(parseInt({{ hours }}));
+d.setMinutes(parseInt({{ minutes }}));
+d.setSeconds(parseInt({{ seconds }}));
+var deadline = d;
+initializeClock('clockdiv', deadline);
+    </script>
+{% endblock extra_scripts %}

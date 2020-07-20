@@ -1,0 +1,23 @@
+<form method="POST" action="{ url 'core:size' }" >
+{% csrf_token %}
+<div id="exampleModalPopovers" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalPopoversLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <h5>Select a size</h5>
+        {% for size in object.size.sizes_choice %}
+        <div class="custom-control custom-radio">
+            <div class="custom-control custom-radio">
+            <input id="{{ forloop.counter }}"  name="sizes_choice" value="{{ size }}" type="radio" class="custom-control-input" required>
+            <label class="custom-control-label" for="{{ forloop.counter }}">{{ size }}</label>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="modal-footer">
+         <input type="submit" class="btn btn-primary btn-md my-0 p">Set
+      </div>
+    </div>
+  </div>
+</div>
+</form>

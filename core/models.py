@@ -1,6 +1,7 @@
 from django.db.models.signals import post_save
 from django.conf import settings
 from django.db import models
+from django.contrib.postgres.fields import ArrayField
 from django.db.models import Sum
 from django.shortcuts import reverse
 from django_countries.fields import CountryField
@@ -9,20 +10,38 @@ from django.utils import timezone
 CATEGORY_CHOICES = (
     ('H', 'Handicrafts'),
     ('SS', 'Sarees'),
-    ('G', 'Grossery'),
+    ('G', 'Grocery'),
     ('P','Daily Needs'),
-    ('FW', 'FashionWear'),
-    ('F', 'FootWear'),
+    ('FW', 'Fashion Wear'),
+    ('F', 'Foot Wear'),
     ('FU', 'Furniture'),
     ('MW', 'MensWear'),
-    ('BC', 'BeautyCare'),
+    ('BC', 'Beauty Care'),
     ('E', 'Electronics'),
+    ('MA', 'Mens Accessories'),
+    ('WA', 'Womens Accessories'),
+    ('MP','Mobiles and Mobile accessories'),
+    ('HA', 'Home Appliances'),
+    ('S', 'Sports'),
+    ('HC', 'Health Care'),
+    ('KW', 'Kids Wear'),
+    ('B', 'Books'),
+    ('AA', 'Auto Accessories'),
+    ('J','Jewellery')
+)
+    
+ROW_CHOICES = (
+    ('1','1'),
+    ('2','2'),
 )
 
 LABEL_CHOICES = (
     ('P', 'primary'),
     ('S', 'secondary'),
     ('D', 'danger'),
+    ('I', 'indigo'),
+    ('G', 'success'),
+    ('B', 'blue'),
 )
 
 ADDRESS_CHOICES = (
@@ -31,12 +50,29 @@ ADDRESS_CHOICES = (
 )
 
 DESIGNATION = (
-    ('ManagingDirector','ManagingDirector'),
-    ('SubordianteDirector','SubordianteDirector'),
-    ('BronzeDirector','BronzeDirector'),
-    ('SilverDirector','SilverDirector'),
-    ('GoldDirector','GoldDirector'),
+    ('ManagingCaption','ManagingCaption'),
+    ('SubordianteCaption','SubordianteCaption'),
+    ('BronzeCaption','BronzeCaption'),
+    ('SilverCaption','SilverCaption'),
+    ('GoldCaption','GoldCaption'),
     ('Beginner','Beginner')
+)
+
+POSITION_CHOICES = (
+    ('T','TOP'),
+    ('M','MIDDLE'),
+    ('B','BOTTOM'),
+)
+
+SALE_NAME_CHOICES = (
+    ('DOD','Deals of the Day'),
+    ('NA','New Arrivals'),
+    ('FO','FlashSale On'),
+    ('BSP','BestSeller Products'),
+    ('DS','Sunday Sale'),
+    ('DOW','Deals of this Week'),
+    ('MTTDP','More than 30% Off on discount price'),
+    ('GDO','Great Discounts on'),
 )
 
 class UserProfile(models.Model):
@@ -44,26 +80,10 @@ class UserProfile(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     Isclubmem = models.BooleanField(default=False)
     userphoto = models.ImageField(upload_to='images/', null=True)
-    phone_number = models.CharField(default=False, max_length=20)
+    phone_number = models.CharField(default=False, max_length=30)
+    paid_amt = models.CharField(default="0", max_length=5)
     def __str__(self):
-        return self.user.username
-
-
-class Clubmember(models.Model):
-    user = models.OneToOneField(
-        UserProfile, on_delete=models.CASCADE)
-    refer = models.CharField(default=False,max_length=6)
-    usermoney = models.FloatField(default=0.0)
-    childern = models.IntegerField(default=0)
-    level = models.FloatField(default=1.0)
-    desig = models.CharField(default='B',choices=DESIGNATION,max_length = 20)
-    travelfund = models.FloatField(default=0.0)
-    teamincome = models.FloatField(default=0.0)
-    downlineincome = models.FloatField(default=0.0)
-    team =  models.CharField(default=False,null=True,blank=True,max_length=20)
-    refered_preson = models.CharField(default=False,null=True,blank=True,max_length=20)
-    def __str__(self):
-        return self.user.user.username
+        return self.user.username      
         
 class ClubJoin(models.Model):
     user = models.OneToOneField(
@@ -71,6 +91,7 @@ class ClubJoin(models.Model):
     refer = models.CharField(default=False,max_length=20)
     usermoney = models.FloatField(default=0.0)
     childern = models.IntegerField(default=0)
+    premium = models.BooleanField(default=False)
     level = models.FloatField(default=1.0)
     desig = models.CharField(default='Beginner',choices=DESIGNATION,max_length = 20)
     referincome = models.FloatField(default=0.0)
@@ -78,37 +99,55 @@ class ClubJoin(models.Model):
     travelfund = models.FloatField(default=0.0)
     teamincome = models.FloatField(default=0.0)
     downlineincome = models.FloatField(default=0.0)
+    levelincome = models.FloatField(default=0.0)
+    positionincome = models.FloatField(default=0.0)
+    bonusincome = models.FloatField(default=0.0)
     team =  models.CharField(default=False,null=True,blank=True,max_length=30)
     refered_person = models.CharField(default=False,null=True,blank=True,max_length=30)
     Acno = models.CharField(default=False,null=True,blank=True,max_length=30)
     Ifsc = models.CharField(default=False,null=True,blank=True,max_length=30)
     paytm = models.CharField(default=False,null=True,blank=True,max_length=30)
+    fund_transfered = models.BooleanField(default=False)
     def __str__(self):
         return self.user.user.username
+
+class Sizes_class(models.Model):
+    sizes_choice = ArrayField(models.CharField(null=True, blank=True,max_length = 5), blank=True, default=list)
+
 
 class Item(models.Model):
     title = models.CharField(max_length=100)
     price = models.FloatField()
     tag = models.CharField(max_length=10,blank=True,null=True,default='New')
     discount_price = models.FloatField(blank=True, null=True)
+    club_discount_price = models.FloatField(blank=True, null=True,default=100000)
     dis_per = models.FloatField(blank=True, null=True,default=-1)
     category = models.CharField(choices=CATEGORY_CHOICES, max_length=2)
     label = models.CharField(choices=LABEL_CHOICES, max_length=1)
     slug = models.SlugField()
     description = models.TextField()
     image = models.ImageField()
-    weight = models.FloatField(default=0.5)
-    pincode = models.IntegerField(default=1)
+    pweight = models.FloatField(default=-1)
+    pincode = models.IntegerField(default=123456)
     schargeinc = models.FloatField(blank=True, null=True,default=-1)
-
+    club_schargeinc = models.FloatField(blank=True, null=True,default=-1)
+    has_size = models.BooleanField(default=False,blank=True, null=True)
+    size = models.ForeignKey(Sizes_class, on_delete=models.CASCADE, null=True, default=False)
+    selcsize = models.CharField(default=False,null=True,blank=True,max_length=25)
+    
     def __str__(self):
         return self.title
-
+        
     def get_absolute_url(self):
         return reverse("core:product", kwargs={
             'slug': self.slug
         })
 
+    def get_refund_url(self):
+        return reverse("core:refund", kwargs={
+            'slug': self.slug
+        })
+    
     def get_add_to_cart_url(self):
         return reverse("core:add-to-cart", kwargs={
             'slug': self.slug
@@ -119,6 +158,84 @@ class Item(models.Model):
             'slug': self.slug
         })
 
+class Itemsearch(models.Model):
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    searchwords = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.item.title
+
+class Itemdealer(models.Model):
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    name = models.CharField(max_length=30)
+    pincode = models.CharField(max_length=30)
+    additional = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.item.title
+
+class Itemimage(models.Model):
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    img = models.ImageField()
+    
+    def __str__(self):
+        return self.item.title
+
+class Myorder(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    myordered_date = models.DateField()
+    mydelivery_date = models.DateField()
+    status = models.CharField(default="404",null=True,blank=True,max_length=25) 
+    
+    def __str__(self):
+        return f"{self.user.username} of {self.item.title} with {self.status}"
+
+class Categories(models.Model):
+    image = models.ImageField()
+    name = models.CharField(max_length=30)
+    link = models.URLField(max_length = 200)
+    slug = models.SlugField() 
+    
+    def __str__(self):
+        return self.name
+    
+    def get_absolute_url(self):
+        return reverse("core:categories", kwargs={
+            'slug': self.slug
+        })
+    
+    class Meta:
+        verbose_name_plural = 'Categories'
+
+class Sales(models.Model):
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    sale_name = models.CharField(choices=SALE_NAME_CHOICES,max_length=30)
+    day = models.CharField(default=False,null=True,blank=True,max_length=30)
+    caption = models.CharField(default=False,null=True,blank=True,max_length=30)
+    row = models.CharField(choices=ROW_CHOICES,default=False,null=True,blank=True,max_length=30)
+    start = models.DateTimeField(null=True,blank=True)
+    end = models.DateTimeField(null=True,blank=True)
+    
+    def __str__(self):
+        return self.sale_name
+    
+    class Meta:
+        verbose_name_plural = 'Sales'
+
+class Extrasales(models.Model):
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    sale_name = models.CharField(max_length=30)
+    day = models.CharField(default=False,null=True,blank=True,max_length=30)
+    caption = models.CharField(default=False,null=True,blank=True,max_length=30)
+    row = models.CharField(choices=ROW_CHOICES,default=False,null=True,blank=True,max_length=30)
+    
+    def __str__(self):
+        return self.sale_name
+    
+    class Meta:
+        verbose_name_plural = 'XtraSales'
+
 
 class OrderItem(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
@@ -126,22 +243,44 @@ class OrderItem(models.Model):
     ordered = models.BooleanField(default=False)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
-
+    size = models.CharField(default=False,null=True,blank=True,max_length=25)
+    
     def __str__(self):
         return f"{self.quantity} of {self.item.title}"
 
     def get_total_item_price(self):
         return self.quantity * self.item.price
+    
+    def get_club_shipping_charges(self):
+        if self.item.club_discount_price:
+            return self.item.club_schargeinc - self.item.club_discount_price
+        return self.item.club_schargeinc - self.item.discount_price
+    
+    def get_shipping_charges(self):
+        if self.item.discount_price:
+            return self.item.schargeinc - self.item.discount_price
+        return self.item.schargeinc - self.item.price
 
     def get_total_discount_item_price(self):
         return self.quantity * self.item.schargeinc
+    
+    def get_total_club_discount_item_price(self):
+        return self.quantity * self.item.club_schargeinc
 
     def get_amount_saved(self):
         return self.get_total_item_price() - self.get_total_discount_item_price()
+    
+    def get_club_amount_saved(self):
+        return self.get_total_item_price() - self.get_total_club_discount_item_price()
 
     def get_final_price(self):
         if self.item.discount_price:
             return self.get_total_discount_item_price()
+        return self.get_total_item_price()
+    
+    def get_club_final_price(self):
+        if self.item.discount_price:
+            return self.get_total_club_discount_item_price()
         return self.get_total_item_price()
 
 
@@ -187,6 +326,14 @@ class Order(models.Model):
         if self.coupon:
             total -= self.coupon.amount
         return total
+    
+    def get_club_total(self):
+        total = 0
+        for order_item in self.items.all():
+            total += order_item.get_club_final_price()
+        if self.coupon:
+            total -= self.coupon.amount
+        return total
 
 
 class Address(models.Model):
@@ -197,6 +344,7 @@ class Address(models.Model):
     country = CountryField(multiple=False)
     zip = models.CharField(max_length=100)
     address_type = models.CharField(max_length=1, choices=ADDRESS_CHOICES)
+    phone = models.CharField(max_length=15, default=False)
     default = models.BooleanField(default=False)
 
     def __str__(self):
@@ -205,6 +353,17 @@ class Address(models.Model):
     class Meta:
         verbose_name_plural = 'Addresses'
 
+class Ads(models.Model):
+    image = models.ImageField(upload_to='images/adds/', null=True)
+    text = models.CharField(max_length=20)
+    position = models.CharField(max_length=1, choices=POSITION_CHOICES)
+    typeoa = models.CharField(max_length=20)
+    
+    def __str__(self):
+        return self.text
+
+    class Meta:
+        verbose_name_plural = 'Ads'
 
 class Payment(models.Model):
     stripe_charge_id = models.CharField(max_length=50)
@@ -245,6 +404,7 @@ class Transaction(models.Model):
         if self.order_id is None and self.made_on and self.id:
             self.order_id = self.made_on.strftime('PAY2ME%Y%m%dODR') + str(self.id)
         return super().save(*args, **kwargs)
+
 
 
 class Paytm_order_history(models.Model):
@@ -314,6 +474,20 @@ class Paytm_history(models.Model):
             value = getattr(self, field_name, None)
             yield (field_name, value)
 
+class Carousal(models.Model):
+    img = models.ImageField(upload_to='images/', null=True)
+    head = models.CharField(max_length=15)
+    des = models.CharField(max_length=100)
+    urlf = models.URLField(max_length = 200)
+    color = models.CharField(choices=LABEL_CHOICES, max_length=1)
+
+class CarousalClub(models.Model):
+    img = models.ImageField(upload_to='images/', null=True)
+    head = models.CharField(max_length=15)
+    des = models.CharField(max_length=100)
+    urlf = models.URLField(max_length = 200)
+    color = models.CharField(choices=LABEL_CHOICES, max_length=1)
+    
 
 class Coupon(models.Model):
     code = models.CharField(max_length=15)
@@ -332,11 +506,62 @@ class Refund(models.Model):
     def __str__(self):
         return f"{self.pk}"
 
+class Reviews(models.Model):
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='rel_user', on_delete=models.CASCADE)
+    rating = models.CharField(max_length=3,default="5")
+    review = models.TextField()
+    
+    def __str__(self):
+        return self.item.title+" by "+self.user.username
+        
+    class Meta:
+        verbose_name_plural = 'Reviews'
 
+class ReviewsImage(models.Model):
+    post = models.ForeignKey(Reviews, related_name='Reviewsimages', on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    images = models.ImageField(upload_to='reviewimages')
+
+    def __str__(self):
+        return '%s - %s ' % (self.post.item.title, self.post.user.username)
+
+class Team(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='rel_team', on_delete=models.CASCADE)
+    name = models.CharField(max_length=20,default="HKR")
+    img = models.ImageField()
+    desig = models.CharField(max_length=20,default="CEO")
+    opinion = models.TextField()
+    team = models.CharField(default=False,null=True,blank=True,max_length=30)
+    facebook = models.URLField(max_length = 200)
+    twitter = models.URLField(max_length = 200)
+    email = models.EmailField()
+    
+    def __str__(self):
+        return self.user.username
+        
+class Contact(models.Model):
+    name = models.CharField(max_length=20)
+    email = models.EmailField()
+    subject = models.CharField(max_length=100)
+    message = models.CharField(max_length=500)
+    
+    def __str__(self):
+        return self.name
+
+class FAQs(models.Model):
+    question = models.CharField(max_length=50)
+    answer = models.CharField(max_length=500)
+    
+    def __str__(self):
+        return self.question
+        
+    class Meta:
+        verbose_name_plural = 'FAQs'
+    
 def userprofile_receiver(sender, instance, created, *args, **kwargs):
     if created:
         userprofile = UserProfile.objects.create(user=instance)
-
+ 
 
 post_save.connect(userprofile_receiver, sender=settings.AUTH_USER_MODEL)
-

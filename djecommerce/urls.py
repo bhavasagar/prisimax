@@ -6,11 +6,14 @@ import debug_toolbar
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
-    path('', include('core.urls', namespace='core'))
+    path('', include('core.urls', namespace='core')),
 ]
 
+handler404 = 'core.views.error_404'
+handler500 = 'core.views.error_500'
+handler413 = 'core.views.error_413'
+
 if settings.DEBUG:
-    urlpatterns += [path('__debug__/', include(debug_toolbar.urls))]
     urlpatterns += static(settings.MEDIA_URL,
                           document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL,

@@ -1,11 +1,15 @@
+{% load static %}
+
+{% block head_title %}PRESIMAX{% endblock %}
 {% load cart_template_tags %}
+{% load myorders_template_tags %}
 <!-- Navbar -->
     <nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
       <div class="container-fluid">
 
         <!-- Brand -->
-        <a class="navbar-brand waves-effect" href="/">
-          <strong class="gold-text text-center" style="color:gold">PRESIMAX</strong>
+        <a class="navbar-brand waves-effect" href="{%url 'core:landing' %}">
+          <strong class="gold-text text-center" style="color:orange"><img src="{% static 'img/plog.jpeg' %}" alt="PRESIMAX" width="122" height="42" style="vertical-align:middle"></strong>
         </a>
 
         <!-- Collapse -->
@@ -19,27 +23,38 @@
           <!-- Left -->
           <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-              <a class="nav-link waves-effect" href="#">Home
+              <a class="nav-link waves-effect active" href="{%url 'core:home' %}">Home
                 <span class="sr-only">(current)</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link waves-effect" href="/">About</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link waves-effect" href="/">Contact</a>
-            </li>
+              <a href="{% url 'core:about' %}" class="nav-link waves-effect">About</a>
+          </li>
             {% if request.user.is_authenticated %}
           <li class="nav-item">
             <a href="{% url 'core:order-summary' %}" class="nav-link waves-effect">
              Hi, {{ user.username }} 
             </a>
           </li>
-          <li class="nav-item">
+          <li class="nav-item" >
             <a href="{% url 'core:order-summary' %}" class="nav-link waves-effect">
               <span class="badge red z-depth-1 mr-1">{{ request.user|cart_item_count }}</span>
-              <i class="fas fa-shopping-cart"></i>
-              <span class="clearfix d-none d-sm-inline-block"> Cart </span>
+              <i class="fas fa-shopping-cart" style="color:#f2994b"></i>
+               Cart 
+            </a>
+          </li>
+          <li class="nav-item" >
+            <a href="{% url 'core:myorders' %}" class="nav-link waves-effect">
+              <span class="badge red z-depth-1 mr-1">{{ request.user|myorder_item_count }}</span>
+              <i class="far fa-list-alt" style="color:#63e0ff"></i>
+               My Orders 
+            </a>
+          </li>
+          <li class="nav-item" >
+            <a href="{% url 'core:Profile' %}" class="nav-link waves-effect">
+              <!--<span class="badge red z-depth-1 mr-1"></span>-->
+              <i class="far fa-edit" style="color:#ebe657"></i>
+              My Profile
             </a>
           </li>
           <li class="nav-item">
@@ -51,6 +66,13 @@
             <a class="nav-link waves-effect" href="{% url 'account_logout' %}">
                Logout 
             </a>
+          </li>
+          <li class="nav-item">
+          {% ifequal request.user.userprofile.paid_amt "250" %}
+            <a href="/pay" class="logo-wrapper waves-effect btn btn-info btn-sm" >
+            <i class="fas fa-award mr-3" style="color:#D4AF37"> Upgrade to Premium</i>
+            </a>
+          {% endifequal %}
           </li>
           {% else %}
           <li class="nav-item">

@@ -7,15 +7,24 @@ PAYMENT_CHOICES = (
     ('P', 'Paytm'),
 )
 
-CAR_SEATS = (
-    ('4','FOUR'),
-    ('6','SIX'),
-    ('7','SEVEN')
+SECTORS_CHOICES = (
+    ('XS','XS'),
+    ('S','S'),
+    ('M','M'),
+    ('L','L'),
+    ('XL','XL'),
+    ('XXL','XXL'),
+    ('XXXL','XXXL'),
 )
 
+class Add_to_cart_Form(forms.Form):
+      size_options = forms.ChoiceField(
+        widget=forms.RadioSelect, choices=SECTORS_CHOICES)
+        
 class CheckoutForm(forms.Form):
     shipping_address = forms.CharField(required=False)
     shipping_address2 = forms.CharField(required=False)
+    shipping_phone = forms.CharField(required=True)
     shipping_country = CountryField(blank_label='(select country)').formfield(
         required=False,
         widget=CountrySelectWidget(attrs={
@@ -25,13 +34,14 @@ class CheckoutForm(forms.Form):
 
     billing_address = forms.CharField(required=False)
     billing_address2 = forms.CharField(required=False)
+    billing_phone = forms.CharField(required=True)
     billing_country = CountryField(blank_label='(select country)').formfield(
         required=False,
         widget=CountrySelectWidget(attrs={
             'class': 'custom-select d-block w-100',
         }))
     billing_zip = forms.CharField(required=False)
-
+    
     same_billing_address = forms.BooleanField(required=False)
     set_default_shipping = forms.BooleanField(required=False)
     use_default_shipping = forms.BooleanField(required=False)
@@ -58,42 +68,8 @@ class RefundForm(forms.Form):
     }))
     email = forms.EmailField()
 
-# class TravelForm(forms.Form):
-#     name = forms.CharField(widget=forms.TextInput(attrs={
-#         'class': 'form-control',
-#         'placeholder': 'Your Name',
-#         'aria-describedby': 'basic-addon2'
-#     }),required=True)
-#     spoint = forms.CharField(widget=forms.TextInput(attrs={
-#         'class': 'form-control',
-#         'placeholder': 'Starting Point',
-#         'aria-describedby': 'basic-addon2'
-#     }),required=True)
-#     epoint = forms.CharField(widget=forms.TextInput(attrs={
-#         'class': 'form-control',
-#         'placeholder': 'Ending Point',
-#         'aria-describedby': 'basic-addon2'
-#     }),required=True)
-#     phonenumber = forms.CharField(widget=forms.TextInput(attrs={
-#         'class': 'form-control',
-#         'placeholder': '9876543210',
-#         'aria-describedby': 'basic-addon2'
-#     }),required=True)
-#     email = forms.EmailField(widget=forms.TextInput(attrs={
-#         'class': 'form-control',
-#         'placeholder': 'example@any.any',
-#         'aria-describedby': 'basic-addon2'
-#     }),required=True)
-#     carform = forms.CharField(widget=forms.TextInput(attrs={
-#         'class': 'form-control',
-#         'placeholder': 'Car Type',
-#         'aria-describedby': 'basic-addon2'
-#     }))
-#     carcapacity = forms.ChoiceField(
-#         widget=forms.RadioSelect, choices=CAR_SEATS,required=True)
 
 class PaymentForm(forms.Form):
     stripeToken = forms.CharField(required=False)
     save = forms.BooleanField(required=False)
     use_default = forms.BooleanField(required=False)
-

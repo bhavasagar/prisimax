@@ -1,0 +1,277 @@
+{% extends "base.html" %}
+{%load static%}
+{% block head_title %}Club Membership | Presimax{% endblock %}
+{% block extra_head %}
+<link href="https://fonts.googleapis.com/css2?family=Fondamento&display=swap" rel="stylesheet"> 
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap" rel="stylesheet"> 
+<style>
+@import url("https://fonts.googleapis.com/css?family=Raleway");
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	background-color: #f6f5f7;
+	font-family: 'Raleway', sans-serif;
+	margin-bottom: 50px;
+}
+
+.container {
+  display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-wrap: wrap;
+  margin-top:20px;
+  margin-bottom:20px;
+}
+
+.price-plan {
+  color:#000;
+  background-image: url(https://www.presimax.online/media/images/white-notebook-ppt-backgrounds.jpg);
+  background-size: 100% 100%;
+  background-position-x:50%;
+	box-shadow: 0px 2px 15px 0px rgba(0,0,0,0.5);
+	border-radius: 4px;
+	flex: 1;
+	padding: 0 30px 30px;
+	margin: 2%;
+	min-width: 200px;
+	max-width: 300px;
+  text-align: center;
+}
+
+.fancy {
+  margin-top: 20px;
+  margin-bottom:20px;
+  transform: scale(1.1);
+  background-image: url(https://www.presimax.online/media/images/white-notebook-ppt-backgrounds.jpg);
+  background-size: 100% 100%;
+  background-position-x:50%;
+  color:#000;
+}
+
+.price-points {
+  list-style-type:none;
+  padding:0px;
+}
+
+.price-points1 {
+  list-style-type:none;
+  padding:0px;
+}
+
+.price-points li {
+  padding:10px 0px;
+  font-weight:1000;
+}
+
+.price-points1 li {
+  padding:10px 0px;
+  font-weight:1000;
+}
+
+
+.price-points li:not(:last-of-type) {
+  color:#000;
+  font-weight:1000;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.price-points1 li:not(:last-of-type) {
+  color:#000;
+  font-weight:1000;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+
+.price {
+  font-size:32px;
+  font-weight:300;
+}
+
+.price sub,
+.price sup {
+  font-size:16px;
+  font-weight:100;
+}
+
+.polyFirst {
+  width: 130px;
+  padding: 10px 10px;
+  border: none;
+  background-color: #fff;
+  background-size: 300%;
+  color: #000;
+  font-weight:1000;
+  font-family: "Raleway", sans-serif;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition-duration: 0.5s;
+}
+
+.polyFirst:hover {
+  background-size: 150%;
+  transition-duration: 0.3s;
+  transform: scale(1.2);
+}
+
+.polyFirst:active {
+  transform:scale(1.15);
+  transition-duration: 0.1s;
+}
+
+.polyFourth {
+  width: 150px;
+  padding: 10px 18px;
+  border: none;
+  background-color:white;
+  background-size: 300%;
+  color: #000000;
+  font-family: "Raleway", sans-serif;
+  font-size: 18px;
+  font-weight:bold;
+  cursor: pointer;
+  border-radius: 5px;
+  transition-duration: 0.5s;
+}
+
+.polyFourth:hover {
+  background-size: 150%;
+  transition-duration: 0.3s;
+  transform: scale(1.2);
+}
+
+.polyFourth:active {
+  transform:scale(1.15);
+  transition-duration: 0.1s;
+}
+
+
+.poly2 {
+  background-position-x: 15%;
+}
+
+.poly3 {
+  background-position-x: 45%;
+}
+
+.price-plan, .fancy{
+margin-bottom:20px !important;
+margin-left:10px !important;
+margin-right:10px !important;
+}
+@media only screen and (min-width: 1000px) {
+.colx1{
+margin-left:80px;
+}
+.clox2{
+margin-bottom:30px !important;
+margin-left:-120px;
+margin-right:-120px
+}
+}
+</style>
+{% endblock extra_head%}
+{% block content %}
+<main>
+<form action="." method="POST" class="form-inline" size="50" style="display: flex;justify-content: space-between;"  >
+          {% csrf_token %}
+<div class="container-fluid" style="margin-bottom:10px">
+<div class="row">
+  
+  <div class="col colx1">
+  <div class='price-plan' >
+  <h5>Club Premium</h5>
+    <p class='price'><sup>Rs.</sup>500<sub>/7years</sub></p>
+    <ul class='price-points1' >
+      <li>Premium Club Membership</li>
+      <li>10 various Income is provided</li>
+      <li>10% cashback on orders more than Rs.300</li>
+      <li>Rs.100 provided for Refering a person</li>
+      <li>Rs.15 provided for increment in each level</li>
+      <li>10% Downline income is  provided</li>
+      <li>Tours are provided according to designations</li>
+      <li>Team is alloted and Team income is given</li>
+      <li><div class="md-form custom-control custom-checkbox">
+                    <input type="checkbox" name="checkbox" style="margin-left:20%" class="custom-control-input ml-2" onclick="myFunction2()" id="defaultUnchecked2" required="required">
+                    <label class="custom-control-label ml-2" for="defaultUnchecked2">Accept our <a href="https://www.presimax.online/privacy/"> Privacy policy.</a></label>
+    </div></li>
+    </ul>
+    {% ifequal request.user.userprofile.paid_amt "250" %}
+    
+    <button type="submit" name="amt" value="250" style="background-color:#3fbbe8;color:#fff" class='polyFourth poly3'>Pay 250</button>
+    {% else %}
+    <button type="submit" name="amt" value="500" style="background-color:#3fbbe8;color:#fff" class='polyFourth poly3'>Pay 500</button>
+    {% endifequal %}
+  </div>
+  </div>
+  
+  <div class="col colx2" style="margin-bottom:30px">
+  <div class='price-plan fancy' >
+    <h5>Club Prime</h5>
+    <p class='price'><sup>Rs.</sup>250<sub>/3years</sub></p>
+    <ul class='price-points'>
+      <li>Prime Club Membership</li>
+      <li>5+1 various Income is provided</li>
+      <li>7% cashback on orders more than Rs.300</li>
+      <li>Rs.50 provided for Refering a person</li>
+      <li>Rs.5 provided for increment in each level</li>
+      <li>Tours are provided according to designations</li>
+      <li>Team is not alloted</li>
+      <li><div class="md-form custom-control custom-checkbox">
+                    <input type="checkbox" name="checkbox" style="margin-left:20%" class="custom-control-input ml-2"  id="defaultUnchecked" onclick="myFunction2()" required="required">
+                    <label class="custom-control-label ml-2" for="defaultUnchecked">Accept our <a href="https://www.presimax.online/privacy/">Privacy policy.</a></label>
+    </div></li>
+    </ul>
+
+    {% ifequal request.user.userprofile.paid_amt "250" %}
+    <a style="background-color:#3fbbe8;color:#fff" href='/club/' class='polyFirst poly2'> Club </a>
+    {% else %}
+    <button name="amt" value="250" style="background-color:#3fbbe8;color:#fff" type="submit" class='polyFirst poly2'>Pay 250</button>
+    {% endifequal %}
+
+  </div>
+  </div>
+
+  <div class="col">
+  <div class='price-plan'>
+  <h5>Basic</h5>
+    <p class='price'><sup>Rs.</sup>0<sub>lifetime</sub></p>
+    <ul class='price-points'>
+      <li>No Club Membership</li>
+      <li>Income is not provided</li>
+      <li>0% cashback on orders</li>
+      <li>Refer income is not provided</li>
+      <li>Level income is not provided</li>
+      <li>Downline income is not provided</li>
+      <li>Tours are not provided</li>
+      <li>Team is not alloted</li>
+    </ul>
+
+    <a style="background-color:#3fbbe8;color:#fff" href='/ecommerce/' class='polyFirst poly2'> Order directly </a>
+    
+  </div>
+  <div>
+</div>
+</div>
+</form>
+</main>
+
+{% endblock content %}
+
+{% block extra_scripts %}
+<script>
+var checkBox = document.getElementById("defaultUnchecked2");
+var checkBox1 = document.getElementById("defaultUnchecked");
+function myFunction2() {
+if (checkBox.checked == true){
+    checkBox1.required = "";
+  }
+if (checkBox1.checked == true){
+    checkBox.required = "";
+  }
+  }
+</script>
+{% endblock extra_scripts %}

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <main>
+    <div class="container">
+
+    <h2>Request Refund</h2>
+    <form method="POST" action=".">
+        {% csrf_token %}
+        Confirm your refund request.
+        <button type='submit' class='btn btn-primary'>Submit</button>
+    </form>
+
+    </div>
+  </main>
+
+{% endblock content %}

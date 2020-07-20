@@ -1,0 +1,56 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=0.6, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge"> 
+  <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/gif" sizes="16x16">
+  <title>{% block head_title %}{% endblock %}</title>
+  {% block extra_head %}{% endblock extra_head%}
+  <!-- Compiled and minified CSS -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+  <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'css/mdb.min.css' %}" rel="stylesheet">
+  <link href="{% static 'css/style.min.css' %}" rel="stylesheet">
+  <style>
+/* ---- reset ---- */
+body {
+  margin: 0;
+  font: normal 75% Arial, Helvetica, sans-serif;
+}
+canvas {
+  display: block;
+  vertical-align: bottom;
+}
+/* ---- tsparticles container ---- */
+#tsparticles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #0d47a1;
+  background-image: url("");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 50% 50%;
+}
+
+  </style>
+</head>
+{% include "navbar.html" %}
+
+<body>
+<!-- tsParticles container -->
+<div id="tsparticles"></div>
+<!-- https://github.com/matteobruni/tsparticles -->
+
+{% include "scripts.html" %}
+<script>
+tsParticles.load("tsparticles", {
+  preset: ["basic", "60fps"]
+});
+
+</script>
+</body>
+</html>

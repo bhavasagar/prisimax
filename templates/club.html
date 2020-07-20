@@ -1,10 +1,506 @@
-{% extends "base.html" %}
+{% load static %}
+{% load cart_template_tags %}
+{% load myorders_template_tags %}
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge"> 
+  <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/gif" sizes="16x16">
+  <title>Club | Presimax</title>
+  <!-- Compiled and minified CSS -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+  <link href='https://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'> 
+  <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'css/mdb.min.css' %}" rel="stylesheet">
+  <link href="{% static 'css/style.min.css' %}" rel="stylesheet">
+  <style>
+  
+.carousel-item img {
 
-{% block extra_head %}
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-<link href='https://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'> 
-<style>
+   flex-shrink: 1;
+}
+  body{
+  background-color: #fff;
+  }
+  .spinner {
+  width: 70px;
+  height: 70px;
+  position: relative;
+  margin: 250px auto;
+}
+
+.double-bounce1, .double-bounce2 {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  
+  -webkit-animation: sk-bounce 1.5s infinite ease-in-out;
+  animation: sk-bounce 1.5s infinite ease-in-out;
+}
+
+.double-bounce2 {
+  -webkit-animation-delay: -1.0s;
+  animation-delay: -1.0s;
+}
+
+@-webkit-keyframes sk-bounce {
+  0%, 100% { -webkit-transform: translateX(-100px); }
+  50% { -webkit-transform: translateX(100px); }
+}
+
+@keyframes sk-bounce {
+  0%, 100% {
+    transform: translateX(-100px);
+    -webkit-transform: translateX(-100px);
+  } 50% { 
+    transform: translateX(100px);
+    -webkit-transform: translateX(100px);
+  }
+}
+
+.comment-box {
+    padding: 5px
+}
+
+.comment-area textarea {
+    resize: none;
+    border: 1px solid #ad9f9f
+}
+
+.form-control:focus {
+    color: #495057;
+    background-color: #fff;
+    border-color: #ffffff;
+    outline: 0;
+    box-shadow: 0 0 0 1px rgb(255, 0, 0) !important
+}
+
+.send {
+    color: #fff;
+    background-color: #ff0000;
+    border-color: #ff0000
+}
+
+.send:hover {
+    color: #fff;
+    background-color: #f50202;
+    border-color: #f50202
+}
+.checked {
+    color: orange;
+}
+.rating:hover{
+    color: orange;
+}
+
+.shfooter .collapse {
+  display: inherit;
+}
+
+.join{
+margin-left:20%;
+margin-right:20%;
+}
+.myimg1
+  {
+  margin-left:-15px;
+  height: 200px;
+  width: 220px;
+  object-fit: fill !important;
+  }
+
+@media (max-width:767px) {
+    
+  .join{
+    margin-left:15px;
+    margin-right:15px;
+    } 
+  
+  .shfooter ul {
+    margin-bottom: 0;
+  }
+
+  .shfooter .collapse {
+    display: none;
+  }
+
+  .shfooter .collapse.show {
+    display: block;
+  }
+
+  .shfooter .title .fa-angle-up,
+  .shfooter .title[aria-expanded=true] .fa-angle-down {
+    display: none;
+  }
+
+  .shfooter .title[aria-expanded=true] .fa-angle-up {
+    display: block;
+  }
+
+  .shfooter .navbar-toggler {
+    display: inline-block;
+    padding: 0;
+  }
+
+}
+
+.resize {
+  text-align: center;
+}
+.resize {
+  margin-top: 3rem;
+  font-size: 1.25rem;
+}
+
+.fa-angle-double-right {
+  animation: rightanime 1s linear infinite;
+}
+
+.fa-angle-double-left {
+  animation: leftanime 1s linear infinite;
+}
+@keyframes rightanime {
+  50% {
+    transform: translateX(10px);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateX(10px);
+    opacity: 0;
+  }
+}
+@keyframes leftanime {
+  50% {
+    transform: translateX(-10px);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateX(-10px);
+    opacity: 0;
+  }
+}
+.col-centered {
+    float: none;
+    margin: 0 auto;
+}
+body {
+    position: relative;
+    overflow-x: hidden;
+}
+body,
+html { height: 100%;}
+.nav .open > a, 
+.nav .open > a:hover, 
+.nav .open > a:focus {background-color: transparent;}
+
+#wrapper {
+    padding-left: 0;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+
+#wrapper.toggled {
+    padding-left: 220px;
+}
+
+#sidebar-wrapper {
+    z-index: 1000;
+    left: 220px;
+    width: 0;
+    height: 100%;
+    margin-left: -220px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: #fff;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+
+#sidebar-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+#wrapper.toggled #sidebar-wrapper {
+    width: 250px;
+}
+
+#page-content-wrapper {
+    width: 100%;
+    padding-top: 70px;
+    margin-top:100px !important;
+}
+
+#wrapper.toggled #page-content-wrapper {
+    position: absolute;
+    margin-right: -250px;
+}
+
+.navbar {
+  padding: 0;
+}
+
+.sidebar-nav {
+    position: absolute;
+    top: 0;
+    width: 250px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.sidebar-nav a {
+    position: relative; 
+    line-height: 20px;
+    display: inline-block;
+    width: 100%;
+}
+
+.sidebar-nav a:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 3px;
+    background-color: #1c1c1c;
+    -webkit-transition: width .2s ease-in;
+      -moz-transition:  width .2s ease-in;
+       -ms-transition:  width .2s ease-in;
+            transition: width .2s ease-in;
+
+}
+.sidebar-nav a:hover{
+  background: skyblue !important;
+  border-radius: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+.sidebar-nav a:hover:before,
+.sidebar-nav a.open:hover:before {
+    width: 100%;
+    -webkit-transition: width .2s ease-in;
+      -moz-transition:  width .2s ease-in;
+       -ms-transition:  width .2s ease-in;
+            transition: width .2s ease-in;
+
+}
+
+.sidebar-nav  a {
+    display: block;
+    color: #ddd;
+    text-decoration: none;
+    padding: 10px 15px 10px 30px;    
+}
+
+.sidebar-nav  a:hover,
+.sidebar-nav  a:active,
+.sidebar-nav  a:focus,
+.sidebar-nav  a:hover,
+.sidebar-nav  a:active,
+.sidebar-nav  a:focus{
+    color: #fff;
+    text-decoration: none;
+    background-color: transparent;
+}
+.sidebar-header {
+    text-align: center;
+    font-size: 20px;
+    position: relative;
+    width: 100%;
+    display: inline-block;
+}
+.sidebar-brand {
+    height: 65px;
+    position: relative;
+    background:#212531;
+    background: linear-gradient(to right bottom, #2f3441 50%, #212531 50%);
+   padding-top: 1em;
+}
+.sidebar-brand a {
+    color: #ddd;
+}
+.sidebar-brand a:hover {
+    color: #fff;
+    text-decoration: none;
+}
+.dropdown-header {
+    text-align: center;
+    font-size: 1em;
+    color: #ddd;
+    background:#212531;
+    background: linear-gradient(to right bottom, #2f3441 50%, #212531 50%);
+}
+.sidebar-nav .dropdown-menu {
+    position: relative;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    border-radius: 0;
+    border: none;
+    background-color: #222;
+    box-shadow: none;
+}
+.dropdown-menu.show {
+    top: 0;
+}
+
+.nav.sidebar-nav li a::before {
+    font-family: fontawesome;
+    vertical-align: baseline;
+    display: inline-block;
+    padding-right: 5px;
+}
+
+.hamburger {
+  position: fixed;
+  top: 20px;  
+  z-index: 999;
+  display: block;
+  width: 32px;
+  height: 32px;
+  margin-left: 15px;
+  background: transparent;
+  border: none;
+}
+.hamburger:hover,
+.hamburger:focus,
+.hamburger:active {
+  outline: none;
+}
+.hamburger.is-closed:before {
+  content: '';
+  display: block;
+  width: 100px;
+  font-size: 14px;
+  color: #fff;
+  line-height: 32px;
+  text-align: center;
+  opacity: 0;
+  -webkit-transform: translate3d(0,0,0);
+  -webkit-transition: all .35s ease-in-out;
+}
+.hamburger.is-closed:hover:before {
+  opacity: 1;
+  display: block;
+  -webkit-transform: translate3d(-100px,0,0);
+  -webkit-transition: all .35s ease-in-out;
+}
+
+.hamburger.is-closed .hamb-top,
+.hamburger.is-open .hamb-top,{
+position: absolute;
+top:0;
+}
+
+.hamburger.is-closed .hamb-top,
+.hamburger.is-closed .hamb-middle,
+.hamburger.is-open .hamb-top,
+.hamburger.is-open .hamb-middle,{
+margin-bottom:-3px !important;
+}
+
+.hamburger.is-closed .hamb-middle,
+.hamburger.is-closed .hamb-bottom,
+.hamburger.is-open .hamb-middle,
+.hamburger.is-open .hamb-bottom {
+margin-top:-3px !important;
+}
+
+.hamburger.is-closed .hamb-bottom,
+.hamburger.is-open .hamb-bottom {
+margin-bottom:5px !important;
+}
+
+.hamburger.is-closed .hamb-top,
+.hamburger.is-closed .hamb-middle,
+.hamburger.is-closed .hamb-bottom,
+.hamburger.is-open .hamb-top,
+.hamburger.is-open .hamb-middle,
+.hamburger.is-open .hamb-bottom {
+  position: absolute;
+  left: 0;
+  height: 1.6px;
+  font-size: 0.9em !important;
+  width: 80%;
+}
+.hamburger.is-closed .hamb-top,
+.hamburger.is-closed .hamb-middle,
+.hamburger.is-closed .hamb-bottom {
+  background-color: #1a1a1a;
+}
+.hamburger.is-closed .hamb-top { 
+  top: 5px; 
+  -webkit-transition: all .35s ease-in-out;
+}
+.hamburger.is-closed .hamb-middle {
+  top: 50%;
+  margin-top: -2px;
+}
+.hamburger.is-closed .hamb-bottom {
+  bottom: 5px;  
+  -webkit-transition: all .35s ease-in-out;
+}
+
+.hamburger.is-closed:hover .hamb-top {
+  top: 0;
+  -webkit-transition: all .35s ease-in-out;
+}
+.hamburger.is-closed:hover .hamb-bottom {
+  bottom: 0;
+  -webkit-transition: all .35s ease-in-out;
+}
+.hamburger.is-open .hamb-top,
+.hamburger.is-open .hamb-middle,
+.hamburger.is-open .hamb-bottom {
+  background-color: #1a1a1a;
+  color:#000;
+  font-size:0.9em;`
+}
+.hamburger.is-open .hamb-top,
+.hamburger.is-open .hamb-bottom {
+  top: 50%;
+  margin-top: -2px;  
+}
+.hamburger.is-open .hamb-top { 
+  -webkit-transform: rotate(45deg);
+  -webkit-transition: -webkit-transform .2s cubic-bezier(.73,1,.28,.08);
+}
+.hamburger.is-open .hamb-middle { display: none; }
+.hamburger.is-open .hamb-bottom {
+  -webkit-transform: rotate(-45deg);
+  -webkit-transition: -webkit-transform .2s cubic-bezier(.73,1,.28,.08);
+}
+.hamburger.is-open:before {
+  content: '';
+  display: block;
+  width: 100px;
+  font-size: 0.7em !important;
+  color: #fff;
+  line-height: 32px;
+  text-align: center;
+  opacity: 0;
+  -webkit-transform: translate3d(0,0,0);
+  -webkit-transition: all .35s ease-in-out;
+}
+.hamburger.is-open:hover:before {
+  opacity: 1;
+  display: block;
+  -webkit-transform: translate3d(-100px,0,0);
+  -webkit-transition: all .35s ease-in-out;
+}
+li{
+list-style-type: none;
+}
 #inline,#inline1,#inline2{
 display:inline-block;
 }
@@ -12,315 +508,675 @@ display:inline-block;
 font-size:30px;
 color:black;
 }
-</style>
-{% endblock %}
+.bottom-right {
+  position: absolute;
+  bottom:35px;
+  right:15px;
+  webkit-box-shadow: 8px 8px 14px 1px rgba(168,237,240,1);
+-moz-box-shadow: 8px 8px 14px 1px rgba(168,237,240,1);
+box-shadow: 8px 8px 14px 1px rgba(168,237,240,1);
+}
+
+.genealogy-scroll::-webkit-scrollbar {
+    width: 5px;
+    height: 8px;
+}
+.genealogy-scroll::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background-color: #e4e4e4;
+}
+.genealogy-scroll::-webkit-scrollbar-thumb {
+    background: #212121;
+    border-radius: 10px;
+    transition: 0.5s;
+}
+.genealogy-scroll::-webkit-scrollbar-thumb:hover {
+    background: #d5b14c;
+    transition: 0.5s;
+}
+
+.genealogy-body{
+    white-space: nowrap;
+    overflow-y: hidden;
+    padding: 50px;
+    min-height: 500px;
+    padding-top: 10px;
+}
+.genealogy-tree ul {
+    padding-top: 20px; 
+    position: relative;
+    padding-left: 0px;
+    display: flex;
+}
+.genealogy-tree li {
+    float: left; text-align: center;
+    list-style-type: none;
+    position: relative;
+    padding: 20px 5px 0 5px;
+}
+.genealogy-tree li::before, .genealogy-tree li::after{
+    content: '';
+    position: absolute; 
+  top: 0; 
+  right: 50%;
+    border-top: 2px solid #ccc;
+    width: 50%; 
+  height: 18px;
+}
+.genealogy-tree li::after{
+    right: auto; left: 50%;
+    border-left: 2px solid #ccc;
+}
+.genealogy-tree li:only-child::after, .genealogy-tree li:only-child::before {
+    display: none;
+}
+.genealogy-tree li:only-child{ 
+    padding-top: 0;
+}
+.genealogy-tree li:first-child::before, .genealogy-tree li:last-child::after{
+    border: 0 none;
+}
+.genealogy-tree li:last-child::before{
+    border-right: 2px solid #ccc;
+    border-radius: 0 5px 0 0;
+    -webkit-border-radius: 0 5px 0 0;
+    -moz-border-radius: 0 5px 0 0;
+}
+.genealogy-tree li:first-child::after{
+    border-radius: 5px 0 0 0;
+    -webkit-border-radius: 5px 0 0 0;
+    -moz-border-radius: 5px 0 0 0;
+}
+.genealogy-tree ul ul::before{
+    content: '';
+    position: absolute; top: 0; left: 50%;
+    border-left: 2px solid #ccc;
+    width: 0; height: 20px;
+}
+.genealogy-tree li a{
+    text-decoration: none;
+    color: #666;
+    font-family: arial, verdana, tahoma;
+    font-size: 11px;
+    display: inline-block;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+}
+
+.genealogy-tree li a:hover+ul li::after, 
+.genealogy-tree li a:hover+ul li::before, 
+.genealogy-tree li a:hover+ul::before, 
+.genealogy-tree li a:hover+ul ul::before{
+    border-color:  #fbba00;
+}
 
 
-{% block content %}
-     {%if user.userprofile.Isclubmem %}
-<div class="container-for-admin">
+.member-view-box{
+    padding:0px 20px;
+    text-align: center;
+    border-radius: 4px;
+    position: relative;
+}
+.member-image{
+    width: 60px;
+    position: relative;
+}
+.member-image img{
+    width: 60px;
+    height: 60px;
+    border-radius: 6px;
+  background-color :#000;
+  z-index: 1;
+}
+body {
+  text-align: center;
+  background: #fcfcfa;
+  color: #818078;
+  font-family: Futura, sans-serif;
+}
 
+.container {
+  max-width: 50%;  
+  margin: 40px auto;
+}
+
+.hr-text {
+  line-height: 1em;
+  position: relative;
+  outline: 0;
+  border: 0;
+  color: black;
+  text-align: center;
+  height: 1.5em;
+  opacity: .5;
+  &:before {
+    content: '';
+    background: linear-gradient(to right, transparent, #818078, transparent);
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 100%;
+    height: 1px;
+  }
+  &:after {
+    content: attr(data-content);
+    position: relative;
+    display: inline-block;
+    color: black;
+
+    padding: 0 .5em;
+    line-height: 1.5em;
+    color: #818078;
+    background-color: #fcfcfa;
+  }
+}
+
+.carousel {
+  background:#007aeb;
+}
+
+.carousel-item .img-fluid {
+  width:100%;
+}
+
+.carousel-item a {
+  display: block;
+  width:100%;
+}
+@media (max-width:767px) {
+.carousel-item a {
+height:180px;
+}
+.carousel-item .img-fluid {
+  height:180px;
+}
+}
+#inline,#inline1,#inline2{
+display:inline-block;
+}
+.sizh:hover{
+font-size:30px;
+color:black;
+}
+body {
+  text-align: center;
+  background: #fcfcfa;
+  color: #818078;
+  font-family: Futura, sans-serif;
+}
+
+
+.hr-text{
+  position: relative;
+  ouline: 0;
+  border: 0;
+  height: 1.5em;
+}
+.hr-text:before{
+  content: '';
+  position: absolute;
+  background: green;
+  left: 0;
+  top: 50%;
+  width: 100%;
+  height: 1px;
+}
+.hr-text:after{
+  content: attr(data-content);
+  position: relative;
+  display: inline-block;
+  color: black;
+  padding: 0 2em;
+  line-height: 1.5em;
+  color: #818078;
+  background-color: #fcfcfa;
+}
+  </style>
+</head>
+{%if user.userprofile.Isclubmem %}
+ <div id="wrapper">
+   <div class="overlay"></div>
+    <!-- Navbar -->
+    <nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
+      <div class="container-fluid">
+      
+      <center>
+        <!-- Brand -->
+        <a style="z-index:1050" class="waves-effect" href="#">
+          <strong class="gold-text text-center" style="color:orange;z-index:1050"><img style="z-index:1050;opacity:0" src="{% static 'img/plog.jpeg' %}" alt="PRESIMAX" width="122" height="42" style="vertical-align:middle"></strong>
+        </a>
+        </center>
+      
+        <!-- Collapse -->
+        <button class="navbar-toggler white" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon" style="margin-right:10px"></span>
+        </button>
+
+        <div class="collapse navbar-collapse white" id="navbarSupportedContent">
+
+          <!-- Left -->
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link waves-effect active" href="{%url 'core:home' %}">Home
+                <span class="sr-only">(current)</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'core:about' %}" class="nav-link waves-effect">About</a>
+          </li>
+            {% if request.user.is_authenticated %}
+          <li class="nav-item">
+            <a href="{% url 'core:order-summary' %}" class="nav-link waves-effect">
+             Hi, {{ user.username }} 
+            </a>
+          </li>
+          <li class="nav-item" >
+            <a href="{% url 'core:order-summary' %}" class="nav-link waves-effect">
+              <span class="badge red z-depth-1 mr-1">{{ request.user|cart_item_count }}</span>
+              <i class="fas fa-shopping-cart" style="color:#f2994b"></i>
+               Cart 
+            </a>
+          </li>
+          <li class="nav-item" >
+            <a href="{% url 'core:myorders' %}" class="nav-link waves-effect">
+              <span class="badge red z-depth-1 mr-1">{{ request.user|myorder_item_count }}</span>
+              <i class="far fa-list-alt" style="color:#63e0ff"></i>
+               My Orders 
+            </a>
+          </li>
+          <li class="nav-item" >
+            <a href="{% url 'core:Profile' %}" class="nav-link waves-effect">
+              <!--<span class="badge red z-depth-1 mr-1"></span>-->
+              <i class="far fa-edit" style="color:#ebe657"></i>
+              My Profile
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link waves-effect" href="{% url 'core:club' %}">
+              Club
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link waves-effect" href="{% url 'account_logout' %}">
+               Logout 
+            </a>
+          </li>
+          <li class="nav-item">
+          {% ifequal request.user.userprofile.paid_amt "250" %}
+            <a href="/pay" class="logo-wrapper waves-effect btn btn-info btn-sm" >
+            <i class="fas fa-award" style="color:#D4AF37"> Upgrade to Premium</i>
+            </a>
+          {% endifequal %}
+          </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link waves-effect" href="{% url 'account_login' %}">
+              Login 
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link waves-effect" href="{% url 'account_signup' %}">
+              Signup 
+            </a>
+          </li>
+          {% endif %}
+          </ul>
+        </div>
+
+      </div>
+    </nav>
+    <!-- Navbar -->
+        <!-- Sidebar -->
+    <nav class="fixed-top navbar-inverse" id="sidebar-wrapper" style="z-index:1050" role="navigation">
+     <ul class="nav sidebar-nav">
+       {%for mem in club_member%}
+      <center style="background-image:url(data:image/jpeg;base64,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)">
+      <a class="logo-wrapper waves-effect" >
+        <img src={{ user.userprofile.userphoto.url }}  style="border-radius: 50%;" class="myimg1">
+      <div class="bottom-right logo-wrapper waves-effect" >
+      {% if mem.desig == "Beginner" %}
+      <i class="fas fa-crown fa-3x cyan-text" ></i>
+      {% elif mem.desig == "GoldDirector" %}
+      <i class="fas fa-crown fa-3x " style="color:gold" ></i>
+      {% elif mem.desig == "SilverDirector" %}
+      <i class="fas fa-crown fa-3x" style="color:gray" ></i>
+      {% elif mem.desig == "BronzeDirector" %}
+      <i class="fas fa-crown fa-3x" style="color:brown" ></i>
+      {% elif mem.desig == "SubordianteDirector" %}
+      <i class="fas fa-crown fa-3x" style="color:orange" ></i>
+      {% elif mem.desig == "SubordianteDirector" %}
+      <i class="fas fa-crown fa-3x" style="color:black" ></i>
+      {% endif %}
+      </div></a><br><div class="progress md-progress" style="height: 20px;margin-left:20px;margin-right:20px;margin-top:-10px;margin-bottom:10px;">
+      {% endfor %}
+  <div class="progress-bar {{ color }}" role="progressbar" style="width: {{ now }}%; height: 20px" aria-valuenow="{{ now }}" aria-valuemin="0" aria-valuemax="100"></div>
+</div>
+</center>
+      {%for mem in club_member%}
+      <div class="list-group list-group-flush">
+      {% ifequal mem.user.paid_amt "250" %}
+      <a href="/pay" class="logo-wrapper waves-effect btn btn-info" ><i class="fas fa-award mr-2" style="color:#ebe657"> Upgrade to Premium</i></a>
+      {% endifequal %}
+       <a href="#" class="list-group-item list-group-item-action waves-effect sizh">
+      <h6 style="color:#002366"><i class="fas fa-code mr-3" style="#cbacfa"></i>Referalcode : {{ mem.refer }}</h6></a><a style="font-size:20px;margin-left:20px;" class="fab fa-whatsapp" href="whatsapp://send?text=Please join in PRESIMAX CLUB with my Referal code : {{ mem.refer }}
+    PRESIMAX
+   Link for registration:
+   https://www.presimax.online/
+   Download the app now in play store with this link:
+   https://play.google.com/store/apps/details?id=com.presimax.neona" data-action="share/whatsapp/share" onClick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false;" target="_blank" title="Share on whatsapp">Share on Whatsapp</a>
+        
+        <a href="#" class="list-group-item list-group-item-action waves-effect">
+          <h6 style="color:#474545"><i class="fa fa-user mr-3" style="color:#e38d8d"></i>Level : {{ mem.level }}</h6></a>
+        <a href="#" class="list-group-item list-group-item-action waves-effect">
+          <h6 style="color:#474545"><i class="far fa-id-badge mr-3" style="color:#8ef0f5"></i>Designation : {{ mem.desig }}</h6></a>
+        <a href="#" class="list-group-item list-group-item-action waves-effect">
+          <h6 style="color:#474545"><i class="fas fa-piggy-bank mr-3" style="color:#dbc65e"></i>Bank Details</h6></a>
+        {% ifequal mem.Acno "False" %}
+        {% else %}
+        <a href="#" class="list-group-item list-group-item-action waves-effect">
+          <h6 style="color:#474545"><i class="far fa-user-circle mr-1" style="color:#7cc284"></i>Acc. No. : {{ mem.Acno }}</h6></a>
+        <a href="#" class="list-group-item list-group-item-action waves-effect">
+          <h6 style="color:#474545"><i class="fas fa-warehouse mr-1" style="color:#cf88eb"></i>IFSC Code : {{ mem.Ifsc }}</h6></a>
+        {% endifequal %}
+        {% if mem.paytm == "False" and mem.Acno == "False" %}
+        <a href="#" class="list-group-item list-group-item-action waves-effect">
+          <h6 style="color:#474545"><i class="far fa-frown mr-1" style="color:#74d1ed"></i>You havn't provided Bank details</h6></a>
+        {% else %}
+        <a href="#" class="list-group-item list-group-item-action waves-effect">
+          <h6 style="color:#474545"><i class="fa fa-user mr-1" style="color:#74d1ed"></i>Paytm No. : {{ mem.paytm }}</h6></a>
+        {% endif %}
+        <!--{% for vid in trainvid %}
+        <a href="{{ vid }}" class="list-group-item list-group-item-action waves-effect">
+          <i class="fa fa-table mr-3"></i><h3 class="mr-5" style="font-size: 20px;color:#002366" >Training</h3></a>
+        {% endfor %} -->
+      {% endfor %}
+      </ul>
+  </nav>
+        <!-- /#sidebar-wrapper -->
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper" style="z-index:1050">
+            <button type="button" class="hamburger animated fadeInLeft is-closed" style="z-index:1050" data-toggle="offcanvas">
+                <span class="hamb-top" style="z-index:1050"></span>
+    			<span class="hamb-middle" style="z-index:1050"></span>
+				<span class="hamb-bottom" style="z-index:1050"></span>
+            </button>
+           
+    </div>
+    <!-- /#wrapper -->
+<body onload="myFunction()">
+    <center>
+    <div class="spinner" id="loader" >
+       <div class="spinner">
+         <i class="fas fa-shopping-cart fa-7x double-bounce1" style="color:#18246e"></i>
+      </div>
+    </center>
+    <div style="display:none;" id="myDiv">
+    <div class="mt-5 pt-4">
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        {% endfor %}
+    {% endif %}
+    </div>
+   
+  <div class="container-for-admin">
   <!--Main layout-->
   <main class="pt-5 mx-lg-5">
-    <div class="container-fluid mt-5">
+    <div class="container-fluid" style="margin-top:-230px">
+    <div id="carousel" class="carousel slide carousel-fade" data-ride="carousel" data-interval="6000">
+        <ol class="carousel-indicators">
+            <li data-target="#carousel" data-slide-to="0" class="active"></li>
+            {% for item in citems %}
+            <li data-target="#carousel" data-slide-to="{{ forloop.counter }}"></li>
+            {% endfor %}
+        </ol>
+        <div class="carousel-inner" role="listbox">
+            <div class="carousel-item active">
+                <a href="{{ item.urlf }}">
+                     <picture>
+                      <source srcset="{{ item.img.url }}" media="(min-width: 1400px)">
+                      <source srcset="{{ item.img.url }}" media="(min-width: 769px)">
+                       <source srcset="{{ item.img.url }}" media="(min-width: 577px)">
+                      <img srcset="{{ item.img.url }}" alt="responsive image" class="d-block img-fluid">
+                    </picture>
 
-      <!-- Heading -->
-      <div class="card mb-4 wow fadeIn">
+                    <div class="carousel-caption">
+                        <div>
+                            <h2>{{ item.head }}</h2>
+                            <p>{{ item.des }}</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <!-- /.carousel-item -->
+            {% for item1 in citems %}
+            <div class="carousel-item">
+                <a href="{{ item1.urlf }}">
+                     <picture>
+                      <source srcset="{{ item1.img.url }}" media="(min-width: 1400px)">
+                      <source srcset="{{ item1.img.url }}" media="(min-width: 769px)">
+                       <source srcset="{{ item1.img.url }}" media="(min-width: 577px)">
+                      <img srcset="{{ item1.img.url }}" alt="responsive image" class="d-block img-fluid">
+                    </picture>
+
+                    <div class="carousel-caption justify-content-center align-items-center">
+                        <div>
+                            <h2>{{ item1.head }}</h2>
+                            <p>{{ item1.des }}</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        <!-- /.carousel-inner -->
+        <a class="carousel-control-prev" href="#carousel" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carousel" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+    <!-- /.carousel -->
+<!-- Heading -->
+      <div class="card wow fadeIn mb-2 mt-2" >
 
         <!--Card content-->
-        <div class="card-body d-sm-flex justify-content-between">
+        <div class="card-body mb-2 d-sm-flex justify-content-between">
 
-          <h4>
-            <a href="/">Home Page</a>
+          <h4 class="mb-2 mb-sm-0 pt-1">
+            <a href="/" target="_blank">Home Page</a>
             <span>/</span>
-            <span>Dashboard</span>
+            <span>ClubDetails</span>
           </h4>
 
         </div>
 
       </div>
       <!-- Heading -->
+<style>
+.accordion-head i{
+    float: right;
+}
 
-      <!--Grid row-->
-      <div class="row wow fadeIn">
+}
+.accordion-head > .collapsed > i:before{
+    content: "\f105";
+}
+</style>
+<div id="accordion" class="mb-3" role="tablist" aria-multiselectable="true">
 
-        <!--Grid column-->
-        <div class="col-md-9 mb-4">
-
-          <!--Card-->
+          <!-- Accordion Item 1 -->
           <div class="card">
-
-            <!--Card content-->
-            <div class="card-body">
-
-              <!-- Sidebar -->
-    <div class="sidebar">
-      {%for mem in club_member%}
-      <a class="logo-wrapper waves-effect">
-        <img src={{ user.userprofile.userphoto.url }} style="border-radius: 50%;height: 145px;width: 145px;">
-      </a><br>
-      <div class="list-group list-group-flush">
-       <a href="#" class="list-group-item list-group-item-action waves-effect sizh">
-      <h3 id="inline1" style="font-size: 20px;color:#002366">Referalcode : {{ mem.refer }}</h3></a><a style="font-size:20px;margin-left:20px;" class="fab fa-whatsapp" href="whatsapp://send?text=Please join in PRESIMAX CLUB with my &Referal code :#x26a0;&#xfe0f; {{ mem.refer }} &#x26a0;&#xfe0f;
-    PRESIMAX
-   Link for registration:
-   https://www.presimax.online/
-
-                                  Make in india products....
- 
-  Objectives of presimax are 2 types:
-               1)Online shoping.
-               2)Tours and Travels.
-
-First: Online shoping.....
-=>100% quality products ..
-=>Great discount on every products..
-=>Safe and secure deliviery by our courier partner..
-=>Easy exchange and returns policy on damaged products....
-=>Max. products are make in india products....
-=>And main reasion for this company is to grow GDP of india and its yours turn...
-=>100% Guarented cash back on each and every products
-
-Second:Tours and Travels......
-=>We can book cabs based on reuirement..
-=>The charges are calculated 2 types
-             1)pre KM  some amount.
-             2)per hour some amount.
-=>Here we will provide load vechiles for carrying logistics....
-=>You can enjoy the safe ride with our presimax travels....
-=>We will provide tour packges yearly
-                           {Vacction tour and devotional tour}
-=>Get adventours tour on great discount...
-
-EARN MONEY:
- =>In this platform not only shopping and travel =>booking, u can earn money too... 
-=>There are 10 income sources in presimax...
-=> U can earn income based on ur performance..
-INCOME SOURCES ARE REGISTRATION PROCESS:
-=> GO TO official portal for PRESIMAX.. 
-=>Enter ur details and submit. pay registration fee.
-=>After this ur profile is created.
-=>u can get training and tips for earning money in our portal .
-=>Reference income: we add income to ur wallet based on references. 
-=>purchase income/cash back: 100% assured cash back on every product. 
-=>performance income: This income is added on ur monthly performance. 
- =>Level up income: Every register's performance is denoted by levels. when they complete the level, level up income is added. 
- =>Gratis products: Every month u will get free products on ur purchase and performance.
-=>Travel fund : This is monthly income is added on the basis of travel booking. 
-=>professional/position bonus : It's a bonus income added to ur wallet based on ur postion in presimax.
-=> Team lead up income: it's a group income,added on the basis of team work.. 
- =>Downline income: We add % of amount from ur downline references by our own fund. 
-=>Premament income : This income is added to perm anent job holders in presimax.
-PERMANENT POSITION IN PRESIMAX:
- =>These permanent posts are selected on the basis of ur completed levels and total refers. 
-=>These job holders are freely provided ID cards and tablets by presimax..
-[Image 65.jpg]
-
-REGISTRATION PROCESS:
-=> GO TO official portal for PRESIMAX.. 
-=>Enter ur details and submit. pay registration fee.
-=>After this ur profile is created.
-=>u can get training and tips for earning money in our portal .
-
-https://www.presimax.online/" data-action="share/whatsapp/share" onClick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false;" target="_blank" title="Share on whatsapp">Share on Whatsapp</a>
-        
-        <a href="#" class="list-group-item list-group-item-action waves-effect">
-          <i class="fa fa-user mr-3"></i><h3 class="mr-5" style="font-size: 20px;color:#002366" >Level : {{ mem.level }}</h3></a>
-        <a href="#" class="list-group-item list-group-item-action waves-effect">
-          <i class="fa fa-table mr-3"></i><h3 class="mr-5" style="font-size: 20px;color:#002366" >Designation : {{ mem.desig }}</h3></a>
-        <!--{% for vid in trainvid %}
-        <a href="{{ vid }}" class="list-group-item list-group-item-action waves-effect">
-          <i class="fa fa-table mr-3"></i><h3 class="mr-5" style="font-size: 20px;color:#002366" >Training</h3></a>
-        {% endfor %}
-        <a href="#" class="list-group-item list-group-item-action waves-effect">
-          <i class="fa fa-map mr-3"></i>Maps</a>
-        <a href="#" class="list-group-item list-group-item-action waves-effect">
-          <i class="fa fa-money mr-3"></i>Orders</a>
-      </div> -->
-      {% endfor %}
-    </div>
-    <!-- Sidebar -->
-    
+            <div class="card-header" role="tab" id="accordionHeadingOne">
+              <div class="mb-0 row">
+                <div class="col-12 no-padding accordion-head">
+                  <a data-toggle="collapse" data-parent="#accordion" href="#accordionBodyOne" aria-expanded="false" aria-controls="accordionBodyOne"
+                    class="collapsed ">
+                    <i class="fa fa-angle-down" aria-hidden="true"></i>
+                    {%for mem in club_member%}
+                    <h6  style="color:#000" ><span class="fas fa-money-bill mr-3" style="color:#CD853F" ></span>Total Income<span class="badge badge-pill pull-right ml-3" style="background-color:#D4AF37">Rs. {{ mem.usermoney }}</span></h6>
+                    {% endfor %}
+                  </a>
+                </div>
+              </div>
             </div>
 
-          </div>
-          <!--/.Card-->
-
-        </div>
-        <!--Grid column-->
-
-        <!--Grid column-->
-        <div class="col">
-
-          <!--Card-->
-          <div class="card mb-4">
-
-            <!--Card content-->
-            <div class="card-body">
-              {%for mem in club_member%}
+            <div id="accordionBodyOne" class="collapse mb-3" role="tabpanel" aria-labelledby="accordionHeadingOne" aria-expanded="false" data-parent="accordion">
+              <div class="card-block col-12">
+                {%for mem in club_member%}
               <!-- List group links -->
               <div class="list-group list-group-flush">
                 <a href="#" class="list-group-item list-group-item-action waves-effect">
-                    <i class="fas fa-wallet"></i><h3 class="mr-5" style="font-size: 20px;color:#002366" >Presimax Wallet</h3></a>
+                    <h3 class="mr-5" style="font-size: 20px;color:#002366" ><i class="fas fa-wallet mr-3"></i>Presimax Wallet</h3></a>
                 <a class="list-group-item list-group-item-action waves-effect">Travelfund
-                  <span class="badge badge-success badge-pill pull-right">{{ mem.travelfund }}
+                  <span class="badge badge-success badge-pill pull-right">Rs. {{ mem.travelfund }}
                   </span>
                 </a>
-                <a class="list-group-item list-group-item-action waves-effect">Teamincome
-                  <span class="badge badge-danger badge-pill pull-right">{{ mem.teamincome }}
+                <a class="list-group-item list-group-item-action waves-effect">Team income
+                  <span class="badge badge-danger badge-pill pull-right">Rs. {{ mem.teamincome }}
                   </span>
                 </a>
-                <a class="list-group-item list-group-item-action waves-effect">Downlineincome
-                  <span class="badge badge-primary badge-pill pull-right">{{ mem.downlineincome }}</span>
+                <a class="list-group-item list-group-item-action waves-effect">Downline income
+                  <span class="badge badge-primary badge-pill pull-right">Rs. {{ mem.downlineincome }}</span>
                 </a>
-                <a class="list-group-item list-group-item-action waves-effect">Referalincome
-                  <span class="badge badge-success badge-pill pull-right">{{ mem.referincome }}</span>
+                <a class="list-group-item list-group-item-action waves-effect">Referal income
+                  <span class="badge badge-success badge-pill pull-right">Rs. {{ mem.referincome }}</span>
                 </a>
                 <a class="list-group-item list-group-item-action waves-effect">Cashback on Orders
-                  <span class="badge badge-danger badge-pill pull-right">{{ mem.orderincome }}</span>
+                  <span class="badge badge-danger badge-pill pull-right">Rs. {{ mem.orderincome }}</span>
                 </a>
-                <a class="list-group-item list-group-item-action waves-effect">Totalincome
-                  <span class="badge badge-primary badge-pill pull-right">{{ mem.usermoney }}</span>
+                <a class="list-group-item list-group-item-action waves-effect">Level income
+                  <span class="badge badge-primary badge-pill pull-right">Rs. {{ mem.levelincome }}</span>
+                </a>
+                <a class="list-group-item list-group-item-action waves-effect">Position income
+                  <span class="badge badge-success badge-pill pull-right">Rs. {{ mem.positionincome }}</span>
+                </a>
+                <a class="list-group-item list-group-item-action waves-effect">Bonus income
+                  <span class="badge badge-danger badge-pill pull-right">Rs. {{ mem.bonusincome }}</span>
+                </a>
+                <a class="list-group-item list-group-item-action waves-effect">Total income
+                  <span class="badge badge-primary badge-pill pull-right">Rs. {{ mem.usermoney }}</span>
                 </a>
                 {% endfor %}
               </div>
-              <!-- List group links -->
-
             </div>
-
           </div>
-          <!--/.Card-->
+</div>
+{% if  downliners%}
+<center>
+<h5 class="mt-2">Downliners</h5>
 
-        </div>
-        <!--Grid column-->
-
-      </div>
-      <!--Grid row-->
-
-      <!--Grid row-->
-      <div class="row wow fadeIn">
-
-        <!--Grid column-->
-        <div class="col-md-6 mb-4">
-
-          <!--Card-->
-          <div class="card">
-
-            <!--Card content-->
-            <div class="card-body">
-
-              <!-- Table  -->
-              <table class="table table-hover">
-                <!-- Table head -->
-                <thead class="blue lighten-4">
-                  <tr>
-                    <th>Downline Member</th>
-                    <th>Income</th>
-                  </tr>
-                </thead>
-                <!-- Table head -->
-
-                <!-- Table body -->
+<div class="body genealogy-body genealogy-scroll" style="margin-bottom:-100px">
+    <div class="genealogy-tree">
+        <ul>
+            <li>
+                <a href="javascript:void(0);">
+                    <div class="member-view-box">
+                        <div class="member-image">
+                        {%for mem in club_member%}
+                        
+                            <img src="{{ mem.user.userphoto.url }}" alt="Member">
+                            <div class="member-details">
+                                <h6 style="text-transform: uppercase;">{{ mem.user.user.username }}</h6>
+                                <h6>Rs. {{ mem.usermoney }}</h6>
+                            </div>
+                        {% endfor %}
+                        </div>
+                    </div>
+                </a>
+                <ul class="active">
                 {%for dlr in downliners%}
-                <tbody>
-                  <tr>
-                    <td>{{ dlr.user.user.username }}</td>
-                    <td>{{ dlr.usermoney }}</td>
-                  </tr>
-                </tbody>
-                <!-- Table body -->
+                    <li>
+                        <a href="javascript:void(0);">
+                            <div class="member-view-box">
+                                <div class="member-image">
+                                
+                                    <img src="{{ dlr.user.userphoto.url }}" alt="Member">
+                                    <div class="member-details">
+                                        <h6 style="text-transform: uppercase;">{{ dlr.user.user.username }}</h6>
+                                        <h6>Rs. {{ dlr.usermoney }}</h6>
+                                </div>
+                                    
+                                </div>
+                            </div>
+                        </a>
+                    </li>
                 {% endfor %}
-              </table>
-              <!-- Table  -->
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>
+</center>
+{% endif %}
+{% if team %}
+<center>
+<h5 class="mt-2">Team Members</h5>
 
-            </div>
-
-          </div>
-          <!--/.Card-->
-
-        </div>
-        <!--Grid column-->
-
-        <!--Grid column-->
-        <div class="col-md-6 mb-4">
-
-          <!--Card-->
-          <div class="card">
-
-            <!--Card content-->
-            <div class="card-body">
-
-              <!-- Table  -->
-              <table class="table table-hover">
-                <!-- Table head -->
-                <thead class="blue lighten-4">
-                  <tr>
-                    <th>Team Member</th>
-                    <th>Team Income</th>
-                  </tr>
-                </thead>
-                <!-- Table head -->
-
-                <!-- Table body -->
-                {%for tm in team%}
-                <tbody>
-                  <tr>
-                    <td>{{ tm.user.user.username }}</td>
-                    <td>{{ tm.teamincome }}</td>
-                  </tr>
-                </tbody>
+<div class="body genealogy-body genealogy-scroll" style="margin-bottom:-100px">
+    <div class="genealogy-tree">
+        <ul>
+            <li>
+                <a href="javascript:void(0);">
+                    <div class="member-view-box">
+                        <div class="member-image">
+                        {%for mem in club_member%}
+                            <img src="{{ mem.user.userphoto.url }}" alt="Member">
+                            <div class="member-details">
+                                <h6 style="text-transform: uppercase;">{{ mem.user.user.username }}</h6>
+                                <h6>Rs. {{ mem.usermoney }}</h6>
+                            </div>
+                        {% endfor %}
+                            </div>
+                    </div>
+                </a>
+                <ul class="active">
+                {%for dlr in team%}
+                    <li>
+                        <a href="javascript:void(0);">
+                            <div class="member-view-box">
+                                <div class="member-image">
+                                    <img src="{{ dlr.user.userphoto.url }}" alt="Member">
+                                    <div class="member-details">
+                                        <h6 style="text-transform: uppercase;">{{ dlr.user.user.username }}</h6>
+                                        <h6>Rs. {{ dlr.usermoney }}</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
                 {% endfor %}
-                <!-- Table body -->
-              </table>
-              <!-- Table  -->
-
-            </div>
-
-          </div>
-          <!--/.Card-->
-
-        </div>
-        <!--Grid column-->
-
-      </div>
-      <!--Grid row-->
-
-      <!--Grid row-->
-      <div class="row wow fadeIn">
-
-        <!--Grid column-->
-        <div class="col">
-
-          <!--Card-->
-          <div class="card">
-
-            <!-- Card header -->
-            <div class="card-header">Google map</div>
-
-            <!--Card content-->
-            <div class="card-body">
-
-              <!--Google map-->
-              <div id="map-container" class="map-container" style="height: 500px; width:320px">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d498024.49834275816!2d78.0393894!3d12.790427!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae1670c9b44e6d%3A0xf8dfc3e8517e4fe0!2sBengaluru%2C%20Karnataka!5e0!3m2!1sen!2sin!4v1592235724201!5m2!1sen!2sin" width="600" height="450" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
-              </div>
-
-            </div>
-
-          </div>
-          <!--/.Card-->
-
-        </div>
-        <!--Grid column-->
-
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>
+</center>
+{% endif %}
+    </div>
   </main>
   <!--Main layout-->
+  
 
+ 
 </div>
 
-    {%else%}
+</div>
+    </div>
+{%else%}
         <!-- Material form login -->
-        <div style="margin-left: 10px;margin-right: 10px;">
+        <div class="join">
           <div class="card">
           
             <h5 class="card-header info-color white-text text-center py-4">
@@ -336,7 +1192,7 @@ https://www.presimax.online/" data-action="share/whatsapp/share" onClick="javasc
                 <div class="md-form">
                   <input name="image" accept=".png,.jpg,.jpeg" type="file" class="form-control" required>
                 </div>
-                <label>ProfilePic</label>
+                <label>ProfilePic( lessthan 2MB )</label>
           
                 
                 <div class="md-form">
@@ -358,12 +1214,17 @@ https://www.presimax.online/" data-action="share/whatsapp/share" onClick="javasc
                   <input name="ifsc" type="text" class="form-control">
                   <label>IFSC Code</label>
                 </div>
-                <hr>
+                
+  <hr class="hr-text text-center" data-content="Or"/>
+
                 <div class="md-form">
                   <input name="paytm" type="text" class="form-control">
                   <label>Paytm Number</label>
                 </div>
-          
+                <div class="md-form custom-control custom-checkbox">
+                    <input type="checkbox" name="checkbox" class="custom-control-input ml-2" id="defaultUnchecked">
+                    <label class="custom-control-label ml-2" for="defaultUnchecked">Accept our <a href="https://www.presimax.online/privacy/">Privacy policy.</a></label>
+                </div>
                 <!-- Sign in button -->
                 <button class="btn btn-outline-info btn-rounded btn-block my-4 waves-effect z-depth-0" style="padding:10px" type="submit">Join</button>
               </form>
@@ -374,78 +1235,70 @@ https://www.presimax.online/" data-action="share/whatsapp/share" onClick="javasc
           </div>
           
         </div>
-          <!-- 
-        <div class="container">
-            <form action="." method="POST" enctype="multipart/form-data">
-                {%csrf_token%}
-                <b>Register:<br><br></b>
-                Profile Pic:
-                <input name="image" accept=".png,.jpg,.jpeg" type="file" value=selectimage><br><br>
-                Phonenumber:
-                <input name="userphonenumber" type="number" placeholder="+91 9876543210" ><br><br>
-                Referal code(if any):
-                <input name="referalcode" type="text" placeholder="Some<ode" ><br><br>
-                <input type="submit" value="submit" class="btn btn-success">
-            </form>
-        </div>Material form login -->
     {%endif%}
-{% endblock content %}
+  <script>
+    var myVar;
+    
+    function myFunction() {
+      myVar = setTimeout(showPage, 500);
+    }
+    
+    function showPage() {
+      document.getElementById("loader").style.display = "none";
+      document.getElementById("myDiv").style.display = "block";
+    }
+ new WOW().init();
+ </script>
+
+    {% include "footer.html" %}
+    {% include "scripts.html" %}
+    <script>
+$(document).ready(function () {
+  var trigger = $('.hamburger'),
+      overlay = $('.overlay'),
+     isClosed = false;
+
+    trigger.click(function () {
+      hamburger_cross();      
+    });
+
+    function hamburger_cross() {
+
+      if (isClosed == true) {          
+        overlay.hide();
+        trigger.removeClass('is-open');
+        trigger.addClass('is-closed');
+        isClosed = false;
+      } else {   
+        overlay.show();
+        trigger.removeClass('is-closed');
+        trigger.addClass('is-open');
+        isClosed = true;
+      }
+  }
   
-{% block extra_scripts %}
-<script>
-  
+  $('[data-toggle="offcanvas"]').click(function () {
+        $('#wrapper').toggleClass('toggled');
+  });  
+});
+        
  new WOW().init();
 
-        // Regular map
-        function regular_map() {
-            var var_location = new google.maps.LatLng(40.725118, -73.997699);
+        
+        
+        $(function () {
+    $('.genealogy-tree ul').hide();
+    $('.genealogy-tree>ul').show();
+    $('.genealogy-tree ul.active').show();
+    $('.genealogy-tree li').on('click', function (e) {
+        var children = $(this).find('> ul');
+        if (children.is(":visible")) children.hide('fast').removeClass('active');
+        else children.show('fast').addClass('active');
+        e.stopPropagation();
+    });
+});
 
-            var var_mapoptions = {
-                center: var_location,
-                zoom: 14
-            };
-
-            var var_map = new google.maps.Map(document.getElementById("map-container"),
-                var_mapoptions);
-
-            var var_marker = new google.maps.Marker({
-                position: var_location,
-                map: var_map,
-                title: "New York"
-            });
-        }
-
-        // Initialize maps
-        google.maps.event.addDomListener(window, 'load', regular_map);
-
-        new Chart(document.getElementById("horizontalBar"), {
-            "type": "horizontalBar",
-            "data": {
-                "labels": ["Red", "Orange", "Yellow", "Green", "Blue", "Purple", "Grey"],
-                "datasets": [{
-                    "label": "My First Dataset",
-                    "data": [22, 33, 55, 12, 86, 23, 14],
-                    "fill": false,
-                    "backgroundColor": ["rgba(255, 99, 132, 0.2)", "rgba(255, 159, 64, 0.2)",
-                        "rgba(255, 205, 86, 0.2)", "rgba(75, 192, 192, 0.2)",
-                        "rgba(54, 162, 235, 0.2)",
-                        "rgba(153, 102, 255, 0.2)", "rgba(201, 203, 207, 0.2)"
-                    ],
-                    "borderColor": ["rgb(255, 99, 132)", "rgb(255, 159, 64)", "rgb(255, 205, 86)",
-                        "rgb(75, 192, 192)", "rgb(54, 162, 235)", "rgb(153, 102, 255)",
-                        "rgb(201, 203, 207)"
-                    ],
-                    "borderWidth": 1
-                }]
-            },
-            "options": {
-                "scales": {
-                    "xAxes": [{
-                        "ticks": {
-                            "beginAtZero": true
-                        }
-                    }]
-                }
-            }
-</script>
-{% endblock extra_scripts %}
+    </script>
+    
+</body>
+</html>

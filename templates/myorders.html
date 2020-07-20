@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{%load static%}
+{% block content %}
+<main>
+<style>
+.card-horizontal {
+  display: flex;
+  flex: 1 1 auto;
+}
+body{
+background-color:#dbdbdb;
+}
+.card{
+margin-bottom: 5px;
+}
+.myimg{
+height:240px;
+width:240px;
+padding-left:10px;
+object-fit: scale-down !important;
+}
+@media only screen and (max-width: 1000px) {
+.myimg{
+height:200px;
+width:160px;
+object-fit: scale-down !important;
+}
+.btn-sm{
+padding:3px;
+margin:2px;
+}
+}
+</style>
+      
+  <div class="container" style="margin-bottom:15px">
+  <h3>My Orders</h3>
+  {% for items in myorders %}
+    {% ifequal items.status '201' %}
+    {% else %}
+  <div class="card">
+    <div class="card-horizontal rounded">
+        <div class="img-wrapper rounded">
+            <img class="myimg rounded" src="{{ items.item.image.url }}" alt="Card image cap">
+        </div>
+        <div class="card-body">
+           <h5 class="card-title">{{ items.item.title }}</h5>
+           {% if request.user.userprofile.Isclubmem %}
+           <p class="card-text">Rs. {{ items.item.club_discount_price }}</p>
+           {% else %}
+           <p class="card-text">Rs. {{ items.item.discount_price }}</p>
+           {% endif %}
+           <a class="btn-success btn-sm" href="{{ items.item.get_absolute_url }}">Buy again!</a>
+           {% ifequal items.status '200' %}
+           <p class="card-text">Refund request is sent. We will contact you soon.</p>
+           {% else %}
+           <a class="btn-danger btn-sm" href="{{ items.item.get_refund_url }}">Refund Request</a>
+           {% endifequal %}
+        </div>
+        </div>
+        <div class="card-footer">
+        <small class="text-muted">ordered on {{ items.myordered_date }}</small><br>
+        <small class="text-muted">Expected delivery on {{ items.mydelivery_date }}</small>
+    </div>
+</div>
+{% endifequal %}
+    {% endfor %}
+    </div>
+</main>
+
+{% endblock content %}

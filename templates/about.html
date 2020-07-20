@@ -1,0 +1,412 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge"> 
+  <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/gif" sizes="16x16">
+  <title>About</title>
+  <!-- Compiled and minified CSS -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+  <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'css/mdb.min.css' %}" rel="stylesheet">
+  <link href="{% static 'css/style.min.css' %}" rel="stylesheet">
+  <style>
+   html,
+        body,
+        header,
+        .jarallax {
+          height: 700px;
+        }
+
+        @media (max-width: 740px) {
+          html,
+          body,
+          header,
+          .jarallax {
+            height: 100vh;
+          }
+        }
+
+        @media (min-width: 800px) and (max-width: 850px) {
+          html,
+          body,
+          header,
+          .jarallax {
+            height: 100vh;
+          }
+        }
+
+        @media (min-width: 560px) and (max-width: 650px) {
+          header .jarallax h1 {
+            margin-bottom: 1.5rem !important;
+          }
+          header .jarallax h5 {
+            margin-bottom: 1.5rem !important;
+          }
+        }
+
+        .top-nav-collapse {
+            background-color: #3f51b5!important;
+        }
+        .navbar:not(.top-nav-collapse) {
+            background: transparent!important;
+        }
+        @media (max-width: 768px) {
+            .navbar:not(.top-nav-collapse) {
+                background: #3f51b5!important;
+            }
+        }
+        @media (min-width: 800px) and (max-width: 850px) {
+            .navbar:not(.top-nav-collapse) {
+                background: #3f51b5!important;
+            }
+        }
+        h5 {
+            letter-spacing: 3px;
+        }
+        .mycard{
+        background-color: #F5FFFA;
+        }
+        .mycard2{
+        text-shadow: 1px 1px 2px black, 0 0 25px blue, 0 0 5px darkblue;
+        }
+        .myimg{
+         background-image: url("https://media0.giphy.com/media/xTiTnxpQ3ghPiB2Hp6/200.gif");
+         background-size: 500px 250px;
+        }
+  </style>
+</head>
+
+<body >
+    <div>
+      <!-- Main Navigation -->
+    <header>
+
+        <!-- Navbar -->
+    <nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
+      <div class="container-fluid">
+
+        <!-- Brand -->
+        <a class="navbar-brand waves-effect" href="{%url 'core:landing' %}">
+          <strong class="gold-text text-center" style="color:orange"><img src="{% static 'img/plog.jpeg' %}" alt="PRESIMAX" width="122" height="42" style="vertical-align:middle"></strong>
+        </a>
+
+        <!-- Collapse -->
+        <button class="navbar-toggler white" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon" style="margin-right:10px"></span>
+        </button>
+
+        <div class="collapse navbar-collapse white" id="navbarSupportedContent">
+
+          <!-- Left -->
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link waves-effect active" href="{%url 'core:home' %}">Home
+                <span class="sr-only">(current)</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link waves-effect" href="{%url 'core:about' %}">About
+              </a>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </nav>
+    <!-- Navbar -->
+
+        <!-- Intro Section -->
+        <div id="home" class="view jarallax" data-jarallax='{"speed": 0.2}' style="background-image: url(https://mdbootstrap.com/img/Photos/Others/img%20%2853%29.jpg); background-repeat: no-repeat; background-size: cover; background-position: center center;">
+          <div class="mask rgba-stylish-light">
+            <div class="container h-100 d-flex justify-content-center align-items-center">
+                <div class="row pt-5 mt-3">
+                    <div class="col-md-12 mb-3">
+                        <div class="intro-info-content text-center">
+                            <h1 class="display-3 white-text mb-5 wow fadeInDown" data-wow-delay="0.3s">ABOUT <a class="white-text font-weight-bold">US</a></h1>
+                            <h5 class="text-uppercase white-text mb-5 mt-1 font-weight-bold wow fadeInDown" data-wow-delay="0.3s">We are team of young engineers who created this beautiful platform for you... </h5>
+                            <a class="btn btn-indigo btn-lg wow fadeInDown" data-wow-delay="0.3s">About</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div>
+
+    </header>
+    <!-- Main Navigation -->
+    <!-- Main Layout -->
+    <div class="mt-5 pt-4">
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        {% endfor %}
+    {% endif %}
+    </div>
+
+    <!-- Main Layout -->
+    <main>
+    
+
+        
+        <nav class="navbar navbar-expand-lg navbar-light white scrolling-navbar rounded" style="margin-left:15px;margin-right:15px;">
+        <div class="nav nav-tabs md-tabs" id="nav-tab" role="tablist">
+          <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab"
+            aria-controls="nav-home" aria-selected="true">Administration</a>
+          <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab"
+            aria-controls="nav-profile" aria-selected="false">Management</a>
+          <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab"
+            aria-controls="nav-contact" aria-selected="false">Directors</a>
+        </div>
+        </nav>
+<div class="container">
+<div class="tab-content pt-5" id="nav-tabContent">
+  <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+   <!-- Section: Team v.3 -->
+            <section id="team" class="section team-section pb-4 wow fadeIn" data-wow-delay="0.3s">
+            <!-- Section heading -->
+                <h2 class="font-weight-bold text-center h1 my-5">Our amazing Administration team</h2>
+                <!-- Section description -->
+                <p class="text-center grey-text mb-5 mx-auto w-responsive">We team of young engineers developed a best and beneficial services  for you by the name of PRESIMAX. Hope you will like our services. We are available 24/7 to assist for you in PRESIMAX. We are proud to serve  people of our country Jai hind!</p>
+                
+                
+                <!-- Grid row -->
+                <div class="row mb-lg-6 text-center d-flex justify-content-center">
+                    <center>
+                    {% for mem in ateam %}
+                    <!-- Grid column -->
+                    <div class="col-md-4">
+                    
+                        <!--Card-->
+                        
+                          <div class="card card-cascade narrower mb-6" style="margin-top: 28px">
+                      
+                            <!--Card image-->
+                            <div class="view view-cascade myimg">
+                              <img style="width:250px;height:250px;border-radius:50%" src="{{ mem.img.url }}" class="card-img-top myimg" alt="">
+                              <a>
+                                <div class="mask rgba-white-slight"></div>
+                              </a>
+                            </div>
+                            <!--/.Card image-->
+
+                            <!--Card content-->
+                            <div class="card-body card-body-cascade mycard" >
+                              <!--Title-->
+                              <h4 class="card-title">{{ mem.name }}</h4>
+                              <h4 style="text-shadow: 1px 1px 2px #ff6ec7;color:#eb6ad9" class="card-title">{{ mem.desig }}</h4>
+                              <!--Text-->
+                              <p class="card-text">{{ mem.opinion }}</p>
+                              <!--Facebook-->
+                              <a type="button" href="{{ mem.facebook }}" class="btn-floating btn-small btn-fb mr-5"><i class="fab fa-facebook-f"></i></a>
+                              <!-- Twitter -->
+                              <a type="button" href="{{ mem.twitter }}" class="btn-floating btn-small btn-tw mr-5"><i class="fab fa-twitter"></i></a>
+                              <!-- Google + -->
+                              <a type="button" href="{{ mem.email }}" class="btn-floating btn-small btn-dribbble mr-5"><i class="fab fa-dribbble"></i></a>
+                            </div>
+                            <!--/.Card content-->
+                      
+                          </div>
+                          <!--/.Card-->
+                    </div>
+                    {% endfor %}
+                    </center>
+                    <!-- Grid column -->
+                </div>
+                <!-- Grid row -->
+                
+
+            </section>
+            <!-- Section: Team v.3 -->  
+  </div>
+  <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+     <!-- Section: Team v.3 -->
+            <section id="team" class="section team-section pb-4 wow fadeIn" data-wow-delay="0.3s">
+            <!-- Section heading -->
+                <h2 class="font-weight-bold text-center h1 my-5">Our amazing Marketing team</h2>
+                <!-- Section description -->
+                <p class="text-center grey-text mb-5 mx-auto w-responsive">We team of young engineers developed a best and beneficial services  for you by the name of PRESIMAX. Hope you will like our services. We are available 24/7 to assist for you in PRESIMAX. We are proud to serve  people of our country Jai hind!</p>
+                
+                
+                <!-- Grid row -->
+                <div class="row mb-lg-6 text-center d-flex justify-content-center">
+                    <center>
+                    {% for mem in mteam %}
+                    <!-- Grid column -->
+                    <div class="col-md-4">
+                    
+                        <!--Card-->
+                        
+                          <div class="card card-cascade narrower mb-6" style="margin-top: 28px">
+                      
+                            <!--Card image-->
+                            <div class="view view-cascade myimg">
+                              <img style="width:250px;height:250px;border-radius:50%" src="{{ mem.img.url }}" class="card-img-top myimg" alt="">
+                              <a>
+                                <div class="mask rgba-white-slight"></div>
+                              </a>
+                            </div>
+                            <!--/.Card image-->
+
+                            <!--Card content-->
+                            <div class="card-body card-body-cascade mycard" >
+                              <!--Title-->
+                              <h4 class="card-title">{{ mem.name }}</h4>
+                              <h4 style="text-shadow: 1px 1px 2px #ff6ec7;color:#eb6ad9" class="card-title">{{ mem.desig }}</h4>
+                              <!--Text-->
+                              <p class="card-text">{{ mem.opinion }}</p>
+                              <!--Facebook-->
+                              <a type="button" href="{{ mem.facebook }}" class="btn-floating btn-small btn-fb mr-5"><i class="fab fa-facebook-f"></i></a>
+                              <!-- Twitter -->
+                              <a type="button" href="{{ mem.twitter }}" class="btn-floating btn-small btn-tw mr-5"><i class="fab fa-twitter"></i></a>
+                              <!-- Google + -->
+                              <a type="button" href="{{ mem.email }}" class="btn-floating btn-small btn-dribbble mr-5"><i class="fab fa-dribbble"></i></a>
+                            </div>
+                            <!--/.Card content-->
+                      
+                          </div>
+                          <!--/.Card-->
+                    </div>
+                    {% endfor %}
+                    </center>
+                    <!-- Grid column -->
+                </div>
+                <!-- Grid row -->
+                
+
+            </section>
+            <!-- Section: Team v.3 -->
+  </div>
+  <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+     <!-- Section: Team v.3 -->
+            <section id="team" class="section team-section pb-4 wow fadeIn" data-wow-delay="0.3s">
+            <!-- Section heading -->
+                <h2 class="font-weight-bold text-center h1 my-5">Our amazing Directors</h2>
+                <!-- Section description -->
+                <p class="text-center grey-text mb-5 mx-auto w-responsive">We team of young engineers developed a best and beneficial services  for you by the name of PRESIMAX. Hope you will like our services. We are available 24/7 to assist for you in PRESIMAX. We are proud to serve  people of our country Jai hind!</p>
+                
+                
+                <!-- Grid row -->
+                <div class="row mb-lg-6 text-center d-flex justify-content-center">
+                    {% for mem in dteam %}
+                    <!-- Grid column -->
+                    <div class="col-lg-3 col-md-6 mb-4">
+                    
+                        <!--Card-->
+                        
+                          <div class="card card-cascade narrower mb-6" style="margin-top: 28px">
+                      
+                            <!--Card image-->
+                            <div class="view view-cascade myimg">
+                              <center>
+                              <img style="width:250px;height:250px;border-radius:50%" src="{{ mem.img.url }}" class="card-img-top myimg" alt="">
+                              </center>
+                              <a>
+                                <div class="mask rgba-white-slight"></div>
+                              </a>
+                            </div>
+                            <!--/.Card image-->
+
+                            <!--Card content-->
+                            <div class="card-body card-body-cascade mycard" >
+                              <!--Title-->
+                              <h4 class="card-title">{{ mem.name }}</h4>
+                              <h4 style="text-shadow: 1px 1px 2px #ff6ec7;color:#eb6ad9" class="card-title">{{ mem.desig }}</h4>
+                              <!--Text-->
+                              <p class="card-text">{{ mem.opinion }}</p>
+                              <!-- Google + -->
+                              <a type="button" href="{{ mem.email }}" class="btn-floating btn-small btn-dribbble mr-5"><i class="fab fa-dribbble"></i></a>
+                            </div>
+                            <!--/.Card content-->
+                      
+                          </div>
+                          <!--/.Card-->
+                    </div>
+                    {% endfor %}
+                    <!-- Grid column -->
+                </div>
+                <!-- Grid row -->
+                
+
+            </section>
+            <!-- Section: Team v.3 -->
+  </div>
+</div>
+
+            <hr class="my-5">
+
+            <!-- Section: Features v.1 -->
+            <section id="products" class="text-center wow fadeIn" data-wow-delay="0.3s">
+
+                <!-- Section heading -->
+                <h1 class="font-weight-bold text-center h1 my-5">We sell awesome products</h1>
+                
+                <!-- Grid row -->
+                <div class="row">
+
+                    <!-- Grid column -->
+                    <div class="col-md-4 mb-4">
+                        <i class="fas fa-4x fa-chart-area pink-text"></i>
+                        <h4 class="font-weight-bold my-4">Mission</h4>
+                        <p class="grey-text">To motivate people in various kinds and to think in modern and technical way, and to provide employment sources.</p>
+                    </div>
+                    <!-- Grid column -->
+
+                    <!-- Grid column -->
+                    <div class="col-md-4 mb-4">
+                        <i class="fas fa-4x fa-pencil-alt cyan-text"></i>
+                        <h4 class="font-weight-bold my-4">Vision</h4>
+                        <p class="grey-text">To provide a good platform to people to fulfill their needs, and to make people to buy Indian products. </p>
+                    </div>
+                    <!-- Grid column -->
+
+                    <!-- Grid column -->
+                    <div class="col-md-4 mb-4">
+                        <i class="fas fa-4x fa-laptop indigo-text"></i>
+                        <h4 class="font-weight-bold my-4">Development</h4>
+                        <p class="grey-text">Beauty with brain is web development</p>
+                    </div>
+                    <!-- Grid column -->
+
+                </div>
+                <!-- Grid row -->
+
+            </section>
+            <!-- Section: Features v.1 -->
+
+            <hr class="my-5">
+
+        </div>
+
+    </main>
+    <script>
+    var myVar;
+    
+    function myFunction() {
+      myVar = setTimeout(showPage, 3000);
+    }
+    
+    function showPage() {
+      document.getElementById("loader").style.display = "none";
+      document.getElementById("myDiv").style.display = "block";
+    }
+     // MDB Lightbox Init
+        $(function () {
+            $("#mdb-lightbox-ui").load("mdb-addons/mdb-lightbox-ui.html");
+        });
+    </script>
+
+    {% include "footer.html" %}
+    {% include "scripts.html" %}
+    </div>
+</body>
+</html>

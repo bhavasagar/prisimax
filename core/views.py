@@ -318,10 +318,6 @@ def callback(request):
                 up = UserProfile.objects.get(user=cust)
                 up.paid_amt = str(int(up.paid_amt)+int(data_dict["TXNAMOUNT"]))
                 up.save()
-                if int(up.paid_amt) >= 500:
-                    cm = ClubJoin.objects.get(user=up)
-                    cm.premium = True
-                    cm.save()
                 msg = EmailMessage()
                 msg.set_content("This is a computer generated email don't reply to this mail.\n This mail is to confirm your entry to our club with entry fee Rs." + str(data_dict["TXNAMOUNT"]) + " . Thank you for joining to our club.\nPlease click on club in navagation bar again to fill your details and enjoy our services as a club member.")
                 msg['Subject'] = 'Presimax-online shopping and money earning'
@@ -440,24 +436,26 @@ def ordercallback(request):
                 cm.level = cm.level + round((amt/3000),1)
                 if int(cm.user.paid_amt) >= 500: 
                     cm.orderincome = cm.orderincome+(amt)*0.1
+                    cm.save()
                 else:
                     cm.orderincome = cm.orderincome+(amt)*0.05
+                    cm.save()
                 if cm.level == int(cm.level):
                     if int(cm.user.paid_amt) >= 500:
                         cm.levelincome = cm.levelincome + 15
+                        cm.save()
                     else:
                         cm.levelincome = cm.levelincome + 5 
-                try:
+                        cm.save()
+                if str(cm.refered_person) != "False":
                     refuser = User.objects.get(username=cm.refered_person)
                     rup = UserProfile.objects.get(user=refuser)
                     ref = ClubJoin.objects.get(user=rup)
-                    if int(referer.user.paid_amt) >= 500:                    
+                    if int(rup.paid_amt) >= 500:                    
                         ref.downlineincome = ref.downlineincome + (amt)*0.01
                     else:
                         ref.downlineincome = ref.downlineincome + (amt)*0.007
                     ref.save()
-                except:
-                    pass
                 msg = "PS"
             return render(request, "ordercallback.html", {"paytm":data_dict, 'user': user, 'msg':msg, 'oid':oid, 'ta':ta})
         else:
@@ -691,6 +689,8 @@ class club(View):
                             referer.save()
                         except:
                             pass
+                    if int(self.request.user.userprofile.paid_amt)>=500:
+                        club_member.premium = True
                     club_member.save()
                     self.request.user.userprofile.save()
                     return redirect("core:home")
@@ -1270,10 +1270,10 @@ def error_404(request, exception):
         data = {}
         return render(request,'404error.html', data)
 
-def error_500(request,  exception):
+def error_500(request):
         data = {}
         return render(request,'404error.html', data)
         
-def error_413(request,  exception):
+def error_413(request, exception):
         data = {}
         return render(request,'404error.html', data)        

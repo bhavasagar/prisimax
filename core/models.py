@@ -108,6 +108,8 @@ class ClubJoin(models.Model):
     Ifsc = models.CharField(default=False,null=True,blank=True,max_length=30)
     paytm = models.CharField(default=False,null=True,blank=True,max_length=30)
     fund_transfered = models.BooleanField(default=False)
+    timestamp = models.DateTimeField(default=timezone.now)
+    
     def __str__(self):
         return self.user.user.username
 

@@ -58,7 +58,7 @@ class ItemAdmin(admin.ModelAdmin):
     search_fields = ['title', 'pincode', 'slug', 'tag', 'category']
 
 class ClubAdmin(admin.ModelAdmin):
-    search_fields = ['user__username']
+    search_fields = ['user__user__username']
     list_filter = ['premium', 'desig', 'fund_transfered']
     
 class ItemimageAdmin(admin.ModelAdmin):

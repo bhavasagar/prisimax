@@ -30,6 +30,7 @@ from .views import (
     Profile,
     test,
     categories,
+    sales,
     push,
     clubpayment,
     refreshprod,
@@ -70,8 +71,8 @@ urlpatterns = [
     path('profile/', Profile.as_view(), name='Profile'),
     path('refreshpaid/', test, name='test'),
     path('refreshprod/', refreshprod, name='refreshprod'),
-    path('sw.js/', push, name='push'),
     path('categories/<slug>/', categories, name='categories'),
+    path('sales/<slug>/', sales, name='sales'),
     path('contact/', contact, name='contact'),
     path('faqs/', faqs, name='faqs'),
 ]

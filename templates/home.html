@@ -143,6 +143,10 @@ a.disabled {
   pointer-events: none;
   cursor: default;
 }
+.disabled{
+  pointer-events: none;
+  cursor: default;
+}
 .scroll-left {
 height: 50px; 
 overflow: hidden;
@@ -182,6 +186,50 @@ transform: translateX(100%);
 -webkit-transform: translateX(-100%);
 transform: translateX(-100%); 
 }
+}
+
+.carousel {
+  background:#007aeb;
+}
+
+.carousel-item .img-fluid {
+  width:100%;
+}
+
+.carousel-item a {
+  display: block;
+  width:100%;
+}
+@media (min-width:767px) {
+.carousel-item a {
+height:300px;
+object-fit: cover !important;
+}
+.carousel-item .img-fluid {
+  height:300px;
+  object-fit: fill !important;
+}
+}
+@media (max-width:767px) {
+.carousel-item a {
+height:200px;
+object-fit: cover !important;
+}
+.carousel-item .img-fluid {
+  height:200px;
+  object-fit: cover !important;
+}
+#inline,#inline1,#inline2{
+display:inline-block;
+}
+.sizh:hover{
+font-size:30px;
+color:black;
+}
+@media only screen and (min-width: 600px) {
+  .mobile{
+  display:none;
+  }
 }
 </style>
 {% endblock extra_head%}
@@ -275,7 +323,7 @@ transform: translateX(-100%);
 </form>
     </nav>
     
-    <h5 class="mt-5 center" style="margin-top:-30px;margin-bottom:-25px;font-weight:600;font-size:1em;font-family: 'Roboto Slab', serif;">Categories</h5>
+    <h5 class="mt-3 center" style="margin-top:-30px;margin-bottom:-25px;font-weight:600;font-size:1em;font-family: 'Roboto Slab', serif;">Categories</h5>
     <div style="margin-top:-30px;margin-left:2px;" class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-1">
 			<a href="/ecommerce/" >
 			<div class="col colx">
@@ -296,18 +344,81 @@ transform: translateX(-100%);
 </div>
 <hr class="gradient_line" />
 
+<div id="carousel" class="carousel slide carousel-fade" data-ride="carousel" data-interval="6000">
+        <ol class="carousel-indicators">
+            <li data-target="#carousel" data-slide-to="0" class="active"></li>
+            {% for item in ctop %}
+            <li data-target="#carousel" data-slide-to="{{ forloop.counter }}"></li>
+            {% endfor %}
+        </ol>
+        <div class="carousel-inner" role="listbox">
+            <div class="carousel-item active">
+                <a href="{{ ctop.0.urlf }}">
+                     <picture>
+                      <source srcset="{{ ctop.0.img.url }}" media="(min-width: 1400px)">
+                      <source srcset="{{ ctop.0.img.url }}" media="(min-width: 769px)">
+                       <source srcset="{{ ctop.0.img.url }}" media="(min-width: 577px)">
+                      <img srcset="{{ ctop.0.img.url }}" alt="responsive image" class="d-block img-fluid">
+                    </picture>
+
+                    <div class="carousel-caption">
+                        <div>
+                            <h2>{{ ctop.0.head }}</h2>
+                            <p>{{ ctop.0.des }}</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            {% for item1 in ctop %}
+            <div class="carousel-item">
+                <a href="{{ item1.urlf }}">
+                     <picture>
+                      <source srcset="{{ item1.img.url }}" media="(min-width: 1400px)">
+                      <source srcset="{{ item1.img.url }}" media="(min-width: 769px)">
+                       <source srcset="{{ item1.img.url }}" media="(min-width: 577px)">
+                      <img srcset="{{ item1.img.url }}" alt="responsive image" class="d-block img-responsive img-fluid">
+                    </picture>
+
+                    <div class="carousel-caption justify-content-center align-items-center">
+                        <div>
+                            <h2>{{ item1.head }}</h2>
+                            <p>{{ item1.des }}</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <a class="carousel-control-prev" href="#carousel" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carousel" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+<hr class="gradient_line" />
+
 <div style="margin-top:-9px;margin-bottom:15px" class="scroll-left">
 <p style="color#373c3d;font-weight:750" class="scrolltext">The price indicated like this <i class="fas fa-crown" style="color:#eec64f;">Rs.XXX</i> is only for our club membership holders.</p>
 </div>
 <hr style="margin-top:0px" class="gradient_line" />
-<div class="card p-1">
+<div class="card pt-1">
 <!--Section: Products v.3-->
-<h5 class="mt-5" style="margin-bottom:-30px;font-weight:600;font-size:1.2em;font-family: 'Roboto Slab', serif;">Deals of the Day </h5>
+<h5 class="mt-2 mb-1" style="font-weight:600;font-size:1.2em;font-family: 'Roboto Slab', serif;">Deals of the Day </h5>
+<div class="custom-control custom-switch mt-2 mb-1" style="position:absolute;right:25px;">
+  <div class="btn-group btn-toggle mt-1 mb-1"> 
+    <input onclick="window.location.href='{{ object_list9.0.get_absolute_url }}';" class="custom-control-input btn btn-link btn-sm p-1 font-weight-bolder" style="margin-top:-2%" type="checkbox" id="customSwitches">
+    <label class="custom-control-label" for="customSwitches">More</label>
+  </div>
+</div>
       <section class="text-center mb-4" >
 
         <div style="margin-left:5px;margin-top:-20px" class="row wow fadeIn">
-           <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4">
-          <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4">
+           <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-2">
 			{% for item in object_list9 %}
       <a href="{{ item.item.get_absolute_url }}" >
 			<div class="col">
@@ -316,7 +427,12 @@ transform: translateX(-100%);
 			</div>
       </a>
       {% endfor %}
-    </div>
+       <a href="{{ object_list9.0.get_absolute_url }}" style="margin-right:15px;padding-right:25px">
+			<div class="col">
+				<img class="card card-block c1" src="https://www.presimax.online/media/images/more.png">
+			</div>
+      </a>
+      
           </div>
         </div>
 
@@ -326,8 +442,8 @@ transform: translateX(-100%);
 <hr class="gradient_line" />
 <div class="card p-1" >
 <!--Section: Products v.3-->
-<h5 class="mt-5" style="font-weight:600;font-size:1.2em;font-family: 'Roboto Slab', serif;">New Arrivals</h5>
-      <section class="text-center mb-4">
+<h5 class="mt-3" style="font-weight:600;font-size:1.2em;font-family: 'Roboto Slab', serif;">New Arrivals</h5>
+      <section class="text-center mb-2">
 
         <div style="margin-left:5px;margin-top:-20px" class="row wow fadeIn">
            <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4">
@@ -458,7 +574,13 @@ transform: translateX(-100%);
 	font-size: 0.5em;
 }
 </style>
-<h5 class="mt-5" style="font-weight:600;font-size:1.2em;font-family: 'Roboto Slab', serif;">FlashSale On </h5>
+<h5 class="mt-3" style="font-weight:600;font-size:1.2em;font-family: 'Roboto Slab', serif;">FlashSale On </h5>
+<div class="custom-control custom-switch mt-2 mb-2" style="position:absolute;right:25px;">
+  <div class="btn-group btn-toggle mt-1 mb-1"> 
+    <input onclick="window.location.href='{{ object_list10.0.get_absolute_url }}';" class="{{ fstatus }} custom-control-input btn btn-link btn-sm p-1 font-weight-bolder" style="margin-top:-2%" type="checkbox" id="customSwitches1">
+    <label class="custom-control-label" for="customSwitches1">More</label>
+  </div>
+</div>
 <center>
 <div style="margin-top:-9%" id="clockdiv">
   <h6 style="color:#009fab;font-weight:600">{{ fmsg }}</h6>
@@ -480,11 +602,10 @@ transform: translateX(-100%);
   </div>
 </div>
 </center>
-      <section class="text-center mb-1"  style="margin-top:-15px" >
+      <section class="text-center mb-3"  style="margin-top:-15px" >
 
         <div style="margin-left:5px;" class="row wow fadeIn">
-           <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4">
-          <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4">
+           <div class="scrolling-wrapper row flex-row flex-nowrap mt-2 pb-4">
 			
 			{% for item in object_list10 %}
       <a class="{{ fstatus }}" href="{{ item.item.get_absolute_url }}" >
@@ -494,22 +615,127 @@ transform: translateX(-100%);
 			</div>
       </a>
       {% endfor %}
-    </div>
+      <a href="{{ object_list10.0.get_absolute_url }}" style="margin-right:15px;padding-right:25px">
+			<div class="col">
+				<img class="card card-block c1" src="https://www.presimax.online/media/images/more.png">
+			</div>
+      </a>
           </div>
         </div>
 
       </section>
       <!--Section: Products v.3-->
 </div>
+<!--
 <hr class="gradient_line" />
+<div class="row wow fadeIn mb-1 mobile">
+<div class="col" style="margin-right:-5px">
+<div id="carousel1" class="carousel slide carousel-fade" data-ride="carousel1" data-interval="6000">
+        <ol class="carousel-indicators">
+            <li data-target="#carousel1" data-slide-to="0" class="active"></li>
+            {% for item in cmid %}
+            <li data-target="#carousel1" data-slide-to="{{ forloop.counter }}"></li>
+            {% endfor %}
+        </ol>
+        <div class="carousel-inner" role="listbox">
+            <div class="carousel-item1 active">
+                <a href="{{ cmid.0.urlf }}">
+                      <img src="{{ cmid.0.img.url }}" alt="responsive image" class="d-block img-responsive">
+
+                    <div class="carousel-caption">
+                        <div>
+                            <h2>{{ cmid.0.head }}</h2>
+                            <p>{{ cmid.0.des }}</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            {% for item1 in cmid %}
+            <div class="carousel-item1">
+                <a href="{{ item1.urlf }}">
+                      <img src="{{ item1.img.url }}" alt="responsive image" class="d-block img-responsive">
+
+                    <div class="carousel-caption justify-content-center align-items-center">
+                        <div>
+                            <h2>{{ item1.head }}</h2>
+                            <p>{{ item1.des }}</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <a class="carousel-control-prev" href="#carousel1" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carousel1" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+    </div>
+    <div class="col" style="margin-left:-5px">
+<div id="carousel2" class="carousel slide carousel-fade" data-ride="carousel2" data-interval="6000">
+        <ol class="carousel-indicators">
+            <li data-target="#carousel2" data-slide-to="0" class="active"></li>
+            {% for item in cbot %}
+            <li data-target="#carousel2" data-slide-to="{{ forloop.counter }}"></li>
+            {% endfor %}
+        </ol>
+        <div class="carousel-inner" role="listbox">
+            <div class="carousel-item1 active">
+                <a href="{{ cbot.0.urlf }}">
+                      <img src="{{ cbot.0.img.url }}" alt="responsive image" class="d-block img-responsive">
+
+                    <div class="carousel-caption">
+                        <div>
+                            <h2>{{ cbot.0.head }}</h2>
+                            <p>{{ cbot.0.des }}</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            {% for item1 in cbot %}
+            <div class="carousel-item1">
+                <a href="{{ item1.urlf }}">
+                      <img src="{{ item1.img.url }}" alt="responsive image" class="d-block img-responsive">
+
+                    <div class="carousel-caption justify-content-center align-items-center">
+                        <div>
+                            <h2>{{ item1.head }}</h2>
+                            <p>{{ item1.des }}</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <a class="carousel-control-prev" href="#carousel2" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carousel2" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+    </div>
+    
+</div> -->
+<hr class="gradient_line"  style="margin-top:-45px"/>
 <div class="card p-1" >
 
 <!--Section: Products v.3-->
-<h5 class="mt-5" style="font-weight:600;font-size:1.2em;font-family: 'Roboto Slab', serif;">Our BestSeller's Products</h5>
+<h5 class="mt-3" style="font-weight:600;font-size:1.2em;font-family: 'Roboto Slab', serif;">Our BestSeller's Products</h5>
       <section class="text-center " >
 
         <div style="margin-left:5px;margin-top:-20px" class="row wow fadeIn">
-           <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4">
+           <div class="scrolling-wrapper row flex-row flex-nowrap mt-3 pb-4">
           {% for item in object_list6 %}
           <div class="col-lg-3 col-md-6">
 
@@ -612,8 +838,14 @@ transform: translateX(-100%);
 <hr class="gradient_line" />
 <div class="card p-1" >
 <!--Section: Products v.3-->
-<h5 class="mt-5" style="font-weight:600;font-size:1.2em;font-family: 'Roboto Slab', serif;">Sunday Sale</h5>
+<h5 class="mt-3" style="font-weight:600;font-size:1.2em;font-family: 'Roboto Slab', serif;">Sunday Sale</h5>
 <h6 class="ml-2" style="font-weight:500;font-size:1em;font-family: 'Roboto Slab', serif;">{{msg}}</h6>
+<div class="custom-control custom-switch mt-2 mb-1" style="position:absolute;right:25px;">
+  <div class="btn-group btn-toggle mt-1 mb-1"> 
+    <input onclick="window.location.href='{{ object_list11.0.get_absolute_url }}';" class="{{ status }} custom-control-input btn btn-link btn-sm p-1 font-weight-bolder" style="margin-top:-2%" type="checkbox" id="customSwitches2">
+    <label class="custom-control-label" for="customSwitches2">More</label>
+  </div>
+</div>
       <section class="text-center" >
       
         <div style="margin-left:5px;margin-top:-20px" class="row wow fadeIn">
@@ -716,7 +948,13 @@ transform: translateX(-100%);
 <hr class="gradient_line" />
 <div class="card p-1" >
 <!--Section: Products v.3-->
-<h5 class="mt-5" style="margin-left:5px;margin-top:-20;font-weight:600;font-size:1.2em;font-family: 'Roboto Slab', serif;">Deals of this Week </h5>
+<h5 class="mt-3" style="margin-left:5px;margin-top:-20;font-weight:600;font-size:1.2em;font-family: 'Roboto Slab', serif;">Deals of this Week </h5>
+<div class="custom-control custom-switch mt-2 mb-1" style="position:absolute;right:25px;">
+  <div class="btn-group btn-toggle mt-1 mb-1"> 
+    <input onclick="window.location.href='{{ object_list8.0.get_absolute_url }}';" class="custom-control-input btn btn-link btn-sm p-1 font-weight-bolder" style="margin-top:-2%" type="checkbox" id="customSwitches3">
+    <label class="custom-control-label" for="customSwitches3">More</label>
+  </div>
+</div>
       <section class="text-center mb-4" >
 
         <div style="margin-left:5px;margin-top:-20px" class="row wow fadeIn">
@@ -731,6 +969,11 @@ transform: translateX(-100%);
 			</div>
       </a>
       {% endfor %}
+      <a href="{{ object_list8.0.get_absolute_url }}" style="margin-right:15px;padding-right:25px">
+			<div class="col">
+				<img class="card card-block c1" src="https://www.presimax.online/media/images/more.png">
+			</div>
+      </a>
     </div>
           </div>
         </div>
@@ -741,7 +984,7 @@ transform: translateX(-100%);
 <hr class="gradient_line" />
 <div class="card p-1" >
 <!--Section: Products v.3-->
-<h5 class="mt-5" style="font-weight:600;font-size:1.2em;font-family: 'Roboto Slab', serif;">More than 30% Off on discount price</h5>
+<h5 class="mt-3" style="font-weight:600;font-size:1.2em;font-family: 'Roboto Slab', serif;">More than 30% Off on discount price</h5>
       <section class="text-center mb-4">
 
         <div style="margin-left:5px;margin-top:-20px" class="row wow fadeIn">
@@ -842,7 +1085,7 @@ transform: translateX(-100%);
 <hr class="gradient_line" />
 <div class="card p-1" >
 <!--Section: Products v.3-->
-<h5 class="mt-5" style="font-weight:600;font-size:1.2em;font-family: 'Roboto Slab', serif;">Great Discounts on</h5>
+<h5 class="mt-3" style="font-weight:600;font-size:1.2em;font-family: 'Roboto Slab', serif;">Great Discounts on</h5>
       <section class="text-center mb-4">
 
         <div style="margin-left:5px;margin-top:-20px" class="row wow fadeIn">

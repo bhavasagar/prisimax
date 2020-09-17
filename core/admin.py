@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Item, OrderItem, Order, Payment, Coupon, Refund, Address, UserProfile, Transaction, TravelDetails, Paytm_history, Paytm_order_history, ClubJoin, Carousal, Sizes_class, Reviews, Team, Ads, Itemimage, Itemdealer, Myorder, Sales, Categories, Extrasales, CarousalClub, ReviewsImage, Contact, FAQs
+from .models import Item, OrderItem, Order, Payment, Coupon, Refund, Address, UserProfile, Transaction, TravelDetails, Paytm_history, Paytm_order_history, ClubJoin, Carousal, Sizes_class, Reviews, Team, Ads, Itemimage, Itemdealer, Myorder, Sales, Categories, Extrasales, CarousalClub, ReviewsImage, Contact, FAQs, CarousalEcommerce 
 
 
 def make_refund_accepted(modeladmin, request, queryset):
@@ -99,6 +99,7 @@ admin.site.register(Paytm_order_history)
 admin.site.register(Paytm_history)
 admin.site.register(Carousal)
 admin.site.register(CarousalClub)
+admin.site.register(CarousalEcommerce)
 admin.site.register(Sizes_class)
 admin.site.register(Reviews)
 admin.site.register(ReviewsImage)

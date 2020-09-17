@@ -3,16 +3,16 @@
 {% block head_title %}PRESIMAX{% endblock %}
 {% load cart_template_tags %}
 {% load myorders_template_tags %}
-<!-- Navbar -->
+
     <nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
       <div class="container-fluid">
 
-        <!-- Brand -->
+
         <a class="navbar-brand waves-effect" href="{%url 'core:landing' %}">
           <strong class="gold-text text-center" style="color:orange"><img src="{% static 'img/plog.jpeg' %}" alt="PRESIMAX" width="122" height="42" style="vertical-align:middle"></strong>
         </a>
 
-        <!-- Collapse -->
+
         <button class="navbar-toggler white" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
           aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon" style="margin-right:10px"></span>
@@ -20,7 +20,7 @@
 
         <div class="collapse navbar-collapse white" id="navbarSupportedContent">
 
-          <!-- Left -->
+
           <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
               <a class="nav-link waves-effect active" href="{%url 'core:home' %}">Home
@@ -69,7 +69,7 @@
           </li>
           <li class="nav-item">
           {% ifequal request.user.userprofile.paid_amt "250" %}
-            <a href="/pay" class="logo-wrapper waves-effect btn btn-info btn-sm" >
+            <a href="/clubpayment/" class="logo-wrapper waves-effect btn btn-info btn-sm" >
             <i class="fas fa-award mr-3" style="color:#D4AF37"> Upgrade to Premium</i>
             </a>
           {% endifequal %}
@@ -91,4 +91,3 @@
 
       </div>
     </nav>
-    <!-- Navbar -->

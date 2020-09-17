@@ -49,19 +49,19 @@
         }
 
         .top-nav-collapse {
-            background-color: #3f51b5!important;
+            background-color: #fff!important;
         }
         .navbar:not(.top-nav-collapse) {
             background: transparent!important;
         }
         @media (max-width: 768px) {
             .navbar:not(.top-nav-collapse) {
-                background: #3f51b5!important;
+                background: #fff!important;
             }
         }
         @media (min-width: 800px) and (max-width: 850px) {
             .navbar:not(.top-nav-collapse) {
-                background: #3f51b5!important;
+                background: #fff!important;
             }
         }
         h5 {
@@ -85,40 +85,7 @@
       <!-- Main Navigation -->
     <header>
 
-        <!-- Navbar -->
-    <nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
-      <div class="container-fluid">
-
-        <!-- Brand -->
-        <a class="navbar-brand waves-effect" href="{%url 'core:landing' %}">
-          <strong class="gold-text text-center" style="color:orange"><img src="{% static 'img/plog.jpeg' %}" alt="PRESIMAX" width="122" height="42" style="vertical-align:middle"></strong>
-        </a>
-
-        <!-- Collapse -->
-        <button class="navbar-toggler white" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon" style="margin-right:10px"></span>
-        </button>
-
-        <div class="collapse navbar-collapse white" id="navbarSupportedContent">
-
-          <!-- Left -->
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-              <a class="nav-link waves-effect active" href="{%url 'core:home' %}">Home
-                <span class="sr-only">(current)</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link waves-effect" href="{%url 'core:about' %}">About
-              </a>
-            </li>
-          </ul>
-        </div>
-
-      </div>
-    </nav>
-    <!-- Navbar -->
+       {% include 'navbar.html' %}
 
         <!-- Intro Section -->
         <div id="home" class="view jarallax" data-jarallax='{"speed": 0.2}' style="background-image: url(https://mdbootstrap.com/img/Photos/Others/img%20%2853%29.jpg); background-repeat: no-repeat; background-size: cover; background-position: center center;">
@@ -129,7 +96,7 @@
                         <div class="intro-info-content text-center">
                             <h1 class="display-3 white-text mb-5 wow fadeInDown" data-wow-delay="0.3s">ABOUT <a class="white-text font-weight-bold">US</a></h1>
                             <h5 class="text-uppercase white-text mb-5 mt-1 font-weight-bold wow fadeInDown" data-wow-delay="0.3s">We are team of young engineers who created this beautiful platform for you... </h5>
-                            <a class="btn btn-indigo btn-lg wow fadeInDown" data-wow-delay="0.3s">About</a>
+                            <a class="btn rounded btn-lg wow fadeInDown" style="background-color:#7edbe6" data-wow-delay="0.5s">About</a>
                         </div>
                     </div>
                 </div>
@@ -354,7 +321,7 @@
                 <div class="row">
 
                     <!-- Grid column -->
-                    <div class="col-md-4 mb-4">
+                    <div class="col-md-4 mb-4 .animated .fadeOutLeftBig" data-wow-delay="1s">
                         <i class="fas fa-4x fa-chart-area pink-text"></i>
                         <h4 class="font-weight-bold my-4">Mission</h4>
                         <p class="grey-text">To motivate people in various kinds and to think in modern and technical way, and to provide employment sources.</p>
@@ -362,7 +329,7 @@
                     <!-- Grid column -->
 
                     <!-- Grid column -->
-                    <div class="col-md-4 mb-4">
+                    <div class="col-md-4 mb-4 .animated .fadeOutLeftBig" data-wow-delay="1s">
                         <i class="fas fa-4x fa-pencil-alt cyan-text"></i>
                         <h4 class="font-weight-bold my-4">Vision</h4>
                         <p class="grey-text">To provide a good platform to people to fulfill their needs, and to make people to buy Indian products. </p>
@@ -370,13 +337,17 @@
                     <!-- Grid column -->
 
                     <!-- Grid column -->
-                    <div class="col-md-4 mb-4">
-                        <i class="fas fa-4x fa-laptop indigo-text"></i>
-                        <h4 class="font-weight-bold my-4">Development</h4>
-                        <p class="grey-text">Beauty with brain is web development</p>
+                    <div class="col-md-4 mb-4" >
+                        <i class="fas fa-4x fa-laptop indigo-text .animated .fadeOutLeftBig" data-wow-delay="1s"></i>
+                        <h4 class="font-weight-bold my-4 .animated .fadeOutLeftBig" data-wow-delay="1s">Development</h4>
+                        <p class="grey-text .animated .fadeOutLeftBig" data-wow-delay="1s">Beauty with brain is web development</p>
                     </div>
                     <!-- Grid column -->
-
+                    <script>
+                    $( document ).ready(function() {
+                      new WOW().init();
+                    });
+                    </script>
                 </div>
                 <!-- Grid row -->
 

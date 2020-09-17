@@ -222,6 +222,11 @@ class Sales(models.Model):
     def __str__(self):
         return self.sale_name
     
+    def get_absolute_url(self):
+        return reverse("core:sales", kwargs={
+            'slug': self.sale_name
+        })
+    
     class Meta:
         verbose_name_plural = 'Sales'
 
@@ -306,17 +311,6 @@ class Order(models.Model):
     received = models.BooleanField(default=False)
     refund_requested = models.BooleanField(default=False)
     refund_granted = models.BooleanField(default=False)
-
-    '''
-    1. Item added to cart
-    2. Adding a billing address
-    (Failed checkout)
-    3. Payment
-    (Preprocessing, processing, packaging etc.)
-    4. Being delivered
-    5. Received
-    6. Refunds
-    '''
 
     def __str__(self):
         return self.user.username
@@ -489,6 +483,14 @@ class CarousalClub(models.Model):
     des = models.CharField(max_length=100)
     urlf = models.URLField(max_length = 200)
     color = models.CharField(choices=LABEL_CHOICES, max_length=1)
+
+class CarousalEcommerce(models.Model):
+    img = models.ImageField(upload_to='images/', null=True)
+    head = models.CharField(max_length=15)
+    des = models.CharField(max_length=100)
+    urlf = models.URLField(max_length = 200)
+    color = models.CharField(choices=LABEL_CHOICES, max_length=1)
+    position = models.CharField(choices=POSITION_CHOICES, max_length=3)
     
 
 class Coupon(models.Model):

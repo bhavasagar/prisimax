@@ -9,7 +9,7 @@ from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from django.utils import timezone
 from .forms import CheckoutForm, CouponForm, RefundForm, PaymentForm
-from .models import Item, OrderItem, Order, Address, Payment, Coupon, Refund, UserProfile, Transaction, TravelDetails, ClubJoin, Paytm_order_history,Paytm_history, Carousal, Reviews, Team, Ads, Itemdealer, Myorder, Categories, Sales, CarousalClub, ReviewsImage, Contact, FAQs
+from .models import Item, OrderItem, Order, Address, Payment, Coupon, Refund, UserProfile, Transaction, TravelDetails, ClubJoin, Paytm_order_history,Paytm_history, Carousal, Reviews, Team, Ads, Itemdealer, Myorder, Categories, Sales, CarousalClub, ReviewsImage, Contact, FAQs, CarousalEcommerce
 import random
 from django.shortcuts import reverse
 import string
@@ -318,28 +318,34 @@ def callback(request):
                 up = UserProfile.objects.get(user=cust)
                 up.paid_amt = str(int(up.paid_amt)+int(data_dict["TXNAMOUNT"]))
                 up.save()
-                msg = EmailMessage()
-                msg.set_content("This is a computer generated email don't reply to this mail.\n This mail is to confirm your entry to our club with entry fee Rs." + str(data_dict["TXNAMOUNT"]) + " . Thank you for joining to our club.\nPlease click on club in navagation bar again to fill your details and enjoy our services as a club member.")
-                msg['Subject'] = 'Presimax-online shopping and money earning'
-                msg['From'] = "presimaxinfo@gmail.com"
-                msg['To'] = cust.email
-                server.send_message(msg)
-                msg1 = EmailMessage()
-                msg1.set_content("This is a computer generated email don't reply to this mail.\n This mail is to confirm "+ str(cust.email) +" entry to our club with entry fee Rs." + str(data_dict["TXNAMOUNT"]) + " . Thank you for joining to our club.\nPlease click on club in navagation bar again to fill your details and enjoy our services as a club member.")
-                msg1['Subject'] = 'New member Joined'
-                msg1['From'] = "presimaxinfo@gmail.com"
-                msg1['To'] = "powerstarcharan666@gmail.com"
-                server.send_message(msg1)
-                server.quit()
+                try:
+                    msg = EmailMessage()
+                    msg.set_content("This is a computer generated email don't reply to this mail.\n This mail is to confirm your entry to our club with entry fee Rs." + str(data_dict["TXNAMOUNT"]) + " . Thank you for joining to our club.\nPlease click on club in navagation bar again to fill your details and enjoy our services as a club member.")
+                    msg['Subject'] = 'Presimax-online shopping and money earning'
+                    msg['From'] = "presimaxinfo@gmail.com"
+                    msg['To'] = cust.email
+                    server.send_message(msg)
+                    msg1 = EmailMessage()
+                    msg1.set_content("This is a computer generated email don't reply to this mail.\n This mail is to confirm "+ str(cust.email) +" entry to our club with entry fee Rs." + str(data_dict["TXNAMOUNT"]) + " . Thank you for joining to our club.\nPlease click on club in navagation bar again to fill your details and enjoy our services as a club member.")
+                    msg1['Subject'] = 'New member Joined'
+                    msg1['From'] = "presimaxinfo@gmail.com"
+                    msg1['To'] = "powerstarcharan666@gmail.com"
+                    server.send_message(msg1)
+                    server.quit()
+                except:
+                    pass
                 msg = "PS"
             else:
-                msg = EmailMessage()
-                msg.set_content("This is a computer generated email don't reply to this mail.\n This mail is to report your entry attempt to our club has failed. Join to our club to enjoy our services.")
-                msg['Subject'] = 'Presimax-online shopping and money earning'
-                msg['From'] = "presimaxinfo@gmail.com"
-                msg['To'] = cust.email
-                server.send_message(msg)
-                server.quit()
+                try:
+                    msg = EmailMessage()
+                    msg.set_content("This is a computer generated email don't reply to this mail.\n This mail is to report your entry attempt to our club has failed. Join to our club to enjoy our services.")
+                    msg['Subject'] = 'Presimax-online shopping and money earning'
+                    msg['From'] = "presimaxinfo@gmail.com"
+                    msg['To'] = cust.email
+                    server.send_message(msg)
+                    server.quit()
+                except:
+                    pass
                 msg="PF"
             oid =  str(data_dict['ORDERID'])
             ta =  str(data_dict['TXNAMOUNT'])
@@ -407,20 +413,23 @@ def ordercallback(request):
                 server = smtplib.SMTP_SSL('smtp.gmail.com',465)
                 server.login('presimaxinfo@gmail.com','Mama_presimax_bagundi') 
                 if data_dict['STATUS'] == 'TXN_SUCCESS':
-                    msg = EmailMessage()
-                    recipients = ['hemanthraju9966@gmail.com', 'navi87362@gmail.com']
-                    msg.set_content("This is a computer generated email don't reply to this mail.\n This mail is to confirm your order on PRESIMAX of Rs." + str(data_dict["TXNAMOUNT"]) + " with order Id "+ str(data_dict["ORDERID"]) + " by "+ str(cust.username) +".\nThank you for purchasing. Visit us again.")
-                    msg['Subject'] = 'Order Confirmation'
-                    msg['From'] = "presimaxinfo@gmail.com"
-                    msg['To'] = ", ".join(recipients)
-                    server.send_message(msg)
-                    msg1 = EmailMessage()
-                    msg1.set_content("This is a computer generated email don't reply to this mail.\n This mail is to confirm your order on PRESIMAX of Rs." + str(data_dict["TXNAMOUNT"]) + " with order Id "+ str(data_dict["ORDERID"]) +".\nThank you for purchasing. Visit us again.")
-                    msg1['Subject'] = 'Order Confirmation'
-                    msg1['From'] = "presimaxinfo@gmail.com"
-                    msg1['To'] = cust.email
-                    server.send_message(msg1)
-                    server.quit()
+                    try:
+                        msg = EmailMessage()
+                        recipients = ['hemanthraju9966@gmail.com', 'navi87362@gmail.com']
+                        msg.set_content("This is a computer generated email don't reply to this mail.\n This mail is to confirm your order on PRESIMAX of Rs." + str(data_dict["TXNAMOUNT"]) + " with order Id "+ str(data_dict["ORDERID"]) + " by "+ str(cust.username) +".\nThank you for purchasing. Visit us again.")
+                        msg['Subject'] = 'Order Confirmation'
+                        msg['From'] = "presimaxinfo@gmail.com"
+                        msg['To'] = ", ".join(recipients)
+                        server.send_message(msg)
+                        msg1 = EmailMessage()
+                        msg1.set_content("This is a computer generated email don't reply to this mail.\n This mail is to confirm your order on PRESIMAX of Rs." + str(data_dict["TXNAMOUNT"]) + " with order Id "+ str(data_dict["ORDERID"]) +".\nThank you for purchasing. Visit us again.")
+                        msg1['Subject'] = 'Order Confirmation'
+                        msg1['From'] = "presimaxinfo@gmail.com"
+                        msg1['To'] = cust.email
+                        server.send_message(msg1)
+                        server.quit()
+                    except:
+                        pass
                 order = Order.objects.get(user=cust, ordered=False)
                 qs = order.items.all()
                 amt = data_dict["TXNAMOUNT"]
@@ -492,6 +501,12 @@ class HomeView(ListView):
         items10 = Sales.objects.filter(sale_name="FO")
         categories = Categories.objects.all()
         context={'object_list':items,'object_list1':items1,'cat':categories,'object_list2':items2,'object_list3':items3,'object_list4':items4,'object_list6':items6,'object_list7':items7,'object_list8':items8,'object_list9':items9,'object_list10':items10,'object_list11':items11,'object_list12':items12}
+        ctop = CarousalEcommerce.objects.all()
+        #cbot = CarousalEcommerce.objects.filter(position="B")
+        #cmid = CarousalEcommerce.objects.filter(position="M")
+        context['ctop']=ctop
+        #context['cmid']=cmid
+        #context['cbot']=cbot
         if datetime.now().strftime("%A")!="Sunday":
             context["status"]="disabled"
             context["msg"]="Wait up to SUNDAY for this sale..."
@@ -506,13 +521,19 @@ class HomeView(ListView):
                 context["minutes"]=edate.minute
                 context["seconds"]=edate.second
                 context["fmsg"]="Ends In"
+            elif now > edate:
+                ontext["day"]=now.day
+                context["hours"]=now.hour
+                context["minutes"]=now.minute
+                context["seconds"]=now.second
+                context["fmsg"]=""
             else:
                 context["day"]=-sdate.day + now.day
                 context["hours"]=sdate.hour
                 context["minutes"]=sdate.minute
                 context["seconds"]=sdate.second
                 context["fmsg"]="Starts In"
-            if sdate > now:
+            if sdate > now or now > edate:
                 context["fstatus"]="disabled"
         return render(self.request, self.template_name, context)
     def post(self,*args,**kwargs):
@@ -1146,7 +1167,50 @@ def categories(request, slug):
             msg = 'Filter results'
             context = { 'sobs': qs1 , 'type':msg}
         return render(request, 'search.html', context=context)
-    
+
+def sales(request, slug):
+    if request.method == 'GET':
+        items1 = Sales.objects.filter(sale_name=slug)
+        categories = Categories.objects.all()
+        paginator = Paginator(items1, 12)
+        page_number = request.GET.get('page')
+        items = paginator.get_page(page_number)
+        context = {'object_list':items, 'cat':categories}
+        return render(request,'sales.html', context=context)
+    if request.method == 'POST':
+        if request.POST.get('search'):
+            query = request.POST.get('search')
+            qs = Sales.objects.filter(Q(item__title__search=query)|Q(item__category__search=query)|Q(item__description__search=query))
+            msg = 'Search results'
+            paginator = Paginator(qs, 12)
+            page_number = request.GET.get('page')
+            qs1 = paginator.get_page(page_number)
+            context = { 'sobs': qs1 , 'type':msg}
+            if len(qs)<1:
+                messages.info(request, "Invalid search")
+                return redirect('/ecommerce/')
+        else:
+            min_price = int(request.POST.get('min_price'))-int(request.POST.get('min_price'))*0.1
+            max_price = int(request.POST.get('max_price'))+int(request.POST.get('max_price'))*0.1
+            min_dis_per = int(request.POST.get('min_dis_price'))-int(request.POST.get('min_dis_price'))*0.1
+            max_dis_per = int(request.POST.get('max_dis_price'))+int(request.POST.get('max_dis_price'))*0.1
+            if request.POST.get('new'):
+                qs = Sales.objects.filter(sale_name=slug).filter(Q(item__dis_per__gte=min_dis_per)&Q(item__tag="New")&Q(item__dis_per__lte=max_dis_per)&Q(item__discount_price__gte=min_price)&Q(item__discount_price__lte=max_price)).order_by('-id')
+            if request.POST.get('bestseller'):
+                qs = Sales.objects.filter(sale_name=slug).filter(Q(item__dis_per__gte=min_dis_per)&Q(item__tag="BESTSELLER")&Q(item__dis_per__lte=max_dis_per)&Q(item__discount_price__gte=min_price)&Q(item__discount_price__lte=max_price)).order_by('-id')
+            if request.POST.get('bestseller') and request.POST.get('new'):
+                qs = Sales.objects.filter(sale_name=slug).filter(Q(item__dis_per__gte=min_dis_per)&Q(item__tag="New")&Q(item__tag="BESTSELLER")&Q(item__dis_per__lte=max_dis_per)&Q(item__discount_price__gte=min_price)&Q(item__discount_price__lte=max_price)).order_by('-id')
+            if not (request.POST.get('bestseller') and request.POST.get('new')):
+                qs = Sales.objects.filter(sale_name=slug).filter(Q(item__dis_per__gte=min_dis_per)&Q(item__dis_per__lte=max_dis_per)&Q(item__discount_price__gte=min_price)&Q(item__discount_price__lte=max_price)).order_by('-id')
+            if request.POST.get('htl'):
+                qs = qs.order_by('-item__discount_price')
+            paginator = Paginator(qs, 36)
+            page_number = request.GET.get('page')
+            qs1 = paginator.get_page(page_number)    
+            msg = 'Filter results'
+            context = { 'sobs': qs1 , 'type':msg}
+        return render(request, 'search.html', context=context)    
+
 
 @login_required
 def refund(request, slug):
@@ -1175,12 +1239,12 @@ def refund(request, slug):
 class Profile(LoginRequiredMixin, View):
     template_name = "profile.html"
     def get(self, *args, **kwargs):
-        club_member = ClubJoin.objects.get(user=self.request.user.userprofile)
+        club_member = self.request.user.userprofile
         context={'club_member':club_member}
         return render(self.request,self.template_name,context=context)
     def post(self, *args, **kwargs):
         if self.request.method == 'POST':
-            club_member = ClubJoin.objects.get(user=self.request.user.userprofile)
+            club_member = user=self.request.user.userprofile
             if self.request.FILES.get('image'):
                 self.request.user.userprofile.userphoto = self.request.FILES.get('image')
             if (len(self.request.POST.get('userphonenumber'))>9 and len(self.request.POST.get('userphonenumber'))<20): 
@@ -1188,7 +1252,7 @@ class Profile(LoginRequiredMixin, View):
             if len(self.request.POST.get('username'))>0:
                 self.request.user.username = self.request.POST.get('username')
                 self.request.user.save()
-            if len(self.request.user.email)>0:
+            if len(self.request.POST.get('email'))>0:
                 self.request.user.email = self.request.POST.get('email')
                 self.request.user.save()
             self.request.user.userprofile.save()
@@ -1197,17 +1261,23 @@ class Profile(LoginRequiredMixin, View):
 
 def test(request):
     cjs = ClubJoin.objects.filter(fund_transfered=True)
+    cm = ClubJoin.objects.all()
+    for i in cm:
+        i.usermoney = i.travelfund + i.teamincome + i.downlineincome + i.referincome + i.orderincome + i.bonusincome + i.positionincome + i.levelincome
+        i.save()
     server = smtplib.SMTP_SSL('smtp.gmail.com',465)
     server.login('presimaxinfo@gmail.com','Mama_presimax_bagundi')
     for i in cjs: 
-        i.usermoney = i.travelfund + i.teamincome + i.downlineincome + i.referincome + i.orderincome + i.bonusincome + i.positionincome + i.levelincome
-        msg = EmailMessage()    
-        msg.set_content("This is a computer generated email, don't reply to this mail.\nMr./Mrs. "+ str(i.user.user.username).capitalize()  +", Your usermoney in Presimax Club has been deposited Rs. "+ str(i.usermoney) +" in your account.\nIf not please contact +91 9515416221.")
-        msg['Subject'] = 'Fund Deposited'
-        msg['From'] = "presimaxinfo@gmail.com"
-        msg['To'] =  i.user.user.email
-        server.send_message(msg)
-        server.quit()
+        try:
+            msg = EmailMessage()    
+            msg.set_content("This is a computer generated email, don't reply to this mail.\nMr./Mrs. "+ str(i.user.user.username).capitalize()  +", Your usermoney in Presimax Club has been deposited Rs. "+ str(i.usermoney) +" in your account.\nIf not please contact +91 9515416221.")
+            msg['Subject'] = 'Fund Deposited'
+            msg['From'] = "presimaxinfo@gmail.com"
+            msg['To'] =  i.user.user.email
+            server.send_message(msg)
+            server.quit()
+        except:
+            pass
         i.fund_transfered = False
         i.travelfund = 0 
         i.teamincome = 0  
@@ -1220,7 +1290,7 @@ def test(request):
         i.usermoney = i.travelfund + i.teamincome + i.downlineincome + i.referincome + i.orderincome + i.bonusincome + i.positionincome + i.levelincome
         i.save()
     return render(request, "similarprod.html")
-
+ 
 def faqs(request):
     faqs= FAQs.objects.all()
     context={'faq':faqs}

@@ -9,7 +9,7 @@
       <div class="row">
         <div class="col-md-8 mb-4">
           <div class="card">
-            <form method="POST" class="card-body">
+            <form method="POST" action='.' class="card-body">
               {% csrf_token %}
 
               <h3>Billing address</h3>
@@ -46,11 +46,25 @@
                       Zip code required.
                     </div>
                   </div>
-                </div>
-
+                </div>             
                 
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" name="same_billing_address" id="same_billing_address">
+                  <label class="custom-control-label" for="same_billing_address">Billing address is the same as my permanent address</label>
+                </div>
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" name="set_default_shipping" id="set_default_shipping">
+                  <label class="custom-control-label" for="set_default_shipping">Save as default Billing address</label>
+                </div>   
 
               </div>
+              
+              {% if default_shipping_address %}
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" name="use_default_shipping" id="use_default_shipping">
+                <label class="custom-control-label" for="use_default_shipping">Use default billing address: {{ default_shipping_address.street_address|truncatechars:10 }}</label>
+              </div>
+              {% endif %}
 
               <hr>
 
@@ -66,7 +80,7 @@
                   <input type='text' placeholder='Apartment or suite' id='billing_address2' name='billing_address2' class='form-control' />
                   <label for="billing_address2" class="">Address 2 (optional)</label>
                 </div>
-
+                
                 <div class="md-form mb-5">
                   <input type='text' placeholder='9012345679' id='billing_phone' name='billing_phone' class='form-control' />
                   <label for="billing_phone" class="">Phone number</label>
@@ -90,9 +104,20 @@
                   </div>
 
                 </div>
-
+                                
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" name="set_default_billing" id="set_default_billing">
+                  <label class="custom-control-label" for="set_default_billing">Save as default permanent address</label>
+                </div>
+                
               </div>
-
+              
+              {% if default_billing_address %}
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" name="use_default_billing" id="use_default_billing">
+                <label class="custom-control-label" for="use_default_billing">Use default permanent address: {{ default_billing_address.street_address|truncatechars:10 }}</label>
+              </div>
+              {% endif %}
               
               <hr>
 
@@ -101,8 +126,8 @@
               <div class="d-block my-3">
                 {% for value, name in form.fields.payment_option.choices %}
                 <div class="custom-control custom-radio">
-                  <input id="{{ name }}" name="payment_option" value="{{ value }}" type="radio" class="custom-control-input" required>
-                  <label class="custom-control-label" for="{{ name }}">{{ name }}</label>
+                  <input id="{{ value }}" name="payment_option" value="{{ value }}" type="radio" class="custom-control-input" required>
+                  <label class="custom-control-label" for="{{ value }}">{{ name }}</label>
                 </div>
                 {% endfor %}
               </div>
@@ -113,7 +138,7 @@
             </form>
 
           </div>
-
+           
         </div>
 
         <div class="col-md-4 mb-4">
@@ -128,6 +153,10 @@
 {% endblock content %}
 
 {% block extra_scripts %}
+<script>
+if('{{ COD_avail }}' == 'NO'){
+$('#C').attr('disabled',true);;}
+</script>
 <script>
 var hideable_shipping_form = $('.hideable_shipping_form');
 var hideable_billing_form = $('.hideable_billing_form');
@@ -150,6 +179,5 @@ use_default_billing.addEventListener('change', function() {
     hideable_billing_form.show();
   }
 })
-
 </script>
 {% endblock extra_scripts %}

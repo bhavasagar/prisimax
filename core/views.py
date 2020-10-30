@@ -8,14 +8,14 @@ from django.views.generic import ListView, DetailView, View
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from django.utils import timezone
-from .forms import CheckoutForm, CouponForm, RefundForm, PaymentForm
-from .models import Item, OrderItem, Order, Address, Payment, Coupon, Refund, UserProfile, Transaction, TravelDetails, ClubJoin, Paytm_order_history,Paytm_history, Carousal, Reviews, Team, Ads, Itemdealer, Myorder, Categories, Sales, CarousalClub, ReviewsImage, Contact, FAQs, CarousalEcommerce
+from .forms import CheckoutForm, CouponForm, RefundForm
+from .models import Item, OrderItem, Order, Address, Payment, Coupon, Refund, UserProfile, Transaction, TravelDetails, ClubJoin, Paytm_order_history,Paytm_history, Carousal, Review, Team, Ads, Itemdealer, Myorder, Categories, Sales, CarousalClub, Contact, FAQs, CarousalEcommerce,Multiple_Pics
 import random
 from django.shortcuts import reverse
 import string
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect,HttpResponse
 from django.contrib.auth import authenticate, login as auth_login
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
@@ -37,18 +37,126 @@ def products(request):
     }
     return render(request, "products.html", context)
 
+def send_email(sub,des,to_user):
+    try:
+        server = smtplib.SMTP_SSL('smtp.gmail.com',465)
+        server.login('presimaxinfo@gmail.com','Mama_presimax_bagundi')
+        msg1 = EmailMessage()
+        msg1.set_content(des)
+        msg1['Subject'] = sub
+        msg1['From'] = "presimaxinfo@gmail.com"
+        msg1['To'] = to_user
+        server.send_message(msg1)
+        server.quit()
+    except:
+        pass
+    return True
+   
+def distribute_money(request,amt):
+    try:        
+        amt = float(amt)
+        up = request.user.userprofile        
+        cm = ClubJoin.objects.get(user=up)
+        new_level = float(cm.level) + round(amt/3000,1)        
+        if int(cm.user.paid_amt) >= 500: 
+            cm.orderincome = float(cm.orderincome)+(amt)*0.1
+            cm.save()
+        else:
+            cm.orderincome = float(cm.orderincome)+(amt)*0.05
+            cm.save()
+        if new_level-int(cm.level) >= 1:
+            if int(cm.user.paid_amt) >= 500:
+                cm.levelincome = float(cm.levelincome) + 15
+                cm.save()
+            else:
+                cm.levelincome = float(cm.levelincome) + 5 
+                cm.save() 
+        cm.level = new_level
+        cm.save()
+        if str(cm.refered_person) != "False":
+            refuser = User.objects.get(username=cm.refered_person)
+            rup = UserProfile.objects.get(user=refuser)
+            ref = ClubJoin.objects.get(user=rup)
+            if int(rup.paid_amt) >= 500:                    
+                ref.downlineincome = float(ref.downlineincome) + (amt)*0.01
+            else:
+                ref.downlineincome = float(ref.downlineincome) + (amt)*0.007
+            ref.save()
+    except:
+        messages.info(request,'Unable to add bonus to your wallet, please contact us')    
 
-def is_valid_form(values):
+def collect_money(request,amt):
+    try:        
+        amt = float(amt)
+        up = request.user.userprofile        
+        cm = ClubJoin.objects.get(user=up)      
+        if int(cm.user.paid_amt) >= 500: 
+            cm.orderincome = float(cm.orderincome)-(amt)*0.1
+            cm.save()
+        else:
+            cm.orderincome = float(cm.orderincome)-(amt)*0.05
+            cm.save()        
+        if str(cm.refered_person) != "False":
+            refuser = User.objects.get(username=cm.refered_person)
+            rup = UserProfile.objects.get(user=refuser)
+            ref = ClubJoin.objects.get(user=rup)
+            if int(rup.paid_amt) >= 500:                    
+                ref.downlineincome = float(ref.downlineincome) - (amt)*0.01
+            else:
+                ref.downlineincome = float(ref.downlineincome) - (amt)*0.007
+            ref.save()
+    except:
+        messages.info(request,'Unable to add bonus to your wallet, please contact us')  
+  
+def brokrage_income(request,orderitem): 
+    up = get_object_or_404(UserProfile,user=orderitem.referer)
+    cp = get_object_or_404(ClubJoin,user=up)
+    dp = float(orderitem.item.discount_price)
+    if dp>199 and dp<401:
+        add=25
+    elif dp>400 and dp<901:
+        add=40
+    elif dp>900 and dp<1901:
+        add=50
+    if dp>1900 and dp<4001:
+        add=75
+    else:
+        add=100
+    cp.prod_ref_inc = float(cp.prod_ref_inc)+add
+    cp.save()
+    sub = 'Product refer income | Presimax'    
+    des = "This is a computer generated email don't reply to this mail.\n This mail is to inform you that you are acknowledged with Rs." + str(add) + "  for refering. Visit us again."                    
+    send_email(sub,des,str(request.user.email))    
+
+def de_brokrage_income(request,orderitem): 
+    up = get_object_or_404(UserProfile,user=orderitem.referer)
+    cp = get_object_or_404(ClubJoin,user=up)
+    dp = float(orderitem.item.discount_price)
+    if dp>199 and dp<401:
+        add=25
+    elif dp>400 and dp<901:
+        add=40 
+    elif dp>900 and dp<1901:
+        add=50
+    if dp>1900 and dp<4001:
+        add=75
+    else:
+        add=100
+    cp.prod_ref_inc = float(cp.prod_ref_inc)-add
+    cp.save()  
+
+def is_valid_form(values): 
+
     valid = True
     for field in values:
         if field == '':
             valid = False
     return valid
 
-class CheckoutView(View):
+class CheckoutView(LoginRequiredMixin,View):
     def get(self, *args, **kwargs):
         try:
-            order = Order.objects.get(user=self.request.user, ordered=False)
+            order = Order.objects.filter(user=self.request.user, ordered=False).last()
             form = CheckoutForm()
             context = {
                 'form': form,
@@ -56,7 +164,12 @@ class CheckoutView(View):
                 'order': order,
                 'DISPLAY_COUPON_FORM': True
             }
-
+            context['COD_avail'] = 'YES'            
+            for o in order.items.all():
+                if not o.item.COD:
+                    context['COD_avail'] = 'NO'
+                    messages.info(self.request, "All products in your order doesn't avail cash on delivery facility.")
+                        
             shipping_address_qs = Address.objects.filter(
                 user=self.request.user,
                 address_type='S',
@@ -74,7 +187,7 @@ class CheckoutView(View):
             if billing_address_qs.exists():
                 context.update(
                     {'default_billing_address': billing_address_qs[0]})
-
+ 
             return render(self.request, "checkout.html", context)
         except ObjectDoesNotExist:
             messages.info(self.request, "You do not have an active order")
@@ -83,9 +196,8 @@ class CheckoutView(View):
     def post(self, *args, **kwargs):
         form = CheckoutForm(self.request.POST or None)
         try:
-            order = Order.objects.get(user=self.request.user, ordered=False)
-            if form.is_valid():
-
+            order = Order.objects.filter(user=self.request.user, ordered=False).last()
+            if form.is_valid() or True:
                 use_default_shipping = form.cleaned_data.get(
                     'use_default_shipping')
                 if use_default_shipping:
@@ -111,7 +223,7 @@ class CheckoutView(View):
                         'shipping_address2')
                     shipping_country = form.cleaned_data.get(
                         'shipping_country')
-                    shipping_zip = form.cleaned_data.get('shipping_zip')
+                    shipping_zip = form.cleaned_data.get('shipping_zip') 
 
                     if is_valid_form([shipping_address1, shipping_country, shipping_zip]):
                         shipping_address = Address(
@@ -203,17 +315,62 @@ class CheckoutView(View):
                             self.request, "Please fill in the required billing address fields")
                         return redirect("core:order-summary")
 
-                payment_option = form.cleaned_data.get('payment_option')
+                payment_option = form.cleaned_data.get('payment_option')                
 
                 if payment_option == 'P':
+                    order.payment = payment_option
+                    order.save()
                     return redirect('core:orderpayment')
+                if payment_option == 'C':                                        
+                    for o in order.items.all():
+                        if not o.item.COD:                              
+                            messages.warning(self.request, "All products in your order doesn't avail cash on delivery facility.")          
+                            return redirect('core:checkout')     
+                    order.payment = payment_option
+                    order.save()                                                  
+                    return redirect('core:orderplaced')                      
                 else:
                     messages.warning(
                         self.request, "Invalid payment option selected")
-                    return redirect('core:checkout')
+                    return redirect('core:checkout')            
         except ObjectDoesNotExist:
             messages.warning(self.request, "You do not have an active order")
             return redirect("core:order-summary")
+          
+
+@login_required
+def orderplaced(request):
+    order = Order.objects.filter(user=request.user, ordered=False).last() 
+    try:
+        order_0 = Order.objects.filter(user=request.user, ordered=False,type='S')[0] 
+        item_0 = order.items.all().last()
+        order_0.items.remove(item_0)
+        order_0.save()
+    except:
+        pass
+    amt = order.get_total()    
+    if request.user.userprofile.Isclubmem:
+        amt = order.get_club_total()
+    transaction = Transaction.objects.create(made_by=request.user, amount=amt)
+    transaction.save()
+    sub = 'Order Successfully Placed | Presimax'    
+    des = "This is a computer generated email don't reply to this mail.\n This mail is to confirm your order on PRESIMAX of Rs." + str(amt) + " with order Id "+ str(transaction.order_id) + " by "+ str(request.user.username) +".\nThank you for purchasing. Visit us again."                    
+    send_email(sub,des,str(request.user.email)) 
+    oitms = order.items.all()    
+    for i in oitms:
+        i.ordered = True
+        if i.referer:
+            brokrage_income(request,i)
+        myorder = Myorder.objects.create(user=request.user,item=i.item,myordered_date=datetime.now(),mydelivery_date=datetime.now()+timedelta(days=5))
+        myorder.orderitem = i
+        myorder.save()
+        i.save()  
+    distribute_money(request,amt=amt)
+    order.ordered = True
+    order.save()    
+    resp = '''<center><img style='width:80%;height:auto' src="https://www.presimax.online/media/images/ezgif.com-gif-maker_1.gif"></center>'''
+    return HttpResponse(resp)
+        
 
 @login_required
 def clubpayment(request):
@@ -258,7 +415,7 @@ def clubpayment(request):
 
 @login_required
 def orderpayment(request):
-    order = Order.objects.get(user=request.user, ordered=False)
+    order = Order.objects.filter(user=request.user, ordered=False).last()
     if request.user.userprofile.Isclubmem:
         amount = int(order.get_club_total())
     else:
@@ -430,41 +587,22 @@ def ordercallback(request):
                         server.quit()
                     except:
                         pass
-                order = Order.objects.get(user=cust, ordered=False)
+                order = Order.objects.filter(user=cust, ordered=False).last()
                 qs = order.items.all()
                 amt = data_dict["TXNAMOUNT"]
-                oitms = OrderItem.objects.filter(user=cust, ordered=False)
+                oitms = qs
                 for i in oitms:
                     i.ordered = True
+                    brokrage_income(request,i)
                     myorder = Myorder.objects.create(user=cust,item=i.item,myordered_date=datetime.now(),mydelivery_date=datetime.now()+timedelta(days=5))
+                    myorder.orderitem = i
+                    myorder.save()
                     i.save()
                 order.ordered = True
                 order.save()
                 up = UserProfile.objects.get(user=cust)
                 cm = ClubJoin.objects.get(user=up)
-                cm.level = cm.level + round((amt/3000),1)
-                if int(cm.user.paid_amt) >= 500: 
-                    cm.orderincome = cm.orderincome+(amt)*0.1
-                    cm.save()
-                else:
-                    cm.orderincome = cm.orderincome+(amt)*0.05
-                    cm.save()
-                if cm.level == int(cm.level):
-                    if int(cm.user.paid_amt) >= 500:
-                        cm.levelincome = cm.levelincome + 15
-                        cm.save()
-                    else:
-                        cm.levelincome = cm.levelincome + 5 
-                        cm.save()
-                if str(cm.refered_person) != "False":
-                    refuser = User.objects.get(username=cm.refered_person)
-                    rup = UserProfile.objects.get(user=refuser)
-                    ref = ClubJoin.objects.get(user=rup)
-                    if int(rup.paid_amt) >= 500:                    
-                        ref.downlineincome = ref.downlineincome + (amt)*0.01
-                    else:
-                        ref.downlineincome = ref.downlineincome + (amt)*0.007
-                    ref.save()
+                distribute_money(request,amt)
                 msg = "PS"
             return render(request, "ordercallback.html", {"paytm":data_dict, 'user': user, 'msg':msg, 'oid':oid, 'ta':ta})
         else:
@@ -487,6 +625,9 @@ def simp(request):
 class HomeView(ListView):
     template_name = "home.html"
     def get(self,*args, **kwargs):
+        if self.request.user.is_authenticated: 
+            buynows = Order.objects.filter(user=self.request.user, ordered=False,type='BN')
+            buynows.delete()
         items = Item.objects.all().order_by('-id')[0:7]
         items1 = Item.objects.all().order_by('-id')[9:16]
         items2 = Item.objects.filter(dis_per__gte=30)[0:7]
@@ -523,7 +664,7 @@ class HomeView(ListView):
                 context["fmsg"]="Ends In"
             elif now > edate:
                 ontext["day"]=now.day
-                context["hours"]=now.hour
+                context["hours"]=now.hour 
                 context["minutes"]=now.minute
                 context["seconds"]=now.second
                 context["fmsg"]=""
@@ -588,13 +729,15 @@ class travels(ListView):
 class club(View):
     template_name = "club.html"
     def get(self,*args,**kwargs):
-        if self.request.user.is_authenticated:
+        if self.request.user.is_authenticated:         
+            buynows = Order.objects.filter(user=self.request.user, ordered=False,type='BN')
+            buynows.delete()
             if self.request.user.userprofile.Isclubmem:
                 club_member = ClubJoin.objects.filter(user=self.request.user.userprofile)
                 downliners = ClubJoin.objects.filter(refered_person=self.request.user.username)
                 mn,mx=0,5
                 for cm in club_member:
-                    cm.usermoney = cm.travelfund + cm.teamincome + cm.downlineincome + cm.referincome + cm.orderincome + cm.bonusincome + cm.positionincome + cm.levelincome
+                    cm.usermoney = cm.travelfund + cm.teamincome + cm.downlineincome + cm.referincome + cm.orderincome + cm.bonusincome + cm.positionincome + cm.levelincome + cm.prod_ref_inc
                     if cm.level<5:
                         cm.desig = "Beginner"
                         clr = 'purple'
@@ -622,12 +765,12 @@ class club(View):
                     
                     nw = (cm.level-int(cm.level))*100
                 for cm in downliners:
-                    cm.usermoney = cm.travelfund + cm.teamincome + cm.downlineincome + cm.referincome + cm.orderincome + cm.bonusincome + cm.positionincome + cm.levelincome + cm.bonusincome + cm.positionincome + cm.levelincome
+                    cm.usermoney = cm.travelfund + cm.teamincome + cm.downlineincome + cm.referincome + cm.orderincome + cm.bonusincome + cm.positionincome + cm.levelincome + cm.bonusincome + cm.positionincome + cm.levelincome + cm.prod_ref_inc
                     cm.save()
                 if club_member[0].team!="False":
                     team = ClubJoin.objects.filter(team=club_member[0].team)
                     for cm in team:
-                        cm.usermoney = cm.travelfund + cm.teamincome + cm.downlineincome + cm.referincome + cm.orderincome + cm.bonusincome + cm.positionincome + cm.levelincome + cm.bonusincome + cm.positionincome + cm.levelincome
+                        cm.usermoney = cm.travelfund + cm.teamincome + cm.downlineincome + cm.referincome + cm.orderincome + cm.bonusincome + cm.positionincome + cm.levelincome + cm.bonusincome + cm.positionincome + cm.levelincome + cm.prod_ref_inc
                         cm.save()
                 carousal = CarousalClub.objects.get(pk=1)
                 carousal1 = CarousalClub.objects.all().exclude(pk=1)
@@ -731,7 +874,7 @@ def refgenrator(name):
 class OrderSummaryView(LoginRequiredMixin, View):
     def get(self, *args, **kwargs):
         try:
-            order = Order.objects.get(user=self.request.user, ordered=False)
+            order = Order.objects.filter(user=self.request.user, ordered=False).last()
             context = {
                 'object': order
             }
@@ -741,18 +884,17 @@ class OrderSummaryView(LoginRequiredMixin, View):
             return redirect("/ecommerce/")
             
 
-class ItemDetailView(DetailView):
+class ItemDetailView(View):
     template_name = "product.html"
     def get(self, *args, **kwargs):
-        url = self.request.get_full_path()
-        lst = url.split("/")
-        slug = lst[-2]
-        item = Item.objects.get(slug=slug)
-        items = Item.objects.filter(category=item.category)[0:4]
-        items1 = Item.objects.filter(category=item.category)[5:9]
-        reviews = Reviews.objects.filter(item=item) 
-        review_imgs = ReviewsImage.objects.filter(item=item)
-        context={'object':item,'object_list':items,'object_list1':items1, 'reviewsget':reviews, 'rimgs':review_imgs}
+        if self.request.user.is_authenticated: 
+            buynows = Order.objects.filter(user=self.request.user, ordered=False,type='BN')
+            buynows.delete()        
+        item = Item.objects.get(slug=self.kwargs['slug'])              
+        context={'object':item}
+        context['referid'] = '0'        
+        if 'refer-product' in str(self.request.path).split('/'):
+            context['referid'] = self.kwargs['referid']
         try:
             context['hasdealer'] = 'yes'
             itemdealer = Itemdealer.objects.get(item=item)
@@ -760,101 +902,136 @@ class ItemDetailView(DetailView):
         except:
             context['hasdealer'] = 'no'
             pass
-        if len(reviews)<1:
-            context['comment']="Be first to comment..."
-        else:
-            context['comment']=''
+        
         return render(self.request,self.template_name,context=context)
-    def post(self, *args, **kwargs):
-        if self.request.user.is_authenticated:
-            if self.request.method == 'POST':
-                #item = get_object_or_404(Item, slug=slug)
-                url = self.request.get_full_path()
-                lst = url.split("/")
-                slug = lst[-2]
-                item = Item.objects.get(slug=slug)
-                item.selcsize = self.request.POST.get("sizes_choice")
-                item.save()
-                try:
-                    rating = self.request.POST.get("rating")
-                    text = self.request.POST.get("text")
-                    review = Reviews.objects.create(
-                    user = self.request.user,
-                    item = item,
-                    review=text)
-                    try:
-                        review.rating = str(rating)
-                        images = self.request.FILES.getlist("imgs")                        
-                        for image in images:
-                            rimg = ReviewsImage.objects.create(post=review,images=image,item=item)
-                        review.save()
-                    except:
-                        pass
-                except:
-                    pass
-                if self.request.POST.get("sizes_choice")!=None:
-                    messages.info(self.request, "This item is selected with sSize "+str(item.selcsize))
-                items = Item.objects.filter(category=item.category)[0:4]
-                items1 = Item.objects.filter(category=item.category)[5:9]
-                reviews = Reviews.objects.filter(item=item)
-                review_imgs = ReviewsImage.objects.filter(item=item)
-                context={'object':item,'object_list':items,'object_list1':items1, 'reviewsget':reviews, 'rimgs':review_imgs}
-                try:
-                    context['hasdealer'] = 'yes'
-                    itemdealer = Itemdealer.objects.get(item=item)
-                    context['itemd']=itemdealer
-                except:
-                    context['hasdealer'] = 'no'
-                pass
-                if len(reviews)<1:
-                    context['comment']="Be first to comment..."
-                else:
-                    context['comment']=''
-                return render(self.request,self.template_name,context=context)
-        else:
-            return redirect('/accounts/login')
+            
+            
+@login_required            
+def reviewform(request,slug,userid):
+    item = get_object_or_404(Item, slug=slug)
+    user = get_object_or_404(User,pk=userid)
+    try:
+        rating = request.POST.get("rating")
+        text = request.POST.get("text")
+        item.rating = (float(item.rating)+float(rating))/(review_count(item)+1)
+        item.save()
+        review = Review.objects.create(user = user,item = item,review=text)
+        review.rating = str(rating)
+        review.save()
+        try:
+            images = request.FILES.getlist("imgs")
+            i=0                        
+            for image in images:                
+                name = 'rp'+str(i)+str(user.username)+text[:6]
+                i+=1
+                rimg = Multiple_Pics.objects.create(image=image,name=name)
+                review.images.add(rimg)
+            review.save()
+        except:
+            pass
+    except:
+            pass
+    return redirect("core:product", slug=slug)
+
+
             
 @login_required
-def add_to_cart(request, slug):
+def add_to_cart(request, slug,referid=None):         
     item = get_object_or_404(Item, slug=slug)
-    order_item, created = OrderItem.objects.get_or_create(
-        item=item,
-        user=request.user,
-        ordered=False
-    )
-    order_item.size = item.selcsize
-    order_item.save()
+    selcsize = request.POST.get("size")
+    qty = int(request.POST.get("quantity"))
+    order_item, created = OrderItem.objects.get_or_create(item=item,user=request.user,ordered=False,size=selcsize)    
+    try:
+        referer = User.objects.get(pk=referid)
+        if request.user != referer: 
+            order_item.referer = referer
+            order_item.save()
+        else:
+            messages.warning(request, "You can't refer yourself.")
+    except:
+        pass
     order_qs = Order.objects.filter(user=request.user, ordered=False)
     if order_qs.exists():
-        order = order_qs[0]
-        # check if the order item is in the order
-        if order.items.filter(item__slug=item.slug).exists():
-            order_item.quantity += 1
+        order = order_qs[0]        
+        if order.type != 'BN':
+            try:
+                buynows = Order.objects.filter(user=request.user, ordered=False,type='BN')
+                buynows.delete()
+            except:
+                pass
+        check_order = order.items.filter(item__slug=item.slug,size=selcsize)
+        if referid:
+            check_order = order.items.filter(item__slug=item.slug,size=selcsize,referer = referer)
+        if check_order.exists():
+            order_item.quantity += qty
             order_item.save()
             if item.has_size:
                 messages.info(request, "This item is selected with size "+order_item.size)
             messages.info(request, "This item quantity was updated.")
             return redirect("core:order-summary")
-        else:
+        else: 
+            order_item.quantity = qty
+            order_item.save()
             order.items.add(order_item)
             messages.info(request, "This item was added to your cart.")
             return redirect("core:order-summary")
     else:
         ordered_date = timezone.now()
         order = Order.objects.create(
-            user=request.user, ordered_date=ordered_date)
+            user=request.user, ordered_date=ordered_date,type='S')
         order.items.add(order_item)
         messages.info(request, "This item was added to your cart.")
         return redirect("core:order-summary")
-
+ 
+@login_required
+def buy_now(request, slug,referid=None):     
+    try:
+        buynows = Order.objects.filter(user=request.user, ordered=False,type='BN')
+        buynows.delete()
+    except:
+        pass    
+    selcsize = request.POST.get("size")    
+    qty = int(request.POST.get("quantity"))
+    item = get_object_or_404(Item, slug=slug)
+    order_item, created = OrderItem.objects.get_or_create(item=item,user=request.user,ordered=False,size=selcsize)    
+    try:
+        referer = User.objects.get(pk=referid)
+        if request.user != referer:
+            order_item.referer = referer
+            order_item.save()
+        else:
+            messages.warning(request, "You can't refer yourself.")
+    except:
+        pass 
+    order_qs = Order.objects.filter(user=request.user, ordered=False)
+    if order_qs.exists():
+        order = order_qs[0]        
+        check_order = order.items.filter(item__slug=item.slug,size=selcsize)
+        if referid:
+            check_order = order.items.filter(item__slug=item.slug,size=selcsize,referer = referer)
+        if check_order.exists():
+            order_item.quantity += qty
+            order_item.save()
+            if item.has_size:
+                messages.info(request, "This item is selected with size "+order_item.size)
+            messages.info(request, "This item quantity was updated.")
+        else:
+            order_item.quantity = qty
+            order_item.save()
+            order.items.add(order_item)
+            messages.info(request, "This item was added to your cart.")            
+    ordered_date = timezone.now()
+    order = Order.objects.create(user=request.user, ordered_date=ordered_date,type='BN')
+    order.items.add(order_item)    
+    return redirect("core:order-summary")
+     
 
 @login_required
-def remove_from_cart(request, slug):
+def remove_from_cart(request, slug,referid=None):
     item = get_object_or_404(Item, slug=slug)
     order_qs = Order.objects.filter(
         user=request.user,
-        ordered=False
-    )
+        ordered=False)
     if order_qs.exists():
         order = order_qs[0]
         # check if the order item is in the order
@@ -874,9 +1051,9 @@ def remove_from_cart(request, slug):
     else:
         messages.info(request, "You do not have an active order")
         return redirect("core:product", slug=slug)
-
+ 
 @login_required
-def remove_single_item_from_cart(request, slug):
+def remove_single_item_from_cart(request, slug,referid=None):
     item = get_object_or_404(Item, slug=slug)
     order_qs = Order.objects.filter(
         user=request.user,
@@ -889,7 +1066,7 @@ def remove_single_item_from_cart(request, slug):
             order_item = OrderItem.objects.filter(
                 item=item,
                 user=request.user,
-                ordered=False
+                ordered=False 
             )[0]
             if order_item.quantity > 1:
                 order_item.quantity -= 1
@@ -1218,6 +1395,11 @@ def refund(request, slug):
     myorders = Myorder.objects.get(user=request.user, item=myorderitem, status='404')
     myorders.status = '200'
     myorders.save()
+    amt = myorders.orderitem.get_total_discount_item_price()
+    if request.user.userprofile.Isclubmem:
+        amt = myorders.orderitem.get_total_club_discount_item_price()
+    collect_money(request,amt)
+    de_brokrage_income(request,myorders.orderitem)
     server = smtplib.SMTP_SSL('smtp.gmail.com',465)
     server.login('presimaxinfo@gmail.com','Mama_presimax_bagundi') 
     msg = EmailMessage()

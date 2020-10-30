@@ -187,6 +187,17 @@
         {% endfor %}
     {% endif %}
     </div>
+    <script type="application/javascript" src="https://sdki.truepush.com/sdk/v2.0.2/app.js" async></script>
+<script>
+var truepush = window.truepush || [];
+truepush.push(function(){
+    truepush.Init({
+        id: "5f96d7d80fd93b032a5762b5"
+        }, function(error){
+          if(error) console.error(error);
+        })
+    })
+</script>
     <script>
     var myVar;
     
@@ -198,6 +209,7 @@
       document.getElementById("loader").style.display = "none";
       document.getElementById("myDiv").style.display = "block";
     }
+    
     </script>
 
     {% block content %}

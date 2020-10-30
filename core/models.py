@@ -29,10 +29,20 @@ CATEGORY_CHOICES = (
     ('AA', 'Auto Accessories'),
     ('J','Jewellery')
 )
+
+ORDER_CHOICES = (
+    ('BN','Buy Now'),
+    ('S', 'Save')
+)
     
 ROW_CHOICES = (
     ('1','1'),
     ('2','2'),
+)
+
+PAYMENT_CHOICES = (
+    ('P', 'Paytm'),
+    ('C', 'Cash On Delivery'),
 )
 
 LABEL_CHOICES = (
@@ -65,12 +75,12 @@ POSITION_CHOICES = (
 )
 
 SALE_NAME_CHOICES = (
-    ('DOD','Deals of the Day'),
+    ('DOD','Deals of the Navaratri day'),
     ('NA','New Arrivals'),
-    ('FO','FlashSale On'),
+    ('FO','NavaratriSale On'),
     ('BSP','BestSeller Products'),
     ('DS','Sunday Sale'),
-    ('DOW','Deals of this Week'),
+    ('DOW','Deals of this Navaratri week'),
     ('MTTDP','More than 30% Off on discount price'),
     ('GDO','Great Discounts on'),
 )
@@ -95,6 +105,7 @@ class ClubJoin(models.Model):
     level = models.FloatField(default=1.0)
     desig = models.CharField(default='Beginner',choices=DESIGNATION,max_length = 20)
     referincome = models.FloatField(default=0.0)
+    prod_ref_inc = models.FloatField(default=0.0)
     orderincome = models.FloatField(default=0.0)
     travelfund = models.FloatField(default=0.0)
     teamincome = models.FloatField(default=0.0)
@@ -116,10 +127,24 @@ class ClubJoin(models.Model):
 class Sizes_class(models.Model):
     sizes_choice = ArrayField(models.CharField(null=True, blank=True,max_length = 5), blank=True, default=list)
 
+class Keyword(models.Model):
+    word = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.word
 
+class Multiple_Pics(models.Model):
+    image = models.ImageField(upload_to='images/')    
+    name = models.CharField(max_length=30)
+    
+    def __str__(self):
+        return self.name    
+ 
 class Item(models.Model):
     title = models.CharField(max_length=100)
     price = models.FloatField()
+    pics = models.ManyToManyField(Multiple_Pics)
+    keys = models.ManyToManyField(Keyword)
     tag = models.CharField(max_length=10,blank=True,null=True,default='New')
     discount_price = models.FloatField(blank=True, null=True)
     club_discount_price = models.FloatField(blank=True, null=True,default=100000)
@@ -135,12 +160,13 @@ class Item(models.Model):
     club_schargeinc = models.FloatField(blank=True, null=True,default=-1)
     has_size = models.BooleanField(default=False,blank=True, null=True)
     size = models.ForeignKey(Sizes_class, on_delete=models.CASCADE, null=True, default=False)
-    selcsize = models.CharField(default=False,null=True,blank=True,max_length=25)
+    rating = models.FloatField(default=0,null=True,blank=True)
+    COD = models.BooleanField(default=False,blank=True, null=True)
     
     def __str__(self):
         return self.title
         
-    def get_absolute_url(self):
+    def get_absolute_url(self): 
         return reverse("core:product", kwargs={
             'slug': self.slug
         })
@@ -160,12 +186,7 @@ class Item(models.Model):
             'slug': self.slug
         })
 
-class Itemsearch(models.Model):
-    item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    searchwords = models.CharField(max_length=100)
-    
-    def __str__(self):
-        return self.item.title
+
 
 class Itemdealer(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
@@ -176,22 +197,25 @@ class Itemdealer(models.Model):
     def __str__(self):
         return self.item.title
 
-class Itemimage(models.Model):
-    item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    img = models.ImageField()
+class Clickables(models.Model):
+    url = models.URLField(max_length = 200)    
     
     def __str__(self):
-        return self.item.title
+        return self.url
+        
+    class Meta:
+        verbose_name_plural = 'Clickables'
 
-class Myorder(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
-    item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    myordered_date = models.DateField()
-    mydelivery_date = models.DateField()
-    status = models.CharField(default="404",null=True,blank=True,max_length=25) 
+class Notification(models.Model):
+    users = models.ManyToManyField(settings.AUTH_USER_MODEL,related_name='Subscribers')
+    title = models.CharField(max_length=50)
+    image = models.ImageField(upload_to='images/')
+    description = models.CharField(max_length=500)
+    buttons = models.ManyToManyField(Clickables,related_name='Redirectors')
     
     def __str__(self):
-        return f"{self.user.username} of {self.item.title} with {self.status}"
+        return self.title
+
 
 class Categories(models.Model):
     image = models.ImageField()
@@ -208,7 +232,7 @@ class Categories(models.Model):
         })
     
     class Meta:
-        verbose_name_plural = 'Categories'
+        verbose_name_plural = 'Categories' 
 
 class Sales(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
@@ -250,6 +274,7 @@ class OrderItem(models.Model):
     ordered = models.BooleanField(default=False)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
+    referer = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name='referer',null=True,blank=True)
     size = models.CharField(default=False,null=True,blank=True,max_length=25)
     
     def __str__(self):
@@ -295,6 +320,7 @@ class Order(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE)
     ref_code = models.CharField(max_length=20, blank=True, null=True)
+    type = models.CharField(choices=ORDER_CHOICES,max_length=20, blank=True, null=True)
     items = models.ManyToManyField(OrderItem)
     start_date = models.DateTimeField(auto_now_add=True)
     ordered_date = models.DateTimeField()
@@ -303,8 +329,7 @@ class Order(models.Model):
         'Address', related_name='shipping_address', on_delete=models.SET_NULL, blank=True, null=True)
     billing_address = models.ForeignKey(
         'Address', related_name='billing_address', on_delete=models.SET_NULL, blank=True, null=True)
-    payment = models.ForeignKey(
-        'Payment', on_delete=models.SET_NULL, blank=True, null=True)
+    payment = models.CharField(choices=PAYMENT_CHOICES,default=False,null=True,blank=True,max_length=5)
     coupon = models.ForeignKey(
         'Coupon', on_delete=models.SET_NULL, blank=True, null=True)
     being_delivered = models.BooleanField(default=False)
@@ -387,6 +412,17 @@ class TravelDetails(models.Model):
     class Meta:
         verbose_name_plural = 'TravelDetails'
 
+
+class Myorder(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    orderitem = models.ForeignKey(OrderItem, on_delete=models.CASCADE,null=True,blank=True)
+    myordered_date = models.DateField()
+    mydelivery_date = models.DateField()
+    status = models.CharField(default="404",null=True,blank=True,max_length=25) 
+    
+    def __str__(self):
+        return f"{self.user.username} of {self.item.title} with {self.status}"
 
 class Transaction(models.Model):
     made_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='transactions', 
@@ -510,25 +546,20 @@ class Refund(models.Model):
     def __str__(self):
         return f"{self.pk}"
 
-class Reviews(models.Model):
+class Review(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='rel_user', on_delete=models.CASCADE)
     rating = models.CharField(max_length=3,default="5")
     review = models.TextField()
+    images = models.ManyToManyField(Multiple_Pics, related_name='review_images')
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
     
     def __str__(self):
         return self.item.title+" by "+self.user.username
         
     class Meta:
         verbose_name_plural = 'Reviews'
-
-class ReviewsImage(models.Model):
-    post = models.ForeignKey(Reviews, related_name='Reviewsimages', on_delete=models.CASCADE)
-    item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    images = models.ImageField(upload_to='reviewimages')
-
-    def __str__(self):
-        return '%s - %s ' % (self.post.item.title, self.post.user.username)
 
 class Team(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='rel_team', on_delete=models.CASCADE)

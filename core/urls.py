@@ -36,6 +36,9 @@ from .views import (
     refreshprod,
     contact,
     faqs,
+    orderplaced,
+    buy_now,
+    reviewform
 )
 
 app_name = 'core'
@@ -43,11 +46,17 @@ app_name = 'core'
 urlpatterns = [
     path('ecommerce/', HomeView.as_view(), name='home'),
     path('checkout/', CheckoutView.as_view(), name='checkout'),
+    path('orderplaced/', orderplaced, name='orderplaced'),
     path('club/', club.as_view(), name='club'),
     path('travels/', travels.as_view(), name='travels'),
     path('order-summary/', OrderSummaryView.as_view(), name='order-summary'),
     path('product/<slug>/', ItemDetailView.as_view(), name='product'),
+    path('refer-product/<int:referid>/<slug:slug>/', ItemDetailView.as_view(), name='refered_product'),
     path('add-to-cart/<slug>/', add_to_cart, name='add-to-cart'),
+    path('buynow/<slug>/', buy_now, name='buynow'),
+    path('review/<int:userid>/<slug:slug>/', reviewform, name='reviewform'),
+    path('refer-add-to-cart/<int:referid>/<slug:slug>/', add_to_cart, name='refer-add-to-cart'),
+    path('refer-buynow/<int:referid>/<slug:slug>/', buy_now, name='refer-buynow'),
     path('add-coupon/', AddCouponView.as_view(), name='add-coupon'),
     path('remove-from-cart/<slug>/', remove_from_cart, name='remove-from-cart'),
     path('remove-item-from-cart/<slug>/', remove_single_item_from_cart,

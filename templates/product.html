@@ -1,350 +1,541 @@
 {% extends "base.html" %}
-
+{% load social_share %}
+{% load reviews_template_tags %}
 {% block content %}
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@500&family=Open+Sans&display=swap');
-</style> 
-  <main class="mt-5 pt-4">
-    <div class="container dark-grey-text mt-5">
+  body{
+    font-family: 'Poppins', sans-serif;
+  }
+  .heading{
+    text-transform: capitalize;
+    font-weight: 400;
+  }
+  .details{
+    display: block;
+    margin: 0 auto;
+  }
+  .box{
+    width: 100% !important;
+    margin: 0 auto;
+  }  
+  .prod-img{
+    width: 85%;
+    height: auto;
+    max-width: 320px;
+    max-height: 300px;
+    object-fit: contain;
+    margin: 0 auto;
+    align-items: center;
+    justify-content: center;
+  }    
+  strong{
+    font-size: larger;
+    font-weight: 400;
+  }
+  .more-pics>img{
+    width: 20%;
+    height: auto;
+  }
+  div.scrollmenu {
+    overflow: auto;
+    white-space: nowrap;
+  }
+  
+  div.scrollmenu>img {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+  }
+  .more-pics{
+    width: 80%;
+  }  
+  .lef{
+    position: relative;
+    left: 0;
+  }
+  .rig{
+    position: relative;
+    right: 0;
+  }
+  .prod-details{
+    font-weight: 400;
+  }
+  .price-section>span{
+    margin: 2%;
+    opacity: 0.6;
+  }
+  .cmp{
+    color:#ff8c00;  
+  }
+  .price-active{    
+    font-size: 1.5em !important;
+    opacity: 1 !important;
+    color:#ff8c00;
+  }
+  .fc{
+    display: block;
+    width: 100%;
+    max-width: 10em;
+    height: calc(1.5em + .75rem + 2px);
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: .15s ease-in-out,box-shadow .15s ease-in-out;
+  }
+  .product-count .qtyminus,
+  .product-count .qtyplus {
+    width: 34px;
+      height: 34px;
+      background: #ff8c00;
+      text-align: center;
+      font-size: 19px;
+      line-height: 36px;
+      color: #fff;
+      cursor: pointer;
+  }  
+  .product-count{
+    display: flex;
+    flex-direction: row;
+  }
+  .product-count .qtyminus {
+    border-radius: 3px 0 0 3px; 
+    display: none;
+  }
+  .product-count .qtyplus {
+    border-radius: 0 3px 3px 0; 
+  }
+  .product-count .qty {
+    width: 60px;
+    text-align: center;
+  }
+  .round-do-btn {
+    border-radius: 4px;
+    background: #ff8c00;
+    color: #fff;
+    padding: 7px 45px;
+    display: inline-block;    
+    width: 90%;
+    margin: 0 auto;
+    text-align: center;
+    justify-content: center;
+    border: solid 2px #ff8c00; 
+    transition: all 0.5s ease-in-out 0s;
+  }
+  .round-blue-btn,.round-red-btn{
+    border-radius: 4px;
+    background: lightblue;
+    color: #fff;
+    display: inline-block;    
+    text-align: center;
+    justify-content: center;
+    border: solid 2px lightblue; 
+    transition: all 0.5s ease-in-out 0s;
+  }
+  .round-red-btn{
+    background: tomato;
+    border: solid 2px tomato; 
+  }
+  .round-do-btn:hover,
+  .round-do-btn:focus{
+    background: transparent;
+    color: #ff8c00;
+    text-decoration: none;
+  } 
+  .round-blue-btn:hover,.round-blue-btn:focus {
+    color: lightblue;
+    background: transparent;    
+    text-decoration: none;
+  }
+  .round-red-btn:hover,.round-red-btn:focus {
+    color: tomato;
+    background: transparent;    
+    text-decoration: none;
+  }
+  .links{
+    margin: 0 auto !important;
+  }
+  .meta-product-section{
+    width: 100%;
+    flex: 100%;
+  }
+  .product-info-tabs {
+    margin-top: 25px; 
+  }
+  .product-info-tabs .nav-tabs {
+    border-bottom: 2px solid #d8d8d8;
+  }
+  .product-info-tabs .nav-tabs .nav-item {
+    margin-bottom: 0;
+  }
+  .product-info-tabs .nav-tabs .nav-link {
+    border: none; 
+    border-bottom: 2px solid transparent;
+    color: #323232;
+  }
+  .product-info-tabs .nav-tabs .nav-item .nav-link:hover {
+    border: none; 
+  }
+  .product-info-tabs .nav-tabs .nav-item.show .nav-link, 
+  .product-info-tabs .nav-tabs .nav-link.active, 
+  .product-info-tabs .nav-tabs .nav-link.active:hover {
+    border: none; 
+    border-bottom: 2px solid #d8d8d8;
+    font-weight: bold;
+  }
+  .product-info-tabs .tab-content .tab-pane {
+    padding: 30px 20px;
+    font-size: 15px;
+    line-height: 24px;
+    color: #7a7a7a;
+  }
+  .share-link{
+    display: inline;
+  }
+  .share-icons{
+    display: flex;
+    flex-direction: row;
+  }
+  .share-icons>div{
+    margin: 2%;
+  }
+  ul,li{
+    list-style: none;
+  }
+  .rating:hover{
+    color: #eec64f;
+    cursor: pointer;
+  }
+  .form-control:focus{
+    box-shadow: none;
+    border: none;
+  }
+  .ratings {
+    position: relative;
+    vertical-align: middle;
+    display: inline-block;
+    color: #b1b1b1;
+    overflow: hidden;
+  }
+  
+  .full-stars{
+    position: absolute;
+    left: 0;
+    top: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    color: #fde16d;
+  }
+  
+  .empty-stars:before,
+  .full-stars:before {
+    content: "\2605\2605\2605\2605\2605";
+    font-size: 14pt;
+  }
+  
+  .empty-stars:before {
+    -webkit-text-stroke: 1px #848484;
+  }
+  
+  .full-stars:before {
+    -webkit-text-stroke: 1px orange;
+  }
+  
+  @-moz-document url-prefix() {
+    .full-stars{
+      color: #ECBE24;
+    }
+  }
 
-      <!--Grid row-->
-      <div class="row wow fadeIn">
-
-        <!--Grid column-->
-        <div class="col-md-6 mb-4">
-          
-          <img src="{{ object.image.url }}" class="img-fluid" alt="">
-
-        </div>
-        <!--Grid column-->
-
-        <!--Grid column-->
-        <div class="col-md-6 mb-4">
-        
-          <!--Content-->
-          <div class="p-4">
-
-            <div class="mb-3">
-              <a href="">
-                <span class="badge purple mr-1">{{ object.get_category_display }}</span>
-              </a>
+  @media only screen and (min-width: 600px) {
+    .box{
+      display: inline;
+      width: 48%;
+    }
+    .details{
+      display: flex;
+      flex-direction: row;
+      margin: 0 auto;
+    }
+    .prod-img{
+      width: 50%;
+      height: auto;
+      margin: 0 auto;
+    }        
+    .more-pics>img{
+      display: inline;
+      width: 15%;
+      height: auto;
+      margin: 0.3% !important;
+    }
+  }
+</style>
+<main>
+<form method="POST">
+{% csrf_token %}
+  <div class="product m-1 p-2">    
+    <h3 class="heading ml-3 mb-3">{{ object.title }} Details <a href="#product-share"><span class="float-right fas fa-share-alt mr-5"> </span></a></h3>    
+    <div class="details">
+      <div class="box img-box">
+        <center>
+          <img class="prod-img mb-1" id='00' src="{{ object.image.url }}" alt="{{ object.title }}">        
+        </center> 
+        <center> 
+          <div class="pics">            
+            <div class="more-pics p-1 mb-2 scrollmenu">
+              {% if object.pics %}
+              <img class="prod-img" src="{{ object.image.url }}" alt="{{ object.title }}">              
+              {% for i in object.pics.all %}
+              <img class="prod-img" src="{{ i.image.url }}" id='{{ forloop.counter }}' alt="{{ i.image.name }}">                              
+              {% endfor %}            
+              {% endif %}         
             </div>
-            <p class="lead">
-                {{ object.title }}
-            </p>
-            <p class="lead">
-              {% if object.discount_price %}
-              <span class="mr-1">
-                <del>Rs. {{ object.price }}</del><br>
-              </span>
-              <span><i class="fas fa-crown" style="color:#eec64f;">Rs. {{ object.club_discount_price }}</i></span><br>
-              <span>Rs. {{ object.discount_price }}</span><br>
-              {% else %}
-              <span>Rs. {{ object.price }}</span>
-              {% endif %}
-            </p>
-            
-            {% if object.has_size %}
-            <!-- Button trigger modal -->
-            <form method="POST" action="." >
-            {% csrf_token %}
-                    {% for size in object.size.sizes_choice %}
-                    <div class="custom-control custom-radio">
-                        <div class="custom-control custom-radio">
-                        <input id="{{ forloop.counter }}"  name="sizes_choice" value="{{ size }}" type="radio" class="custom-control-input" required>
-                        <label class="custom-control-label" for="{{ forloop.counter }}">{{ size }}</label>
-                      </div>
-                    </div>
-                    {% endfor %}
-                    <button vlaue="Set" title="set" class="btn btn-success">Select</button>
-            </form>
-            {% endif %}
-            
-            <p class="lead font-weight-bold">Description</p>
-            
-            <p>{{ object.description }}</p>
-            
+            <!-- <div class="lef"><span class="fas fa-chevron-left"></span></div>
+            <div class="rig"><span class="fas fa-chevron-right"></span></div> -->
+          </div>
+        </center>   
+      </div>
+      <div class="box  mt-1 ml-2">
+        <h4 class="heading"> {{ object.title }} </h4>
+        <div class="prod-details ml-2 p-2">
+          <div class="review">
+            <div class="ratings">
+              <div class="empty-stars"></div>
+              <div class="full-stars" style="width:{{ rating }}%"></div>
+            </div>
+          
+           <a href="#reviews">({{ object | review_count }} reviews)</a></div>  
+          <label class="mt-2">Price</label>                   
+          <div class="price-section ml-3">
+            {% if request.user.userprofile.Isclubmem %}
+            <span class="cmp price-active fas fa-crown" style="color:#eec64f;" title="club discount price">  &#8377;{{ object.club_discount_price }}</span><span class="dp"><del>&#8377;{{ object.discount_price }}</del></span>
+            <span class="normal-price"><del>&#8377;{{ object.price }}</del></span>
+            {% else %}
+            <span class="cmp fas fa-crown" style="color:#eec64f;" title="club discount price"><del> &#8377;{{ object.club_discount_price }}</del></span><span class="dp price-active">&#8377;{{ object.discount_price }}</span>
+            <span class="normal-price"><del>&#8377;{{ object.price }}</del></span>
+            <br>
+            want more discount, <a href="{% url 'core:club' %}">join Presimax club to get it for golden price.</a> 
+            {% endif %}            
+          </div>
+          <div class="description mt-2 mb-2">
+            <span class="badge purple mr-1">{{ object.get_category_display }}</span>
+            <p class="mt-2 mb-1 ml-3">{{ object.description }}</p>
             {% ifequal 'yes' hasdealer %}
             <p style="font-family: 'Grenze Gotisch';text-transform:uppercase" class="lead font-weight-bold">Dealer Name</p>
             
             <p style="font-family: 'Grenze Gotisch', cursive;">{{ itemd.name }}</p>
             {% endifequal %}
-            
-            <a href="{{ object.get_add_to_cart_url }}" class="btn btn-primary btn-md my-0 p">
-              Add to cart
-              <i class="fas fa-shopping-cart ml-1"></i>
-            </a>
-            <a href="{{ object.get_remove_from_cart_url }}" class="btn btn-danger btn-md my-0 p">
-              Remove from cart
-            </a>
-
           </div>
-          <!--Content-->
-
-        </div>
-        <!--Grid column-->
-
-      </div>
-      <!--Grid row-->
-      
-      <hr>
-<!--Carousel Wrapper-->
-<div id="multi-item-example" class="carousel slide carousel-multi-item" data-ride="carousel">
-
-  <!--Controls-->
-  <div class="controls-top">
-    <a class="btn-floating" href="#multi-item-example" data-slide="prev"><i class="fas fa-chevron-left"></i></a>
-    <a class="btn-floating" href="#multi-item-example" data-slide="next"><i
-        class="fas fa-chevron-right"></i></a>
-  </div>
-  <!--/.Controls-->
-
-  <!--Indicators-->
-  <ol class="carousel-indicators">
-    <li data-target="#multi-item-example" data-slide-to="0" class="active"></li>
-    <li data-target="#multi-item-example" data-slide-to="1"></li>
-    
-  </ol>
-  <!--/.Indicators-->
-
-  <!--Slides-->
-  <div class="carousel-inner" role="listbox">
-
-    <!--First slide-->
-    <div class="carousel-item active">
-      {% for item in object_list1 %}
-      <div class="col-md-3" style="float:left">
-        <div class="card rounded mb-2">
-
-              <div class="view overlay" style="padding:2px">
-                <img style="width:360px;height:360px" src="{{ item.image.url }}" class="card-img-top img-responsive rounded">
-                <a href="{{ item.get_absolute_url }}">
-                  <div class="mask rgba-white-slight"></div>
-                </a>
-              </div>
-
-              <div class="card-body text-center">
-                <a href="" class="grey-text">
-                  <h5>{{ item.get_category_display }}</h5>
-                </a>
-                <h5>
-                  <strong>
-                    <a href="{{ item.get_absolute_url }}" class="dark-grey-text">{{ item.title|truncatechars:10 }}
-                      <span class="badge badge-pill {{ item.get_label_display }}-color">{{item.tag}}</span>
-                    </a>
-                  </strong>
-                </h5>
-
-                <h4 class="font-weight-bold black-text">
-                  <strong>
-                  {% if item.discount_price %}
-                  <del>Rs. {{ item.price }}</del><br>
-                  <i class="fas fa-crown" style="color:#eec64f;">Rs. {{ item.club_discount_price }}</i><br>
-                  Rs. {{ item.discount_price }}
-                  <span class="badge badge-pill danger-color">{{item.dis_per}}% off</span>
-                  {% else %}
-                  {{ item.price }}
-                  {% endif %}
-                  </strong>
-                </h4>
-
-              </div>
-
+          {% if object.has_size %}
+            <div class="size">
+              <label for="size">Size</label>
+								<select id="size" name="size" class="fc">                  
+                  {% for size in object.size.sizes_choice %}
+                  <option>{{ size }}</option>
+                  {% endfor %}              
+								</select>
             </div>
-
-        </div>
-        {% endfor %}
-      </div>
-    <!--/.First slide-->
-
-    <!--Second slide-->
-    <div class="carousel-item">
-      {% for item in object_list %}
-      <div class="col-md-3" style="float:left">
-        <div class="card rounded mb-2">
-
-              <div class="view overlay" style="padding:2px">
-                <img style="width:360px;height:360px" src="{{ item.image.url }}" class="card-img-top img-responsive rounded">
-                <a href="{{ item.get_absolute_url }}">
-                  <div class="mask rgba-white-slight"></div>
-                </a>
-              </div>
-
-              <div class="card-body text-center">
-                <a href="" class="grey-text">
-                  <h5>{{ item.get_category_display }}</h5>
-                </a>
-                <h5>
-                  <strong>
-                    <a href="{{ item.get_absolute_url }}" class="dark-grey-text">{{ item.title|truncatechars:10 }}
-                      <span class="badge badge-pill {{ item.get_label_display }}-color">{{item.tag}}</span>
-                    </a>
-                  </strong>
-                </h5>
-
-                <h4 class="font-weight-bold black-text">
-                  <strong>
-                  {% if item.discount_price %}
-                  <del>Rs. {{ item.price }}</del><br>
-                  <i class="fas fa-crown" style="color:#eec64f;">Rs. {{ item.club_discount_price }}</i><br>
-                  Rs. {{ item.discount_price }}
-                  <span class="badge badge-pill danger-color">{{item.dis_per}}% off</span>
-                  {% else %}
-                  {{ item.price }}
-                  {% endif %}
-                  </strong>
-                </h4>
-
-              </div>
-
+          {% endif %}
+          <label for="qty">Quantity</label> 
+          <div class="product-count">            
+            <div class="qtyminus" onclick="decrease_qty()">-</div>
+            <input type="text" name="quantity" id="qty" value="1" class="qty">
+            <div class="qtyplus" onclick="increase_qty()">+</div>
+          </div>     
+          <center>
+          <div class="links mt-4 mb-2">
+            {% if referid != '0' %}
+            {% url 'core:refer-add-to-cart' referid object.slug as url1 %}
+            <button class="round-do-btn mt-4 mb-2" onclick="javascript: form.action='{{ url1 }}';"> <span class="fas fa-shopping-cart white"></span>              
+              Add to Cart</button><br>
+            {% url 'core:refer-buynow' referid object.slug as url2 %}
+            <button class="round-do-btn mt-4"  onclick="javascript: form.action='{{ url2 }}';"> <span class="fas fa-file-invoice"></span> Buy Now</button><br>
+            {% else %}
+            {% url 'core:add-to-cart' object.slug as url3 %}
+            <button onclick="javascript: form.action='{{ url3 }}';" class="round-do-btn mt-4 mb-2">Add to Cart</button><br>
+            {% url 'core:buynow' object.slug as url4 %}
+            <button onclick="javascript: form.action='{{ url4 }}';" class="round-do-btn mt-4">Buy Now</button><br>
+            {% endif %}
+          </div>
+          </center> 
+          <div class="product-share mt-3 mb-4" id="product-share">
+            <p>
+              Presimax gives you oppertunity to share and earn. For more details <a href="#share-benifits">click here.</a>
+            </p>
+            {% if request.user.is_authenticated %}
+            {% url 'core:refered_product' request.user.id object.slug as share_url %}            
+            <div class="p-3 share-icons">
+                {% post_to_facebook  share_url  "<span style='color:blue' class='fab fa-facebook-f fa-2x share-link mb-2'></span>" %}
+                {% post_to_twitter "A Product from Presimax: {{object.title}}. Check it out!"  share_url "<span class='fab fa-twitter fa-2x mb-2 share-link' style='color: #1DA1F2;'></span>" %} 
+                {% post_to_gplus  share_url "<span class='fab fa-google-plus-g fa-2x mb-2 share-link' style='color: #db3236;'" %}                
+                {% send_email object.title "A Product from Presimax: {{object.title}}. Check it out!"  share_url  "<span class='far fa-envelope fa-2x mb-2 share-link' style='color: yellow;'" %}
+                {% post_to_reddit "A Product from Presimax: {{object.title}}" share_url " <span class='fab fa-reddit-alien fa-2x mb-2 share-link' style='color: #FF4500;' " %}
+                {% post_to_telegram "A Product from Presimax: {{object.title}}"  share_url " <span class='fab fa-telegram fa-2x mb-2 share-link' style='color: #0088cc;' " %}
+                {% post_to_whatsapp  share_url  "<span class='fab fa-whatsapp fa-2x mb-2 share-link' style='color: #4FCE5D;'" %}</a></span>
             </div>
-
-        </div>
-        {% endfor %}
-      </div>
-
+            {% else %}
+            <a href="{% url 'account_login' %}" class="round-blue-btn">
+                Login to get shareable url
+            </a>
+          {% endif %}          
+          </div>          
+        </div>         
+      </div>                 
     </div>
-    <!--/.Second slide-->
-
-   
-
+    </form>
+    <h4 class="heading ml-2">Add your Review</h4>          
+          <p class="m-1 p-1">
+            Aready purchased this product Add your review here.
+          </p>          
+          {% if request.user.is_authenticated %}
+          <form action="{% url 'core:reviewform' request.user.id object.slug %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+                <div class="m-2 p-2">
+                    <div class="row">
+                    {% if user.username.userphoto %}
+                        <div class="col-2"> <img src="{{ user.username.userphoto.url }}" width="70" class="rounded-circle mt-2"> </div>
+                        {% endif %}                                                                         
+                            <div class="comment-box">
+                                <h4>Add a comment</h4>
+                                <div class="container">
+                                  <input id="ratinginp" type="hidden" name="rating" value="5">
+                                  <span value="1" class="fa fa-star rating" id="star1" onclick="functionx(this,1)"></span>
+                                  <span value="2" class="fa fa-star rating" id="star2" onclick="functionx(this,2)"></span>
+                                  <span value="3" class="fa fa-star rating" id="star3" onclick="functionx(this,3)"></span>
+                                  <span value="4" class="fa fa-star rating" id="star4" onclick="functionx(this,4)"></span>
+                                  <span value="5" class="fa fa-star rating" id="star5" onclick="functionx(this,5)"></span>
+                                </div>
+                                <div class="comment-area"> <textarea class="form-control" name="text" placeholder="what is your view?" rows="4"></textarea> </div>
+                                <div class="text-center">
+                                    <div class="form-group">
+                                    <label for="comment">Add pictures:</label>
+                                    <input id="fileupload" name="imgs" type="file" multiple="multiple">                                    
+                                    <br>
+                                    <br>
+                                    <div id="dvPreview"></div>
+                                 </div>
+                                <style>
+                                  .btn-inline{
+                                    display: inline;
+                                  }
+                                </style>                                                                      
+                                <button class="round-red-btn btn-inline" >Cancel</button>    
+                                <button type="submit" class="round-blue-btn btn-inline ml-2">Send</button>                                   
+                            </div>                                              
+                    </div>
+                </div>                
+            </form>
+            {% else %}
+            <p class="ml-2"><a href="{% url 'account_login' %}">Sign in to add your review</a></p>
+            {% endif %}
+    <div class="meta-product-section product-info-tabs mt-4 mb-4 p-3">
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="description-tab" data-toggle="tab" href="#description" role="tab" aria-controls="description" aria-selected="true">Description</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="reviews-tab" data-toggle="tab" href="#reviews" role="tab" aria-controls="reviews" aria-selected="false">Reviews</a>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="description-tab">this is extra description.</div>
+        <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">this is about reviews</div>          
+      </div>
+    </div> 
+    <div id="share-benifits" class="p-1 ml-2">
+      <h4 class="heading ml-1">Share this product</h4>
+      <p class="p-2">Benifits of Sharing is product. Do you want to earn money through sharing <a href="#product-share">click here</a></p>
+      <ul>
+        <li>If the total purchase(excluding shipping charges) price of this product is in between <strong> &#8377;200 to &#8377;400, you will recieve &#8377;25 </strong>.</li>
+        <li>If the total purchase(excluding shipping charges) price of product is in between <strong> &#8377;401 to &#8377;900, you will recieve &#8377;40 </strong>.</li>
+        <li>If the total purchase(excluding shipping charges) price of product is in between <strong> &#8377;901 to &#8377;1900, you will recieve &#8377;50 </strong>.</li>
+        <li>If the total purchase(excluding shipping charges) price of product is in between <strong> &#8377;1901 to &#8377;4000, you will recieve &#8377;75 </strong>.</li>
+        <li>If the total purchase(excluding shipping charges) price of product is greater than <strong> &#8377;4000, you will recieve &#8377;100 .</strong></li>
+      </ul>
+    </div>
   </div>
-  <!--/.Slides-->
-
-</div>
-<!--/.Carousel Wrapper-->
-
-{% block extra_scripts %}
+</main>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
- <script language="javascript" type="text/javascript">
-$(function () {
-    $("#fileupload").change(function () {
-        if (typeof (FileReader) != "undefined") {
-            var dvPreview = $("#dvPreview");
-            dvPreview.html("");
-            var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.jpg|.jpeg|.gif|.png|.bmp)$/;
-            $($(this)[0].files).each(function () {
-                var file = $(this);
-                if (regex.test(file[0].name.toLowerCase())) {
-                    var reader = new FileReader();
-                    reader.onload = function (e) {
-                        var img = $("<img />");
-                        img.attr("style", "height:100px;width: 100px");
-                        img.attr("src", e.target.result);
-                        dvPreview.append(img);
-                    }
-                    reader.readAsDataURL(file[0]);
-                } else {
-                    alert(file[0].name + " is not a valid image file.");
-                    dvPreview.html("");
-                    return false;
-                }
-            });
-        } else {
-            alert("This browser does not support HTML5 FileReader.");
-        }
-    });
-});
-function functionx(ths,sno){
-$('#ratinginp').val(sno);
-for (var i=1;i<=5;i++){
-var cur=document.getElementById("star"+i)
-cur.className="fa fa-star"
+<script>
+function check_qty(qty){  
+  if(qty>1){
+    $('.qtyminus').css('display','block');
+  }
+  else{
+    $('.qtyminus').css('display','none');
+  }}
+function increase_qty(){
+  var qty = parseInt($('#qty').val());
+  $('#qty').html(qty+1);  
+  $('#qty').val(qty+1);
+  check_qty(qty+1);
 }
-
-for (var i=1;i<=sno;i++){
-var cur=document.getElementById("star"+i)
-if(cur.className=="fa fa-star")
-{
-cur.className="fa fa-star checked"
-}
-}
+function decrease_qty(){
+  var qty = parseInt($('#qty').val());
+  $('#qty').html(qty-1);  
+  $('#qty').val(qty-1);
+  check_qty(qty-1);
 }
 </script>
-{% endblock extra_scripts %}
-
-<hr>
-
-<div class="container">
-  <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#form"> Add your Comment </button>
-<div class="modal fade" id="form" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content pl-4">
-          <form action="." method="POST" enctype="multipart/form-data">
-          {% csrf_token %}
-<div class="card">
-    <div class="row">
-    {% if user.username.userphoto %}
-        <div class="col-2"> <img src="{{ user.username.userphoto.url }}" width="70" class="rounded-circle mt-2"> </div>
-        {% endif %}
-        <div class="col-10">
-            <div class="comment-box">
-                <h4>Add a comment</h4>
-                <div class="container">
-                  <input id="ratinginp" type="hidden" name="rating" value="5">
-                  <span value="1" class="fa fa-star rating" id="star1" onclick="functionx(this,1)"></span>
-                  <span value="2" class="fa fa-star rating" id="star2" onclick="functionx(this,2)"></span>
-                  <span value="3" class="fa fa-star rating" id="star3" onclick="functionx(this,3)"></span>
-                  <span value="4" class="fa fa-star rating" id="star4" onclick="functionx(this,4)"></span>
-                  <span value="5" class="fa fa-star rating" id="star5" onclick="functionx(this,5)"></span>
-                </div>
-                <div class="comment-area"> <textarea class="form-control" name="text" placeholder="what is your view?" rows="4"></textarea> </div
-                <div class="text-center">
-                    <div class="form-group">
-                    <label for="comment">Add pictures:</label>
-                    <input id="fileupload" name="imgs" type="file" multiple="multiple">
-                    <b>Live Preview</b>
-                    <br>
-                    <br>
-                    <div id="dvPreview"></div>
-                    </div>
-                <div class="comment-btns mt-2">
-                    <div class="row">
-                        <div class="col-6">
-                            <div class="pull-left"> <button class="btn btn-success btn-sm">Cancel</button> </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="pull-right"> <button type="submit" class="btn btn-success send btn-sm">Send <i class="fa fa-long-arrow-right ml-1"></i></button> </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-</form>
-        </div>
-    </div>
-</div>
-</div>
-<hr>
-<div class="container mb-3">
-  <h3 class="mr-5">Reviews:</h3>
-  <h5>{{ comment }}</h5>
-  {%for review in reviewsget%}
-  <div class="card p-2 mb-1">
-  <a class="logo-wrapper waves-effect" >
-    {% if review.user.userprofile.userphoto %}
-    <b><img src="{{ review.user.userprofile.userphoto.url }}"  style="border-radius: 50%;height: 30px;width: 30px;margin-right:10px;text-transform:capitalise">{% endif %}{{ review.user.username }} <span class="badge badge-pill danger-color mr-5" ><strong style="font-size:20px;">{{ review.rating }}/5</strong></span></a></b>
-  {% if review.review %}
-  <a href="#" class="list-group-item list-group-item-action waves-effect">
-          <p class="mb-0">{{ review.review }}</p></a>{% endif %}
-  <a href="#" class="list-group-item list-group-item-action waves-effect">
-  {% if rimgs %}
-  {% for image in rimgs %}
-  {% ifequal review.id image.post.id %}
-  <img src="{{image.images.url}}" class="ml-2" width="240px">
-  {% endifequal %}
-  {% endfor %}
-  {% else %}
-  <h6 class="ml-3">No images</h6>
-  </a>
-  {% endif %}
-  </div>
-  {% endfor %}
-</div>
-  </main>
-
+<script>
+  $('.prod-img').click(function(){
+  var mainsrc = $('#00').attr('src');
+  var newsrc = $(this).attr('src');
+  $('#00').attr('src',newsrc);
+  });
+  </script>
+  <script language="javascript" type="text/javascript">
+    $(function () {
+        $("#fileupload").change(function () {
+            if (typeof (FileReader) != "undefined") {
+                var dvPreview = $("#dvPreview");
+                dvPreview.html("");
+                var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.jpg|.jpeg|.gif|.png|.bmp)$/;
+                $($(this)[0].files).each(function () {
+                    var file = $(this);
+                    if (regex.test(file[0].name.toLowerCase())) {
+                        var reader = new FileReader();
+                        reader.onload = function (e) {
+                            var img = $("<img />");
+                            img.attr("style", "height:100px;width: 100px");
+                            img.attr("src", e.target.result);
+                            dvPreview.append(img);
+                        }
+                        reader.readAsDataURL(file[0]);
+                    } else {
+                        alert(file[0].name + " is not a valid image file.");
+                        dvPreview.html("");
+                        return false;
+                    }
+                });
+            } else {
+                alert("This browser does not support HTML5 FileReader.");
+            }
+        });
+    });
+    function functionx(ths,sno){
+    $('#ratinginp').val(sno);
+    for (var i=1;i<=5;i++){
+    var cur=document.getElementById("star"+i)
+    cur.className="fa fa-star"
+    }
+    
+    for (var i=1;i<=sno;i++){
+    var cur=document.getElementById("star"+i)
+    if(cur.className=="fa fa-star")
+    {
+    cur.className="fa fa-star checked"
+    }
+    }
+    }
+    </script>
 {% endblock content %}

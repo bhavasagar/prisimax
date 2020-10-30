@@ -592,17 +592,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 {% include "footer.html" %}
 {% include "scripts.html" %}
-<script type="application/javascript" src="https://sdki.truepush.com/sdk/v2.0.2/app.js" async></script>
-<script>
-var truepush = window.truepush || [];
-truepush.push(function(){
-    truepush.Init({
-        id: "5f0c34883937b40914f8a263"
-        }, function(error){
+
+    <script type="application/javascript" src="https://sdki.truepush.com/sdk/v2.0.2/app.js" async></script>
+    <script>
+    var truepush = window.truepush || [];
+            
+    truepush.push(function(){
+        truepush.Init({
+            id: "5f96d7d80fd93b032a5762b5"
+        },function(error){
           if(error) console.error(error);
         })
     })
-</script>
+    </script>
 <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-app.js"></script>
 
 <!-- TODO: Add SDKs for Firebase products that you want to use

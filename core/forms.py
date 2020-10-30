@@ -2,9 +2,9 @@ from django import forms
 from django_countries.fields import CountryField
 from django_countries.widgets import CountrySelectWidget
 
-
 PAYMENT_CHOICES = (
     ('P', 'Paytm'),
+    ('C', 'Cash On Delivery'),
 )
 
 SECTORS_CHOICES = (
@@ -20,7 +20,7 @@ SECTORS_CHOICES = (
 class Add_to_cart_Form(forms.Form):
       size_options = forms.ChoiceField(
         widget=forms.RadioSelect, choices=SECTORS_CHOICES)
-        
+      
 class CheckoutForm(forms.Form):
     shipping_address = forms.CharField(required=False)
     shipping_address2 = forms.CharField(required=False)
@@ -68,8 +68,3 @@ class RefundForm(forms.Form):
     }))
     email = forms.EmailField()
 
-
-class PaymentForm(forms.Form):
-    stripeToken = forms.CharField(required=False)
-    save = forms.BooleanField(required=False)
-    use_default = forms.BooleanField(required=False)

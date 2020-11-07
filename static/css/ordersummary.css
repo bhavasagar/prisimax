@@ -1,0 +1,303 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display+SC:wght@400;700&family=Playfair+Display:wght@400;500;600&family=Raleway:wght@100;200;300;400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bitter&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap');
+:root{
+    --presimax-brand-color:  #ff8c00;
+    --presimax-brand-light-color:  #ff8c00;
+    --presimax-font-1: 'Playfair Display', serif;
+    --presimax-font-2: 'Raleway', sans-serif;    
+    --presimax-font-3: 'Bitter', serif;
+    --link-color: #0099CC;
+    --presimax-silver: #C0C0C0;
+    --presimax-light-white: #DCDCDC;
+    --presimax-black: #0b0704;
+    --presimax-white: #f8f9f5;
+    --product-back-ex: #f8f9f5;
+    --product-back: #fdde6c;
+    --presimax-white-orange: #fdf9ef;
+    --presimax-tag-opacity: .7;
+    --heading-font:'Nunito Sans', sans-serif;
+    --end: -95%;
+}
+.fas,.far,.fa{
+    font-weight: 600;
+}
+.presimax-color{
+    color: var(--presimax-white-orange);
+}
+body{
+    color: var(--presimax-body-color);
+    font-family: var(--presimax-font-2);   
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover; 
+    margin: auto;   
+    background: #F5F5F5; 
+  }
+.dark-mode{
+    font-weight: 500;
+    color: var(--presimax-black);
+}
+.heading, .h2, .h3{
+    text-transform: capitalize;
+    font-weight: 500;    
+    font-size: 1.2rem;
+    font-family: var(--heading-font) !important;
+}
+.h2{
+    font-family: var(--heading-font) !important;
+    font-size: 1rem !important;
+}
+.h3{
+    font-family: var(--heading-font) !important;
+    font-size: 14px !important;
+}
+.logo-image{
+    width: 9rem;
+    height: 3rem;
+}
+a{
+    color: inherit;
+}
+.order-nav{
+    margin-top: 4.5rem !important;
+    font-size: 2.6rem;
+    margin-left: auto;
+    margin-right: auto;
+    color: var(--presimax-silver);
+    background: #FFFFFF;
+}
+.large-screen{
+    display: none;
+}
+.small-font{
+    font-size: .8rem;
+}
+.order-summary{    
+    display: block;    
+}
+.great-dis-sec{
+    width: 100%;        
+}
+.great-tag{
+    position: absolute;
+    display: none;
+    top: .5rem;
+    left: .5rem;
+    width: max-content;
+    color: #fff;
+    padding-top: .15em;
+    padding-left: .5em;
+    padding-bottom: .15em;
+    padding-right: 1.5em;
+    background: linear-gradient(115deg, #ff8c00 80%, transparent 80%);    
+    opacity: var(--presimax-tag-opacity);
+}
+.product-hor,.details-footer{
+    display: flex;    
+    margin: .5em;
+    align-items: center;    
+    border: .08rem solid #C0C0C0;    
+    flex-direction: row;
+}
+.product-hor{
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    background: #fff;
+}
+.details-footer{
+    margin-top: -.5em;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-top: .08rem solid #C0C0C0;
+    justify-content: space-around;
+    background: #fff;
+}
+
+.buy{
+    border-left: .08rem solid #C0C0C0;
+    padding-left: 4.5rem;
+}
+.great-dis-prods{
+    display: grid;
+    grid-auto-flow: dense;
+    margin-top: 0 !important;
+    grid-template-columns: repeat(1, 1fr);
+    margin-bottom: 5rem;
+}
+.hor-prod-details{
+    font-size: 1.1rem;    
+}
+.c4{
+    width:135px;
+    height:225px;    
+    margin: .5rem;
+    transition: all 0.2s ease-in-out !important;    
+}
+.details-footer{
+    flex: 1 100%;
+    flex-grow: 5;
+}
+.pp{
+    display: inline-block;    
+    justify-content: space-around;
+  }
+.fc{
+    display: block;
+    width: 100%;
+    max-width: 10em;
+    height: calc(.99em + .75rem + 2px);
+    padding: .3rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: .15s ease-in-out,box-shadow .15s ease-in-out;
+  }  
+.final-bill{
+    background: #fff;
+    margin-bottom: 5rem;
+}
+.product-count .qtyminus,
+.product-count .qtyplus {
+width: 34px;
+height: 24px;
+background-color:  var(--presimax-brand-color);
+text-align: center;
+font-size: 19px;
+line-height: 24px;
+color: #fff;
+cursor: pointer;
+}  
+.product-count .qty{
+width: 34px;
+height: 24px;
+text-align: center;
+font-size: 19px;
+line-height: 36px;    
+}  
+.product-count .qtyminus {
+border-radius: 3px 0 0 3px;
+}
+.product-count .qtyplus {
+border-radius: 0 3px 3px 0; 
+}
+.product-count .qty {
+width: 60px;
+text-align: center;
+}
+.product-count{
+display: flex;
+flex-direction: row;
+} 
+.price-title{
+    float: left;
+}
+.price-value{
+    float: right;
+}
+.checkout-btn{
+    border-radius: 4px;
+    background: var(--presimax-brand-color);
+    color: #fff;
+    padding: 7px 45px;
+    display: inline-block;        
+    margin: 0 auto;
+    text-align: center;
+    width: 85%;
+    justify-content: center;
+    border: solid 2px var(--presimax-color); 
+    transition: all 0.5s ease-in-out 0s;
+}
+.shake-eff{ 
+    animation:  shake 0.4s ; 
+    animation-iteration-count: 4;
+} 
+@keyframes shake{ 
+0%{ 
+    transform: translateX(0) 
+} 
+25%{ 
+    transform: translateX(15px); 
+} 
+    
+50%{ 
+    transform: translateX(-15px); 
+} 
+100%{ 
+    transform: translateX(0px); 
+} 
+} 
+@media only screen and (min-width: 600px) { 
+    .great-dis-sec{        
+        width: 60%;
+    }
+    .order-nav{
+        font-size: 3.3rem;
+    }
+    .large-screen{
+        display: inline;
+    }
+    .order-summary{    
+        display: flex;    
+    }
+    .final-bill{
+       width: 38%;
+       height: max-content;
+       height: -moz-fit-content;
+       margin-top: 4rem;
+    }
+    .c4{
+        width:170px;
+        height:215px;    
+        margin: .5rem;
+        transition: all 0.2s ease-in-out !important;    
+    }
+    .small-font{
+        font-size: .8rem;
+    }
+    .product-hor,.details-footer{
+        width: 75%;
+        margin: auto;
+    }
+    .buy{     
+        padding-left: 6.5rem;
+    }
+    .fc{
+        display: block;
+        width: 100%;
+        max-width: 10em;
+        height: calc(1.5em + .75rem + 2px);
+        padding: .3rem;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        border-radius: .25rem;
+        transition: .15s ease-in-out,box-shadow .15s ease-in-out;
+      }  
+      .product-count .qtyminus,
+      .product-count .qtyplus {
+        width: 34px;
+        height: 34px;
+        background-color:  var(--presimax-brand-color);
+        text-align: center;
+        font-size: 19px;
+        line-height: 34px;
+        color: #fff;
+        cursor: pointer;
+      }  
+      .product-count .qty{
+        width: 54px;
+        height: 34px;
+        text-align: center;
+        font-size: 19px;
+        line-height: 36px;    
+      }  
+}

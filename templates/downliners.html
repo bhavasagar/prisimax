@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{%load static%}
+{% block extra_head %}
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+{% endblock extra_head%}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/category.css' %}">
+<main>
+<div style="margin-bottom: 0rem;opacity:0">Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum autem ex exercitationem perferendis quis natus? Pariatur rem enim, ratione explicabo quis perspiciatis illum quas voluptatibus numquam quo quam, voluptate vero.</div>
+<div class="p-1">    
+  <b><strong><p class="heading" style="font-size:1.5rem;">{{ request.user.username }} - Downliners</p></strong></b>
+</div>
+<!-- great discounts -->
+<div class="great-dis-sec p-1">  
+  <div class="great-dis-prods">
+    {% for item in object_list %}
+    <div class="product-hor">
+      <div class="hor-prod-img">
+        <img class="c4 gif-img" src="https://media4.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" alt="loading">
+        <img class="c4" src="{{ item.user.userphoto.url }}" style="display: none;"
+            alt="prod-image">
+      </div>
+      <div class="hor-prod-details" style="color:#fff">             
+          <p class="h2">Name : {{item.user.user.username|truncatechars:14}}<br> 
+            <span class="ml-2">Level : {{ item.level|floatformat:"0" }}</span><br>
+            <span class="ml-2">Income : &#8377;{{ item.usermoney|floatformat:"0" }}</span>
+          </p></strong>         
+      </div>
+    </div>
+    {% empty %}
+    No Downliners
+    {% endfor %}
+  </div>
+</div>
+<!-- great discounts -->
+<div style="margin-bottom: 5rem;opacity:0">Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus odio accusamus possimus similique fuga ducimus itaque amet iure. Nemo perspiciatis, quam quae assumenda qui eaque rerum deserunt ducimus cupiditate labore.</div>
+</main>
+{% endblock content %}
+{% block extra_scripts %}
+<script>
+$(document).ready(function() {
+  const $valueSpan = $('.valueSpan2');
+  const $value = $('#customRange11');
+  $valueSpan.html($value.val());
+  $value.on('input change', () => {
+  $valueSpan.html($value.val());
+  });
+});
+$(document).ready(function() {
+
+  const $valueSpan = $('.valueSpan3');
+  const $value = $('#customRange12');
+  $valueSpan.html($value.val()+"%");
+  $value.on('input change', () => {
+  $valueSpan.html($value.val()+"%");
+  });
+});
+$(document).ready(function() {
+
+  const $valueSpan = $('.valueSpan5');
+  const $value = $('#customRange14');
+  $valueSpan.html($value.val()+"%");
+  $value.on('input change', () => {
+  $valueSpan.html($value.val()+"%");
+  });
+});
+$(document).ready(function() {
+
+  const $valueSpan = $('.valueSpan');
+  const $value = $('#customRange10');
+  $valueSpan.html($value.val());
+  $value.on('input change', () => {
+  $valueSpan.html($value.val());
+  });
+});
+</script>
+<script>
+  $(document).ready(function () {
+    console.log("ready!");
+    $('img').not('.poster').not('.logo-image').toggle();
+  });
+</script>
+<script>
+  {% if pbc %}
+  document.documentElement.style.setProperty('--product-back', '{{ pbc.color }}');
+  document.documentElement.style.setProperty('--presimax-black', '{{ pbc.font_color }}');
+  document.documentElement.style.setProperty('--presimax-white-orange', '{{ pbc.category_font_color }}');
+  {% endif %}
+</script>
+<script>
+  {% if bbi %}
+  $(".bg").css("background-image", "url('{{ bbi.image.url }}')");
+  document.documentElement.style.setProperty('--presimax-body-color', '{{ bbi.font_color }}');
+  {% endif %}
+</script>
+{% endblock extra_scripts %}

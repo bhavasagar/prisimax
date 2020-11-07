@@ -1,93 +1,86 @@
 {% load static %}
-
-{% block head_title %}PRESIMAX{% endblock %}
 {% load cart_template_tags %}
 {% load myorders_template_tags %}
-
-    <nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
-      <div class="container-fluid">
-
-
-        <a class="navbar-brand waves-effect" href="{%url 'core:landing' %}">
-          <strong class="gold-text text-center" style="color:orange"><img src="{% static 'img/plog.jpeg' %}" alt="PRESIMAX" width="122" height="42" style="vertical-align:middle"></strong>
-        </a>
-
-
-        <button class="navbar-toggler white" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon" style="margin-right:10px"></span>
-        </button>
-
-        <div class="collapse navbar-collapse white" id="navbarSupportedContent">
-
-
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-              <a class="nav-link waves-effect active" href="{%url 'core:home' %}">Home
-                <span class="sr-only">(current)</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="{% url 'core:about' %}" class="nav-link waves-effect">About</a>
-          </li>
-            {% if request.user.is_authenticated %}
-          <li class="nav-item">
-            <a href="{% url 'core:order-summary' %}" class="nav-link waves-effect">
-             Hi, {{ user.username }} 
-            </a>
-          </li>
-          <li class="nav-item" >
-            <a href="{% url 'core:order-summary' %}" class="nav-link waves-effect">
-              <span class="badge red z-depth-1 mr-1">{{ request.user|cart_item_count }}</span>
-              <i class="fas fa-shopping-cart" style="color:#f2994b"></i>
-               Cart 
-            </a>
-          </li>
-          <li class="nav-item" >
-            <a href="{% url 'core:myorders' %}" class="nav-link waves-effect">
-              <span class="badge red z-depth-1 mr-1">{{ request.user|myorder_item_count }}</span>
-              <i class="far fa-list-alt" style="color:#63e0ff"></i>
-               My Orders 
-            </a>
-          </li>
-          <li class="nav-item" >
-            <a href="{% url 'core:Profile' %}" class="nav-link waves-effect">
-              <!--<span class="badge red z-depth-1 mr-1"></span>-->
-              <i class="far fa-edit" style="color:#ebe657"></i>
-              My Profile
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link waves-effect" href="{% url 'core:club' %}">
-              Club
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link waves-effect" href="{% url 'account_logout' %}">
-               Logout 
-            </a>
-          </li>
-          <li class="nav-item">
-          {% ifequal request.user.userprofile.paid_amt "250" %}
-            <a href="/clubpayment/" class="logo-wrapper waves-effect btn btn-info btn-sm" >
-            <i class="fas fa-award mr-3" style="color:#D4AF37"> Upgrade to Premium</i>
-            </a>
-          {% endifequal %}
-          </li>
-          {% else %}
-          <li class="nav-item">
-            <a class="nav-link waves-effect" href="{% url 'account_login' %}">
-              Login 
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link waves-effect" href="{% url 'account_signup' %}">
-              Signup 
-            </a>
-          </li>
-          {% endif %}
-          </ul>
-        </div>
-
-      </div>
-    </nav>
+<style>
+  .bottom-nav-fixed{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    padding: .5rem;
+    font-size: 2rem;
+    font-weight: 100;
+    background-color: #fff;
+    color:#636c77;   
+    z-index: 1030; 
+  }
+  span:hover{
+    color: var(--presimax-brand-color);        
+  }
+  .holder{
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+  }
+  nav>a>{
+    display: inline;
+    max-width: 2rem;
+    height: min-content;
+    text-align: center;        
+  }  
+  .caption{    
+    font-size: .378em;
+    font-weight: 300;
+  }
+@media only screen and (min-width: 600px) {
+  .bottom-nav-fixed{
+    padding-left: 15%;
+    padding-right: 17%;
+  }
+}
+</style>
+<link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+<nav class="bottom-nav-fixed">
+    {%url 'core:home' as home %}
+    <a href="{{ home }}" {% ifequal request.path home %} style="color:var(--presimax-brand-color)" {% endifequal %} ><div class="holder" >      
+      <span class="bx bx-home-alt" > </span>
+      <span class="caption" >Home</span>
+    </div></a>       
+    <!-- <a href="{{ home }}" >       
+    <div class="holder" >      
+      <span class="bx bx-store" > </span>
+      <span class="caption" >Store</span>
+    </div></a>  -->
+    {%url 'core:club' as club %}
+    <a href="{{ club }}" {% ifequal request.path club %} style="color:var(--presimax-brand-color)" {% endifequal %} >    
+    <div class="holder" >      
+      <span class="bx bx-group" > </span>
+      <span class="caption" >Club</span></div></a>
+    {%url 'core:home' as home %}
+    <a href="{{ home }}#categories"  >    
+    <div class="holder" >      
+      <span class="bx bx-category" > </span>
+      <span class="caption" >Categories</span></div></a>
+    {%url 'core:home' as travels %}
+    <a href="{{ travels }}"  >    
+    <div class="holder" >      
+      <span class="bx bxs-directions" > </span>
+      <span class="caption" >Travels</span></div></a>
+    {% if not request.user.is_authenticated %}    
+    <a href="{% url 'account_login' %}" {% ifequal request.path account_login %} style="color:var(--presimax-brand-color)" {% endifequal %} >       
+    <div class="holder" >      
+      <span class="bx bx-log-in" > </span>
+      <span class="caption" >Log In</span></div></a>
+    {% else %}
+    {%url 'core:Profile' as Profile %}
+    <a href="{{ Profile }}" {% ifequal request.path Profile %} style="color:var(--presimax-brand-color)" {% endifequal %} >             
+    <div class="holder" >      
+      <span class="bx bx-user" > </span>
+      <span class="caption" >Profile</span></div></a>
+    {% endif %}
+</nav>

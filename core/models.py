@@ -1,4 +1,4 @@
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save,pre_save
 from django.conf import settings
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
@@ -28,6 +28,20 @@ CATEGORY_CHOICES = (
     ('B', 'Books'),
     ('AA', 'Auto Accessories'),
     ('J','Jewellery')
+)
+
+DELIVERY_STATUS = (
+    ('R', 'Refund'),
+    ('S', 'Shipped'),    
+    ('P','Order Packed'),
+    ('D', 'Out For Delivery'),
+    ('O', 'Order Placed')
+)
+
+PAGE_OPTS = (
+    ('H', 'Home'),
+    ('C', 'Category'),    
+    ('S','Sales')
 )
 
 ORDER_CHOICES = (
@@ -75,12 +89,12 @@ POSITION_CHOICES = (
 )
 
 SALE_NAME_CHOICES = (
-    ('DOD','Deals of the Navaratri day'),
+    ('DOD','Deals of the day'),
     ('NA','New Arrivals'),
-    ('FO','NavaratriSale On'),
+    ('FO','Flashsale On'),
     ('BSP','BestSeller Products'),
     ('DS','Sunday Sale'),
-    ('DOW','Deals of this Navaratri week'),
+    ('DOW','Deals of this week'),
     ('MTTDP','More than 30% Off on discount price'),
     ('GDO','Great Discounts on'),
 )
@@ -113,8 +127,8 @@ class ClubJoin(models.Model):
     levelincome = models.FloatField(default=0.0)
     positionincome = models.FloatField(default=0.0)
     bonusincome = models.FloatField(default=0.0)
-    team =  models.CharField(default=False,null=True,blank=True,max_length=30)
-    refered_person = models.CharField(default=False,null=True,blank=True,max_length=30)
+    team =  models.CharField(default=False,null=True,blank=True,max_length=30)    
+    referer = models.ForeignKey(UserProfile,on_delete=models.SET_NULL,related_name='referer',null=True,blank=True)
     Acno = models.CharField(default=False,null=True,blank=True,max_length=30)
     Ifsc = models.CharField(default=False,null=True,blank=True,max_length=30)
     paytm = models.CharField(default=False,null=True,blank=True,max_length=30)
@@ -143,7 +157,7 @@ class Multiple_Pics(models.Model):
 class Item(models.Model):
     title = models.CharField(max_length=100)
     price = models.FloatField()
-    pics = models.ManyToManyField(Multiple_Pics)
+    pics = models.ManyToManyField(Multiple_Pics, blank=True)
     keys = models.ManyToManyField(Keyword)
     tag = models.CharField(max_length=10,blank=True,null=True,default='New')
     discount_price = models.FloatField(blank=True, null=True)
@@ -175,6 +189,9 @@ class Item(models.Model):
         return reverse("core:refund", kwargs={
             'slug': self.slug
         })
+    
+    def get_shipping_charges_item(self):
+        return float(self.schargeinc - self.discount_price)
     
     def get_add_to_cart_url(self):
         return reverse("core:add-to-cart", kwargs={
@@ -235,11 +252,9 @@ class Categories(models.Model):
         verbose_name_plural = 'Categories' 
 
 class Sales(models.Model):
-    item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    sale_name = models.CharField(choices=SALE_NAME_CHOICES,max_length=30)
-    day = models.CharField(default=False,null=True,blank=True,max_length=30)
-    caption = models.CharField(default=False,null=True,blank=True,max_length=30)
-    row = models.CharField(choices=ROW_CHOICES,default=False,null=True,blank=True,max_length=30)
+    item = models.ManyToManyField(Item)
+    sale_name = models.CharField(choices=SALE_NAME_CHOICES,max_length=30)    
+    caption = models.CharField(default=False,null=True,blank=True,max_length=30)    
     start = models.DateTimeField(null=True,blank=True)
     end = models.DateTimeField(null=True,blank=True)
     
@@ -255,17 +270,23 @@ class Sales(models.Model):
         verbose_name_plural = 'Sales'
 
 class Extrasales(models.Model):
-    item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    sale_name = models.CharField(max_length=30)
-    day = models.CharField(default=False,null=True,blank=True,max_length=30)
-    caption = models.CharField(default=False,null=True,blank=True,max_length=30)
-    row = models.CharField(choices=ROW_CHOICES,default=False,null=True,blank=True,max_length=30)
+    item = models.ManyToManyField(Item)
+    sale_name = models.CharField(max_length=30)    
+    caption = models.CharField(default=False,null=True,blank=True,max_length=30)    
+    start = models.DateTimeField(null=True,blank=True)
+    end = models.DateTimeField(null=True,blank=True)
     
     def __str__(self):
         return self.sale_name
+        
+    def get_absolute_url(self):
+        return reverse("core:Xtrasales", kwargs={
+            'slug': self.sale_name
+        })
     
     class Meta:
         verbose_name_plural = 'XtraSales'
+
 
 
 class OrderItem(models.Model):
@@ -274,46 +295,23 @@ class OrderItem(models.Model):
     ordered = models.BooleanField(default=False)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
-    referer = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name='referer',null=True,blank=True)
+    referer = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.SET_NULL,related_name='referer',null=True,blank=True)
     size = models.CharField(default=False,null=True,blank=True,max_length=25)
-    
+    mrp_price = models.FloatField(default=0)
+    price = models.FloatField(default=0)
+    price_inc_ship = models.FloatField(default=0)
+
     def __str__(self):
         return f"{self.quantity} of {self.item.title}"
 
     def get_total_item_price(self):
-        return self.quantity * self.item.price
-    
-    def get_club_shipping_charges(self):
-        if self.item.club_discount_price:
-            return self.item.club_schargeinc - self.item.club_discount_price
-        return self.item.club_schargeinc - self.item.discount_price
-    
-    def get_shipping_charges(self):
-        if self.item.discount_price:
-            return self.item.schargeinc - self.item.discount_price
-        return self.item.schargeinc - self.item.price
+        return self.price_inc_ship   
 
-    def get_total_discount_item_price(self):
-        return self.quantity * self.item.schargeinc
-    
-    def get_total_club_discount_item_price(self):
-        return self.quantity * self.item.club_schargeinc
+    def get_shipping_charges(self):        
+        return self.price_inc_ship - self.price    
 
     def get_amount_saved(self):
-        return self.get_total_item_price() - self.get_total_discount_item_price()
-    
-    def get_club_amount_saved(self):
-        return self.get_total_item_price() - self.get_total_club_discount_item_price()
-
-    def get_final_price(self):
-        if self.item.discount_price:
-            return self.get_total_discount_item_price()
-        return self.get_total_item_price()
-    
-    def get_club_final_price(self):
-        if self.item.discount_price:
-            return self.get_total_club_discount_item_price()
-        return self.get_total_item_price()
+        return self.mrp_price - self.price
 
 
 class Order(models.Model):
@@ -337,21 +335,28 @@ class Order(models.Model):
     refund_requested = models.BooleanField(default=False)
     refund_granted = models.BooleanField(default=False)
 
-    def __str__(self):
-        return self.user.username
+    def get_total_mrp(self):
+        total = 0
+        for order_item in self.items.all():
+            total += order_item.mrp_price        
+        return total
+    
+    def get_total_saved(self):
+        total = 0
+        for order_item in self.items.all():
+            total += float(order_item.mrp_price - order_item.price)
+        return total
+
+    def get_total_ship(self):
+        total = 0
+        for order_item in self.items.all():
+            total += order_item.item.get_shipping_charges_item()        
+        return total
 
     def get_total(self):
         total = 0
         for order_item in self.items.all():
-            total += order_item.get_final_price()
-        if self.coupon:
-            total -= self.coupon.amount
-        return total
-    
-    def get_club_total(self):
-        total = 0
-        for order_item in self.items.all():
-            total += order_item.get_club_final_price()
+            total += order_item.price_inc_ship
         if self.coupon:
             total -= self.coupon.amount
         return total
@@ -375,16 +380,23 @@ class Address(models.Model):
         verbose_name_plural = 'Addresses'
 
 class Ads(models.Model):
-    image = models.ImageField(upload_to='images/adds/', null=True)
-    text = models.CharField(max_length=20)
-    position = models.CharField(max_length=1, choices=POSITION_CHOICES)
-    typeoa = models.CharField(max_length=20)
+    image = models.ImageField(upload_to='images/ads/', null=True)
+    urlf = models.URLField(max_length = 200,default="https://www.presimax.online/")
     
     def __str__(self):
-        return self.text
+        return 'Ad '+str(self.id)
 
     class Meta:
         verbose_name_plural = 'Ads'
+
+class Withdraw(models.Model):
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    amount = models.FloatField(default=0)
+    granted = models.BooleanField(default=False)
+    at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'By {self.user.user.username} for '+str(self.amount)
 
 class Payment(models.Model):
     stripe_charge_id = models.CharField(max_length=50)
@@ -396,6 +408,22 @@ class Payment(models.Model):
     def __str__(self):
         return self.user.username
 
+class Pagebackground(models.Model):
+    image = models.ImageField(upload_to='images/backgrounds/')
+    font_color = models.CharField(max_length=10,default="#000")
+    page = models.CharField(default="H",choices=PAGE_OPTS,max_length=3)
+    
+    def __str__(self):
+        return str(self.id)
+
+class Productbackground(models.Model):
+    color = models.CharField(max_length=10,default="#fdde6c")
+    font_color = models.CharField(max_length=10,default="#fff")
+    category_font_color =  models.CharField(max_length=10,default="#fff") 
+    page = models.CharField(default="H",choices=PAGE_OPTS,max_length=3)
+    
+    def __str__(self):
+        return self.color
 
 class TravelDetails(models.Model):
     name = models.CharField(max_length=20)
@@ -419,7 +447,7 @@ class Myorder(models.Model):
     orderitem = models.ForeignKey(OrderItem, on_delete=models.CASCADE,null=True,blank=True)
     myordered_date = models.DateField()
     mydelivery_date = models.DateField()
-    status = models.CharField(default="404",null=True,blank=True,max_length=25) 
+    status = models.CharField(default="O",choices=DELIVERY_STATUS,max_length=3) 
     
     def __str__(self):
         return f"{self.user.username} of {self.item.title} with {self.status}"
@@ -598,5 +626,42 @@ def userprofile_receiver(sender, instance, created, *args, **kwargs):
     if created:
         userprofile = UserProfile.objects.create(user=instance)
  
+def orderitem_receiver(sender, instance, *args, **kwargs):        
+    user = UserProfile.objects.get(user=instance.user)
+    instance.mrp_price = float(instance.item.price)*instance.quantity    
+    if user.Isclubmem:
+        price = float(instance.item.club_discount_price)*instance.quantity
+        instance.price = price
+        instance.price_inc_ship = float(instance.item.get_shipping_charges_item())+float(price)        
+    else:
+        price = float(instance.item.discount_price)*instance.quantity
+        instance.price = price
+        instance.price_inc_ship = float(instance.item.get_shipping_charges_item())+float(price)        
+
+def cj_receiver(sender, instance, *args, **kwargs):
+    instance.usermoney = instance.travelfund + instance.teamincome + instance.downlineincome + instance.referincome + instance.orderincome + instance.bonusincome + instance.positionincome + instance.levelincome + instance.prod_ref_inc 
+    if instance.level < 5:
+        instance.desig = "Beginner"                        
+    elif instance.level < 12 and instance.level >= 5:                        
+        instance.desig = "SubordianteDirector"                        
+    elif instance.level >= 12 and instance.level < 25:                        
+        instance.desig = "ManagingDirector"                        
+    elif instance.level >= 25 and instance.level < 50:                        
+        instance.desig = "BronzeDirector"                        
+    elif instance.level >= 50 and instance.level < 90:                        
+        instance.desig = "SilverDirector"                        
+    else:                        
+        instance.desig = "GoldDirector"
+    try:
+        cj = ClubJoin.objects.get(id=instance.id)
+        if int(float(instance.level) - float(cj.level)) >= 1:
+           if int(cj.user.paid_amt) >= 500:
+              instance.levelincome = instance.levelincome + 15*int(float(instance.level) - float(cj.level))
+           else:
+              instance.levelincome = instance.levelincome + 5*int(float(instance.level) - float(cj.level))
+    except:
+        pass                                     
 
 post_save.connect(userprofile_receiver, sender=settings.AUTH_USER_MODEL)
+pre_save.connect(orderitem_receiver, sender=OrderItem)
+pre_save.connect(cj_receiver, sender=ClubJoin)

@@ -1,4 +1,5 @@
 from django import forms
+from .models import Sales,Item
 from django_countries.fields import CountryField
 from django_countries.widgets import CountrySelectWidget
 
@@ -68,3 +69,5 @@ class RefundForm(forms.Form):
     }))
     email = forms.EmailField()
 
+class ItemChangeListForm(forms.ModelForm):    
+    item = forms.ModelMultipleChoiceField(queryset=Item.objects.all(), required=False)

@@ -9,7 +9,7 @@ from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from django.utils import timezone
 from .forms import CheckoutForm, CouponForm, RefundForm
-from .models import Item, OrderItem, Order, Address, Payment, Coupon, Refund, UserProfile, Transaction, TravelDetails, ClubJoin, Paytm_order_history,Paytm_history, Carousal, Review, Team, Ads, Itemdealer, Myorder, Categories, Sales, CarousalClub, Contact, FAQs, CarousalEcommerce,Multiple_Pics
+from .models import Item, OrderItem, Order, Address, Payment, Coupon, Refund, UserProfile, Transaction, TravelDetails, ClubJoin, Paytm_order_history,Paytm_history, Carousal, Review, Team, Ads, Itemdealer, Myorder, Categories, Sales, CarousalClub, Contact, FAQs, CarousalEcommerce,Multiple_Pics, Productbackground, Pagebackground, Extrasales, Withdraw
 import random
 from django.shortcuts import reverse
 import string
@@ -34,7 +34,7 @@ def create_ref_code():
 def products(request):
     context = {
         'items': Item.objects.all()
-    }
+    } 
     return render(request, "products.html", context)
 
 def send_email(sub,des,to_user):
@@ -63,21 +63,12 @@ def distribute_money(request,amt):
             cm.save()
         else:
             cm.orderincome = float(cm.orderincome)+(amt)*0.05
-            cm.save()
-        if new_level-int(cm.level) >= 1:
-            if int(cm.user.paid_amt) >= 500:
-                cm.levelincome = float(cm.levelincome) + 15
-                cm.save()
-            else:
-                cm.levelincome = float(cm.levelincome) + 5 
-                cm.save() 
+            cm.save()        
         cm.level = new_level
         cm.save()
-        if str(cm.refered_person) != "False":
-            refuser = User.objects.get(username=cm.refered_person)
-            rup = UserProfile.objects.get(user=refuser)
-            ref = ClubJoin.objects.get(user=rup)
-            if int(rup.paid_amt) >= 500:                    
+        if cm.referer:             
+            ref = ClubJoin.objects.get(user=cm.referer)
+            if int(cm.referer.paid_amt) >= 500:                  
                 ref.downlineincome = float(ref.downlineincome) + (amt)*0.01
             else:
                 ref.downlineincome = float(ref.downlineincome) + (amt)*0.007
@@ -96,11 +87,9 @@ def collect_money(request,amt):
         else:
             cm.orderincome = float(cm.orderincome)-(amt)*0.05
             cm.save()        
-        if str(cm.refered_person) != "False":
-            refuser = User.objects.get(username=cm.refered_person)
-            rup = UserProfile.objects.get(user=refuser)
-            ref = ClubJoin.objects.get(user=rup)
-            if int(rup.paid_amt) >= 500:                    
+        if cm.referer:                       
+            ref = ClubJoin.objects.get(user=cm.referer)
+            if int(cm.referer.paid_amt) >= 500:                    
                 ref.downlineincome = float(ref.downlineincome) - (amt)*0.01
             else:
                 ref.downlineincome = float(ref.downlineincome) - (amt)*0.007
@@ -146,7 +135,6 @@ def de_brokrage_income(request,orderitem):
     cp.save()  
 
 def is_valid_form(values): 
-
     valid = True
     for field in values:
         if field == '':
@@ -340,17 +328,8 @@ class CheckoutView(LoginRequiredMixin,View):
 
 @login_required
 def orderplaced(request):
-    order = Order.objects.filter(user=request.user, ordered=False).last() 
-    try:
-        order_0 = Order.objects.filter(user=request.user, ordered=False,type='S')[0] 
-        item_0 = order.items.all().last()
-        order_0.items.remove(item_0)
-        order_0.save()
-    except:
-        pass
-    amt = order.get_total()    
-    if request.user.userprofile.Isclubmem:
-        amt = order.get_club_total()
+    order = Order.objects.filter(user=request.user, ordered=False).last()     
+    amt = order.get_total() 
     transaction = Transaction.objects.create(made_by=request.user, amount=amt)
     transaction.save()
     sub = 'Order Successfully Placed | Presimax'    
@@ -416,10 +395,7 @@ def clubpayment(request):
 @login_required
 def orderpayment(request):
     order = Order.objects.filter(user=request.user, ordered=False).last()
-    if request.user.userprofile.Isclubmem:
-        amount = int(order.get_club_total())
-    else:
-        amount = int(order.get_total())
+    amount = int(order.get_total())
     transaction = Transaction.objects.create(made_by=request.user, amount=amount)
     transaction.save()
     merchant_key = settings.PAYTM_SECRET_KEY
@@ -622,89 +598,102 @@ def simp(request):
     context={'items':item}
     return render(request, 'similarprod.html', context=context)
 
+CATEGORYCHOICES = {'H': 'handi crafts','SS': 'sarees','G': 'grocery','P':'daily Needs','FW': 'fashion wear','F': 'foot wear','FU': 'furniture','MW': 'menswear','BC': 'beauty care','E': 'electronics','MA': 'mens accessories','WA': 'womens accessories','MP':'mobiles & accessories','HA': 'home appliances','S': 'sports','HC': 'health','KW': 'kids wear','B': 'books','AA': 'auto accessories','J':'jewellery'}  
+CATEGORYCHOICES = {value : key for (key, value) in CATEGORYCHOICES.items()}
+def get_model_or_nothing(model_name):
+    try:        
+        return model_name.objects.all()
+    except:
+        return False
+
 class HomeView(ListView):
     template_name = "home.html"
     def get(self,*args, **kwargs):
         if self.request.user.is_authenticated: 
             buynows = Order.objects.filter(user=self.request.user, ordered=False,type='BN')
             buynows.delete()
-        items = Item.objects.all().order_by('-id')[0:7]
-        items1 = Item.objects.all().order_by('-id')[9:16]
-        items2 = Item.objects.filter(dis_per__gte=30)[0:7]
-        items3 = Item.objects.filter(dis_per__gte=30).order_by('-id')[9:16]
+        sword = self.request.GET.get('search', False)
+        catgeory = self.request.GET.get('category', False)
+        if sword:
+            qs = Item.objects.filter(Q(title__search=sword)|Q(category__search=sword)|Q(description__search=sword))
+            if catgeory and catgeory!='All':
+                cchoice = CATEGORYCHOICES[catgeory.lower().strip()]
+                qs = qs.filter(category=cchoice)
+            return render(self.request, 'search.html', context={'sobs': qs , 'type':'Search Results for word'+sword})
+        items = Item.objects.all().order_by('-id')[0:12]
         items4 = Item.objects.filter(dis_per__gte=70).order_by('-id')
-        items7 = Item.objects.filter(tag="BESTSELLER").order_by('-id')[0:7]
-        items6 = Item.objects.filter(tag="BESTSELLER")[9:16]
-        items8 = Sales.objects.filter(sale_name="DOW")
-        items11 = Sales.objects.filter(sale_name="DS")[0:7]
-        items12 = Sales.objects.filter(sale_name="DS")[9:16]
+        items7 = Item.objects.filter(tag="BESTSELLER").order_by('-id')[0:16]
+        items8 = Sales.objects.filter(sale_name="DOW").order_by('-id')
+        items11 = Sales.objects.filter(sale_name="DS")
         items9 = Sales.objects.filter(sale_name="DOD")
         items10 = Sales.objects.filter(sale_name="FO")
         categories = Categories.objects.all()
-        context={'object_list':items,'object_list1':items1,'cat':categories,'object_list2':items2,'object_list3':items3,'object_list4':items4,'object_list6':items6,'object_list7':items7,'object_list8':items8,'object_list9':items9,'object_list10':items10,'object_list11':items11,'object_list12':items12}
+        context={'object_list':items,'cat':categories,'great_discounts':items4,'Bestsellers':items7,'Deals_of_week':items8,'deals_of_day':items9,'flash_sale':items10,'sunday_sale':items11,'time':timezone.now()}
+        context['sp1_s'],context['sp2_s'],context['sp3_s'] = False,False,False
+        try:
+            sp1 = Extrasales.objects.all()[0]
+            context['sp1'] = sp1
+            context['sp1_s'],context['sp2_s'],context['sp3_s'] = True,False,False
+        except:
+            pass
+        try:
+            sp2 = Extrasales.objects.all()[1]
+            context['sp2'] = sp2
+            context['sp1_s'],context['sp2_s'],context['sp3_s'] = True,True,False
+        except:
+            pass
+        try:
+            sp3 = Extrasales.objects.all()[2]
+            context['sp3'] = sp3
+            context['sp1_s'],context['sp2_s'],context['sp3_s'] = True,True,True
+        except:
+            pass
+        posters = get_model_or_nothing(Ads)
+        context['poster'] = posters
         ctop = CarousalEcommerce.objects.all()
-        #cbot = CarousalEcommerce.objects.filter(position="B")
-        #cmid = CarousalEcommerce.objects.filter(position="M")
         context['ctop']=ctop
-        #context['cmid']=cmid
-        #context['cbot']=cbot
-        if datetime.now().strftime("%A")!="Sunday":
-            context["status"]="disabled"
-            context["msg"]="Wait up to SUNDAY for this sale..."
+        context["sunday_status"]=False
+        if datetime.now().strftime("%A")=="Monday":            
+            context["sunday_status"]=True                        
         now = timezone.now()
-        if len(items10)>0:
-            sdate = items10[0].start
-            edate = items10[0].end
-            today = datetime.today()
-            if sdate < now:
-                context["day"]=edate.day - now.day
-                context["hours"]=edate.hour
-                context["minutes"]=edate.minute
-                context["seconds"]=edate.second
-                context["fmsg"]="Ends In"
-            elif now > edate:
-                ontext["day"]=now.day
-                context["hours"]=now.hour 
-                context["minutes"]=now.minute
-                context["seconds"]=now.second
-                context["fmsg"]=""
-            else:
-                context["day"]=-sdate.day + now.day
-                context["hours"]=sdate.hour
-                context["minutes"]=sdate.minute
-                context["seconds"]=sdate.second
-                context["fmsg"]="Starts In"
-            if sdate > now or now > edate:
-                context["fstatus"]="disabled"
+        try:
+            if len(items10)>0:
+                sdate = items10[0].start
+                edate = items10[0].end
+                today = datetime.today()
+                if now > edate:
+                    context["day"]=now.day
+                    context["hours"]=now.hour 
+                    context["minutes"]=now.minute
+                    context["seconds"]=now.second                    
+                elif sdate < now:
+                    context["day"]=edate.day - now.day
+                    context["hours"]=edate.hour
+                    context["minutes"]=edate.minute
+                    context["seconds"]=edate.second                                    
+                else:
+                    context["day"]=-sdate.day + now.day
+                    context["hours"]=sdate.hour
+                    context["minutes"]=sdate.minute
+                    context["seconds"]=sdate.second
+                context['fsale']=True                   
+                if sdate > now or now > edate:
+                    context['fsale']=False
+                    context["fstatus"]="disabled"
+        except:
+            pass
+        try:
+          bbi = Pagebackground.objects.filter(page="H").order_by('-id')[0]
+          context['bbi']=bbi          
+        except:
+            pass 
+        try:
+          pbc = Productbackground.objects.filter(page="H").order_by('-id')[0]
+          context['pbc']=pbc                            
+        except:
+            pass 
         return render(self.request, self.template_name, context)
-    def post(self,*args,**kwargs):
-        if self.request.method == 'POST':
-            if self.request.POST.get('search'):
-                query = self.request.POST.get('search')
-                qs = Item.objects.filter(Q(title__search=query)|Q(category__search=query)|Q(description__search=query))
-                msg = 'Search results'
-                context = { 'sobs': qs , 'type':msg}
-                if len(qs)<1:
-                    messages.info(self.request, "Invalid search")
-                    return redirect('/ecommerce/')
-            else:
-                min_price = int(self.request.POST.get('min_price'))-int(self.request.POST.get('min_price'))*0.1
-                max_price = int(self.request.POST.get('max_price'))+int(self.request.POST.get('max_price'))*0.1
-                min_dis_per = int(self.request.POST.get('min_dis_price'))-int(self.request.POST.get('min_dis_price'))*0.1
-                max_dis_per = int(self.request.POST.get('max_dis_price'))+int(self.request.POST.get('max_dis_price'))*0.1
-                if self.request.POST.get('new'):
-                    qs = Item.objects.filter(Q(dis_per__gte=min_dis_per)&Q(tag="New")&Q(dis_per__lte=max_dis_per)&Q(discount_price__gte=min_price)&Q(discount_price__lte=max_price)).order_by('-id')
-                if self.request.POST.get('bestseller'):
-                    qs = Item.objects.filter(Q(dis_per__gte=min_dis_per)&Q(tag="BESTSELLER")&Q(dis_per__lte=max_dis_per)&Q(discount_price__gte=min_price)&Q(discount_price__lte=max_price)).order_by('-id')
-                if self.request.POST.get('bestseller') and self.request.POST.get('new'):
-                    qs = Item.objects.filter(Q(dis_per__gte=min_dis_per)&Q(tag="New")&Q(tag="BESTSELLER")&Q(dis_per__lte=max_dis_per)&Q(discount_price__gte=min_price)&Q(discount_price__lte=max_price)).order_by('-id')
-                if not (self.request.POST.get('bestseller') and self.request.POST.get('new')):
-                    qs = Item.objects.filter(Q(dis_per__gte=min_dis_per)&Q(dis_per__lte=max_dis_per)&Q(discount_price__gte=min_price)&Q(discount_price__lte=max_price)).order_by('-id')
-                if len(qs)>36:
-                    qs = qs[0:36]
-                msg = 'Filter results'
-                context = { 'sobs': qs , 'type':msg}
-            return render(self.request, 'search.html', context=context)
+    
             
 class travels(ListView):
     model = TravelDetails
@@ -733,58 +722,22 @@ class club(View):
             buynows = Order.objects.filter(user=self.request.user, ordered=False,type='BN')
             buynows.delete()
             if self.request.user.userprofile.Isclubmem:
-                club_member = ClubJoin.objects.filter(user=self.request.user.userprofile)
-                downliners = ClubJoin.objects.filter(refered_person=self.request.user.username)
-                mn,mx=0,5
-                for cm in club_member:
-                    cm.usermoney = cm.travelfund + cm.teamincome + cm.downlineincome + cm.referincome + cm.orderincome + cm.bonusincome + cm.positionincome + cm.levelincome + cm.prod_ref_inc
-                    if cm.level<5:
-                        cm.desig = "Beginner"
-                        clr = 'purple'
-                    elif cm.level<12 and cm.level>=5:
-                        mn,mx=5,12
-                        cm.desig = "SubordianteDirector"
-                        clr = 'pink'
-                    elif cm.level>=12 and cm.level<25:
-                        mn,mx=12,25
-                        cm.desig = "ManagingDirector"
-                        clr = 'yellow'
-                    elif cm.level>=25 and cm.level<50:
-                        mn,mx=25,50
-                        cm.desig = "BronzeDirector"
-                        clr = 'green'
-                    elif cm.level>=50 and cm.level<90:
-                        mn,mx=50,90
-                        cm.desig = "SilverDirector"
-                        clr = 'red'
-                    else:
-                        mn,mx=90,150
-                        cm.desig = "GoldDirector"
-                        clr = 'blue'
-                    cm.save()
-                    
-                    nw = (cm.level-int(cm.level))*100
-                for cm in downliners:
-                    cm.usermoney = cm.travelfund + cm.teamincome + cm.downlineincome + cm.referincome + cm.orderincome + cm.bonusincome + cm.positionincome + cm.levelincome + cm.bonusincome + cm.positionincome + cm.levelincome + cm.prod_ref_inc
-                    cm.save()
-                if club_member[0].team!="False":
-                    team = ClubJoin.objects.filter(team=club_member[0].team)
-                    for cm in team:
-                        cm.usermoney = cm.travelfund + cm.teamincome + cm.downlineincome + cm.referincome + cm.orderincome + cm.bonusincome + cm.positionincome + cm.levelincome + cm.bonusincome + cm.positionincome + cm.levelincome + cm.prod_ref_inc
-                        cm.save()
+                club_member = ClubJoin.objects.get(user=self.request.user.userprofile)
+                downliners = ClubJoin.objects.filter(referer=club_member.user)                                    
+                nw = (club_member.level-int(club_member.level))*100                                    
+                if club_member.team!="False":
+                    team = ClubJoin.objects.filter(team=club_member.team)                    
                 carousal = CarousalClub.objects.get(pk=1)
                 carousal1 = CarousalClub.objects.all().exclude(pk=1)
+                cms = ClubJoin.objects.filter(user=self.request.user.userprofile)
                 context = {
-                    'club_member': club_member,
+                    'club_member': cms,
                     'downliners':downliners,
                     'citems':carousal1,
                     'item':carousal
                 }
-                context['min']=mn
-                context['max']=mx
                 context['now']=nw
-                context['color']=clr
-                if club_member[0].team!="False":
+                if club_member.team!="False":
                       context['team']=team                
                 return render(self.request,self.template_name,context=context)
             elif len(Paytm_history.objects.filter(user=self.request.user, STATUS='TXN_SUCCESS'))<1:
@@ -796,14 +749,11 @@ class club(View):
                     gtype = "text"
                 return render(self.request,self.template_name,{'type':gtype})
         else:
-            return redirect('/accounts/login')
+            return redirect('/accounts/login/')
     def post(self, *args ,**kwargs):
         if self.request.user.is_authenticated:
             if not self.request.user.userprofile.Isclubmem:
                 if self.request.method == 'POST':
-                    if len(self.request.user.email)<11:
-                        self.request.user.email = self.request.POST.get('email')
-                        
                     self.request.user.userprofile.userphoto = self.request.FILES.get('image')
                     if (len(self.request.POST.get('userphonenumber'))>9 and len(self.request.POST.get('userphonenumber'))<20): 
                         self.request.user.userprofile.phone_number = self.request.POST.get('userphonenumber')
@@ -812,8 +762,11 @@ class club(View):
                         return redirect('core:club')
                     self.request.user.userprofile.Isclubmem = True
                     k = refgenrator('any')
-                    while len(ClubJoin.objects.filter(refer = k))>1:
-                        k = refgenrator('any')
+                    try:
+                        while len(ClubJoin.objects.filter(refer = k))>1:
+                            k = refgenrator('any')
+                    except:
+                        pass
                     if not self.request.POST.get('checkbox'):
                         messages.warning(self.request, "Check the box down...")
                         return redirect('core:club')
@@ -833,23 +786,18 @@ class club(View):
                             club_member.paytm = self.request.POST.get('paytm')
                     else:
                         messages.info(self.request, "Enter valid Account number and IFSC code or Paytm number")
-                        return redirect('core:club')
+                        return redirect('core:club') 
                     ref = self.request.POST.get('referalcode')
                     if len(ref)>0:
                         try:
                             referer = ClubJoin.objects.filter(refer=ref).first()
                             referer.childern += 1
-                            referer.level = referer.level+0.2
-                            if referer.level == int(referer.level):
-                                if int(referer.user.paid_amt) >= 500:
-                                    referer.levelincome = referer.levelincome + 15
-                                else:
-                                    referer.levelincome = referer.levelincome + 5 
+                            referer.level = referer.level+0.2                            
                             if (int(referer.user.paid_amt) >= 500) and int(self.request.user.userprofile.paid_amt)>=500:
                                 referer.referincome = referer.referincome + 100
                             else:
                                 referer.referincome = referer.referincome + 50
-                            club_member.refered_person = referer.user.user.username 
+                            club_member.referer = referer.user
                             referer.save()
                         except:
                             pass
@@ -857,11 +805,11 @@ class club(View):
                         club_member.premium = True
                     club_member.save()
                     self.request.user.userprofile.save()
-                    return redirect("core:home")
+                    return redirect("core:club")
             elif len(Paytm_history.objects.filter(user=self.request.user, STATUS='TXN_SUCCESS'))>0:
                 return redirect('/clubpayment/')
         else:
-            return redirect('/accounts/login')
+            return redirect('/accounts/login/')
             
 import random as rd
 def refgenrator(name):
@@ -890,8 +838,9 @@ class ItemDetailView(View):
         if self.request.user.is_authenticated: 
             buynows = Order.objects.filter(user=self.request.user, ordered=False,type='BN')
             buynows.delete()        
-        item = Item.objects.get(slug=self.kwargs['slug'])              
-        context={'object':item}
+        item = Item.objects.get(slug=self.kwargs['slug'])       
+        reviews = Review.objects.filter(item=item)                     
+        context={'object':item,'reviews':reviews}       
         context['referid'] = '0'        
         if 'refer-product' in str(self.request.path).split('/'):
             context['referid'] = self.kwargs['referid']
@@ -901,10 +850,14 @@ class ItemDetailView(View):
             context['itemd']=itemdealer
         except:
             context['hasdealer'] = 'no'
-            pass
-        
+            pass        
         return render(self.request,self.template_name,context=context)
-            
+
+def review_count(item):
+    qs = Review.objects.filter(item=item)
+    if qs.exists():
+        return len(qs)
+    return 0          
             
 @login_required            
 def reviewform(request,slug,userid):
@@ -934,66 +887,23 @@ def reviewform(request,slug,userid):
     return redirect("core:product", slug=slug)
 
 
-            
 @login_required
-def add_to_cart(request, slug,referid=None):         
+def add_to_cart(request, slug, referid=None):
     item = get_object_or_404(Item, slug=slug)
-    selcsize = request.POST.get("size")
-    qty = int(request.POST.get("quantity"))
-    order_item, created = OrderItem.objects.get_or_create(item=item,user=request.user,ordered=False,size=selcsize)    
-    try:
-        referer = User.objects.get(pk=referid)
-        if request.user != referer: 
-            order_item.referer = referer
-            order_item.save()
-        else:
-            messages.warning(request, "You can't refer yourself.")
-    except:
-        pass
-    order_qs = Order.objects.filter(user=request.user, ordered=False)
-    if order_qs.exists():
-        order = order_qs[0]        
-        if order.type != 'BN':
-            try:
-                buynows = Order.objects.filter(user=request.user, ordered=False,type='BN')
-                buynows.delete()
-            except:
-                pass
-        check_order = order.items.filter(item__slug=item.slug,size=selcsize)
-        if referid:
-            check_order = order.items.filter(item__slug=item.slug,size=selcsize,referer = referer)
-        if check_order.exists():
-            order_item.quantity += qty
-            order_item.save()
-            if item.has_size:
-                messages.info(request, "This item is selected with size "+order_item.size)
-            messages.info(request, "This item quantity was updated.")
-            return redirect("core:order-summary")
-        else: 
-            order_item.quantity = qty
-            order_item.save()
-            order.items.add(order_item)
-            messages.info(request, "This item was added to your cart.")
-            return redirect("core:order-summary")
+    selcsize = request.POST.get("size", False)
+    qty = request.POST.get("quantity", False)
+    if item.has_size:
+        if not selcsize:
+            messages.info(request, " Select product size ")
+            return redirect("core:product", slug=slug)
+    if qty:
+        qty = int(qty)
+    if selcsize:
+        order_item, created = OrderItem.objects.get_or_create(
+            item=item, user=request.user, ordered=False, size=selcsize)
     else:
-        ordered_date = timezone.now()
-        order = Order.objects.create(
-            user=request.user, ordered_date=ordered_date,type='S')
-        order.items.add(order_item)
-        messages.info(request, "This item was added to your cart.")
-        return redirect("core:order-summary")
- 
-@login_required
-def buy_now(request, slug,referid=None):     
-    try:
-        buynows = Order.objects.filter(user=request.user, ordered=False,type='BN')
-        buynows.delete()
-    except:
-        pass    
-    selcsize = request.POST.get("size")    
-    qty = int(request.POST.get("quantity"))
-    item = get_object_or_404(Item, slug=slug)
-    order_item, created = OrderItem.objects.get_or_create(item=item,user=request.user,ordered=False,size=selcsize)    
+        order_item, created = OrderItem.objects.get_or_create(
+            item=item, user=request.user, ordered=False)
     try:
         referer = User.objects.get(pk=referid)
         if request.user != referer:
@@ -1002,29 +912,129 @@ def buy_now(request, slug,referid=None):
         else:
             messages.warning(request, "You can't refer yourself.")
     except:
-        pass 
+        pass
     order_qs = Order.objects.filter(user=request.user, ordered=False)
     if order_qs.exists():
-        order = order_qs[0]        
-        check_order = order.items.filter(item__slug=item.slug,size=selcsize)
+        order = order_qs[0]
+        if order.type != 'BN':
+            try:
+                buynows = Order.objects.filter(
+                    user=request.user, ordered=False, type='BN')
+                buynows.delete()
+            except:
+                pass
+        if selcsize:
+            check_order = order.items.filter(
+                item__slug=item.slug, size=selcsize)
+        else:
+            check_order = order.items.filter(item__slug=item.slug)
         if referid:
-            check_order = order.items.filter(item__slug=item.slug,size=selcsize,referer = referer)
+            if selcsize:
+                check_order = order.items.filter(
+                    item__slug=item.slug, size=selcsize)
+            else:
+                check_order = order.items.filter(item__slug=item.slug)
         if check_order.exists():
-            order_item.quantity += qty
+            if qty:
+                order_item.quantity = qty
+            else:
+                order_item.quantity += 1
+            if selcsize:
+                order_item.size = selcsize
             order_item.save()
             if item.has_size:
-                messages.info(request, "This item is selected with size "+order_item.size)
+                messages.info(
+                    request, "This item is selected with size "+order_item.size)
             messages.info(request, "This item quantity was updated.")
+            return redirect("core:order-summary")
         else:
-            order_item.quantity = qty
-            order_item.save()
+            if qty:
+                order_item.quantity = qty
+                order_item.save()
             order.items.add(order_item)
-            messages.info(request, "This item was added to your cart.")            
+            messages.info(request, "This item was added to your cart.")
+            return redirect("core:order-summary")
+    else:
+        ordered_date = timezone.now()
+        order = Order.objects.create(
+            user=request.user, ordered_date=ordered_date, type='S')
+        order.items.add(order_item)
+        messages.info(request, "This item was added to your cart.")
+        return redirect("core:order-summary")
+
+
+@login_required
+def buy_now(request, slug, referid=None):
+    item = get_object_or_404(Item, slug=slug)
+    selcsize = request.POST.get("size", False)
+    qty = request.POST.get("quantity", False)
+    if item.has_size:
+        if not selcsize:
+            messages.info(request, " Select product size ")
+            return redirect("core:product", slug=slug)
+    if qty:
+        qty = int(qty)
+    if selcsize:
+        order_item, created = OrderItem.objects.get_or_create(
+            item=item, user=request.user, ordered=False, size=selcsize)
+    else:
+        order_item, created = OrderItem.objects.get_or_create(
+            item=item, user=request.user, ordered=False)
+    try:
+        referer = User.objects.get(pk=referid)
+        if request.user != referer:
+            order_item.referer = referer
+            order_item.save()
+        else:
+            messages.warning(request, "You can't refer yourself.")
+    except:
+        pass
+    order_qs = Order.objects.filter(user=request.user, ordered=False)
+    if order_qs.exists():
+        order = order_qs[0]
+        if order.type != 'BN':
+            try:
+                buynows = Order.objects.filter(
+                    user=request.user, ordered=False, type='BN')
+                buynows.delete()
+            except:
+                pass
+        if selcsize:
+            check_order = order.items.filter(
+                item__slug=item.slug, size=selcsize)
+        else:
+            check_order = order.items.filter(item__slug=item.slug)
+        if referid:
+            if selcsize:
+                check_order = order.items.filter(
+                    item__slug=item.slug, size=selcsize)
+            else:
+                check_order = order.items.filter(item__slug=item.slug)
+        if check_order.exists():
+            if qty:
+                order_item.quantity = qty
+            else:
+                order_item.quantity += 1
+            if selcsize:
+                order_item.size = selcsize
+            order_item.save()
+            if item.has_size:
+                messages.info(
+                    request, "This item is selected with size "+order_item.size)
+            messages.info(request, "This item quantity was updated.")
+            return redirect("core:order-summary")
+        else:
+            if qty:
+                order_item.quantity = qty
+                order_item.save()
+            order.items.add(order_item)
+            messages.info(request, "This item was added to your cart.")
+            return redirect("core:order-summary")
     ordered_date = timezone.now()
-    order = Order.objects.create(user=request.user, ordered_date=ordered_date,type='BN')
-    order.items.add(order_item)    
-    return redirect("core:order-summary")
-     
+    order = Order.objects.create(
+        user=request.user, ordered_date=ordered_date, type='BN')
+    order.items.add(order_item)
+    return redirect("core:order-summary")     
 
 @login_required
 def remove_from_cart(request, slug,referid=None):
@@ -1155,139 +1165,93 @@ def about(request):
     dteam = Team.objects.filter(team="DIRECTORS")
     return render(request, "about.html", {'ateam':ateam,'mteam':mteam,'dteam':dteam})
   
+  
 class temp(View):
     template_name = "temp.html"
-    def get(self,*args,**kwargs):
-        if self.request.user.is_authenticated:
-            if self.request.user.userprofile.Isclubmem:
-                club_member = ClubJoin.objects.filter(user=self.request.user.userprofile)
-                downliners = ClubJoin.objects.filter(refered_person=self.request.user.username)
-                mn,mx=0,5
-                for cm in club_member:
-                    cm.usermoney = cm.travelfund + cm.teamincome + cm.downlineincome + cm.referincome + cm.orderincome + cm.bonusincome + cm.positionincome + cm.levelincome
-                    if cm.level<5:
-                        cm.desig = "Beginner"
-                        clr = 'purple'
-                    elif cm.level<12 and cm.level>=5:
-                        mn,mx=5,12
-                        cm.desig = "SubordianteDirector"
-                        clr = 'pink'
-                    elif cm.level>=12 and cm.level<25:
-                        mn,mx=12,25
-                        cm.desig = "ManagingDirector"
-                        clr = 'yellow'
-                    elif cm.level>=25 and cm.level<50:
-                        mn,mx=25,50
-                        cm.desig = "BronzeDirector"
-                        clr = 'green'
-                    elif cm.level>=50 and cm.level<90:
-                        mn,mx=50,90
-                        cm.desig = "SilverDirector"
-                        clr = 'red'
-                    else:
-                        mn,mx=90,150
-                        cm.desig = "GoldDirector"
-                        clr = 'blue'
-                    cm.save()
-                    
-                    nw = (cm.level-int(cm.level))*100
-                for cm in downliners:
-                    cm.usermoney = cm.travelfund + cm.teamincome + cm.downlineincome + cm.referincome + cm.orderincome + cm.bonusincome + cm.positionincome + cm.levelincome + cm.bonusincome + cm.positionincome + cm.levelincome
-                    cm.save()
-                if club_member[0].team!="False":
-                    team = ClubJoin.objects.filter(team=club_member[0].team)
-                    for cm in team:
-                        cm.usermoney = cm.travelfund + cm.teamincome + cm.downlineincome + cm.referincome + cm.orderincome + cm.bonusincome + cm.positionincome + cm.levelincome + cm.bonusincome + cm.positionincome + cm.levelincome
-                        cm.save()
-                carousal = CarousalClub.objects.get(pk=1)
-                carousal1 = CarousalClub.objects.all().exclude(pk=1)
-                context = {
-                    'club_member': club_member,
-                    'downliners':downliners,
-                    'citems':carousal1,
-                    'item':carousal
-                }
-                context['min']=mn
-                context['max']=mx
-                context['now']=nw
-                context['color']=clr
-                if club_member[0].team!="False":
-                      context['team']=team                
-                return render(self.request,self.template_name,context=context)
-            elif len(Paytm_history.objects.filter(user=self.request.user, STATUS='TXN_SUCCESS'))<1:
-                return redirect('/clubpayment/')
-            else:
-                gtype = "hidden"
-                if len(self.request.user.email)<11:
-                    self.request.user.email = self.request.POST.get('email')
-                    gtype = "text"
-                return render(self.request,self.template_name,{'type':gtype})
-        else:
-            return redirect('/accounts/login')
-    def post(self, *args ,**kwargs):
-        if self.request.user.is_authenticated:
-            if not self.request.user.userprofile.Isclubmem:
-                if self.request.method == 'POST':
-                    if len(self.request.user.email)<11:
-                        self.request.user.email = self.request.POST.get('email')
-                        
-                    self.request.user.userprofile.userphoto = self.request.FILES.get('image')
-                    if (len(self.request.POST.get('userphonenumber'))>9 and len(self.request.POST.get('userphonenumber'))<20): 
-                        self.request.user.userprofile.phone_number = self.request.POST.get('userphonenumber')
-                    else:
-                        messages.info(self.request, "Enter a valid Phone number")
-                        return redirect('core:club')
-                    self.request.user.userprofile.Isclubmem = True
-                    k = refgenrator('any')
-                    while len(ClubJoin.objects.filter(refer = k))>1:
-                        k = refgenrator('any')
-                    if not self.request.POST.get('checkbox'):
-                        messages.warning(self.request, "Check the box down...")
-                        return redirect('core:club')
-                    if (len(self.request.POST.get('acno'))>0 and len(self.request.POST.get('ifsc'))>0) or len(self.request.POST.get('paytm'))>0: 
-                        if (len(self.request.POST.get('acno'))>0 and len(self.request.POST.get('ifsc'))>0):
-                            club_member = ClubJoin.objects.create(
-                                user = self.request.user.userprofile,
-                                refer = k,
-                            )
-                            club_member.Acno = self.request.POST.get('acno')
-                            club_member.Ifsc = self.request.POST.get('ifsc')
-                        else:
-                            club_member = ClubJoin.objects.create(
-                                user = self.request.user.userprofile,
-                                refer = k,
-                            )
-                            club_member.paytm = self.request.POST.get('paytm')
-                    else:
-                        messages.info(self.request, "Enter valid Account number and IFSC code or Paytm number")
-                        return redirect('core:club')
-                    ref = self.request.POST.get('referalcode')
-                    if len(ref)>0:
-                        try:
-                            referer = ClubJoin.objects.filter(refer=ref).first()
-                            referer.childern += 1
-                            referer.level = referer.level+0.2
-                            if referer.level == int(referer.level):
-                                if int(referer.user.paid_amt) >= 500:
-                                    referer.levelincome = referer.levelincome + 15
-                                else:
-                                    referer.levelincome = referer.levelincome + 5 
-                            if (int(referer.user.paid_amt) >= 500) and int(self.request.user.userprofile.paid_amt)>=500:
-                                referer.referincome = referer.referincome + 100
-                            else:
-                                referer.referincome = referer.referincome + 50
-                            club_member.refered_person = referer.user.user.username 
-                            referer.save()
-                        except:
-                            pass
-                    club_member.save()
-                    self.request.user.userprofile.save()
-                    return redirect("core:home")
-            elif len(Paytm_history.objects.filter(user=self.request.user, STATUS='TXN_SUCCESS'))>0:
-                return redirect('/clubpayment/')
-        else:
-            return redirect('accounts/login')
-            
+    def get(self,*args, **kwargs):
+        if self.request.user.is_authenticated: 
+            buynows = Order.objects.filter(user=self.request.user, ordered=False,type='BN')
+            buynows.delete()
+        sword = self.request.GET.get('search', False)
+        catgeory = self.request.GET.get('category', False)
+        if sword:
+            qs = Item.objects.filter(Q(title__search=sword)|Q(category__search=sword)|Q(description__search=sword))
+            if catgeory and catgeory!='All':
+                cchoice = CATEGORYCHOICES[catgeory.lower().strip()]
+                qs = qs.filter(category=cchoice)
+            return render(self.request, 'search.html', context={'sobs': qs , 'type':'Search Results for word'+sword})
+        items = Item.objects.all().order_by('-id')[0:12]
+        items4 = Item.objects.filter(dis_per__gte=70).order_by('-id')
+        items7 = Item.objects.filter(tag="BESTSELLER").order_by('-id')[0:16]
+        items8 = Sales.objects.filter(sale_name="DOW").order_by('-id')
+        items11 = Sales.objects.filter(sale_name="DS")
+        items9 = Sales.objects.filter(sale_name="DOD")
+        items10 = Sales.objects.filter(sale_name="FO")
+        categories = Categories.objects.all()
+        context={'object_list':items,'cat':categories,'great_discounts':items4,'Bestsellers':items7,'Deals_of_week':items8,'deals_of_day':items9,'flash_sale':items10,'sunday_sale':items11,'time':timezone.now()}
+        context['sp1_s'],context['sp2_s'],context['sp3_s'] = False,False,False
+        try:
+            sp1 = Extrasales.objects.all()[0]
+            context['sp1'] = sp1
+        except:
+            pass
+        try:
+            sp2 = Extrasales.objects.all()[1]
+            context['sp2'] = sp2
+        except:
+            pass
+        try:
+            sp3 = Extrasales.objects.all()[2]
+            context['sp3'] = sp3
+        except:
+            pass
+        posters = get_model_or_nothing(Ads)
+        context['poster'] = posters
+        ctop = CarousalEcommerce.objects.all()
+        context['ctop']=ctop
+        context["sunday_status"]=False
+        if datetime.now().strftime("%A")=="Sunday":            
+            context["sunday_status"]=True            
+        now = timezone.now()
+        try:
+            if len(items10)>0:
+                sdate = items10.start
+                edate = items10.end
+                today = datetime.today()
+                if sdate < now:
+                    context["day"]=edate.day - now.day
+                    context["hours"]=edate.hour
+                    context["minutes"]=edate.minute
+                    context["seconds"]=edate.second
+                    context['fsale']=False
+                elif now > edate:
+                    context["day"]=now.day
+                    context["hours"]=now.hour 
+                    context["minutes"]=now.minute
+                    context["seconds"]=now.second
+                    context['fsale']=False
+                else:
+                    context["day"]=-sdate.day + now.day
+                    context["hours"]=sdate.hour
+                    context["minutes"]=sdate.minute
+                    context["seconds"]=sdate.second
+                    context['fsale']=True
+                if sdate > now or now > edate:
+                    context["fstatus"]="disabled"
+        except:
+            pass
+        try:
+          bbi = Pagebackground.objects.all().order_by('-id')[0]
+          context['bbi']=bbi          
+        except:
+            pass 
+        try:
+          pbc = Productbackground.objects.all().order_by('-id')[0]
+          context['pbc']=pbc                            
+        except:
+            pass 
+        return render(self.request, self.template_name, context)
+        
     
 def sitemap(request):
     return render(request, 'sitemap.xml')
@@ -1300,117 +1264,233 @@ class Myorders(LoginRequiredMixin, ListView):
     def get(self, *args, **kwargs):
         myorders = Myorder.objects.filter(user=self.request.user)
         context={'myorders':myorders}
-        return render(self.request,self.template_name,context=context)
-        
+        return render(self.request,self.template_name,context=context)        
+
+# changed
 def categories(request, slug):
     if request.method == 'GET':
+        sword = request.GET.get('search', False)
         items1 = Item.objects.filter(category=slug)
         categories = Categories.objects.all()
         paginator = Paginator(items1, 12)
         page_number = request.GET.get('page')
         items = paginator.get_page(page_number)
-        context = {'object_list':items, 'cat':categories}
-        return render(request,'categories.html', context=context)
-    if request.method == 'POST':
-        if request.POST.get('search'):
-            query = request.POST.get('search')
-            qs = Item.objects.filter(Q(title__search=query)|Q(category__search=query)|Q(description__search=query))
-            msg = 'Search results'
-            paginator = Paginator(qs, 12)
-            page_number = request.GET.get('page')
-            qs1 = paginator.get_page(page_number)
-            context = { 'sobs': qs1 , 'type':msg}
-            if len(qs)<1:
-                messages.info(request, "Invalid search")
-                return redirect('/ecommerce/')
-        else:
-            min_price = int(request.POST.get('min_price'))-int(request.POST.get('min_price'))*0.1
-            max_price = int(request.POST.get('max_price'))+int(request.POST.get('max_price'))*0.1
-            min_dis_per = int(request.POST.get('min_dis_price'))-int(request.POST.get('min_dis_price'))*0.1
-            max_dis_per = int(request.POST.get('max_dis_price'))+int(request.POST.get('max_dis_price'))*0.1
-            if request.POST.get('new'):
-                qs = Item.objects.filter(category=slug).filter(Q(dis_per__gte=min_dis_per)&Q(tag="New")&Q(dis_per__lte=max_dis_per)&Q(discount_price__gte=min_price)&Q(discount_price__lte=max_price)).order_by('-id')
-            if request.POST.get('bestseller'):
-                qs = Item.objects.filter(category=slug).filter(Q(dis_per__gte=min_dis_per)&Q(tag="BESTSELLER")&Q(dis_per__lte=max_dis_per)&Q(discount_price__gte=min_price)&Q(discount_price__lte=max_price)).order_by('-id')
-            if request.POST.get('bestseller') and request.POST.get('new'):
-                qs = Item.objects.filter(category=slug).filter(Q(dis_per__gte=min_dis_per)&Q(tag="New")&Q(tag="BESTSELLER")&Q(dis_per__lte=max_dis_per)&Q(discount_price__gte=min_price)&Q(discount_price__lte=max_price)).order_by('-id')
-            if not (request.POST.get('bestseller') and request.POST.get('new')):
-                qs = Item.objects.filter(category=slug).filter(Q(dis_per__gte=min_dis_per)&Q(dis_per__lte=max_dis_per)&Q(discount_price__gte=min_price)&Q(discount_price__lte=max_price)).order_by('-id')
-            if request.POST.get('htl'):
-                qs = qs.order_by('-discount_price')
-            paginator = Paginator(qs, 36)
-            page_number = request.GET.get('page')
-            qs1 = paginator.get_page(page_number)    
-            msg = 'Filter results'
-            context = { 'sobs': qs1 , 'type':msg}
+        context = {'object_list': items, 'cat': categories}
+        if sword:
+            qs = Item.objects.filter(Q(title__search=sword) | Q(
+                category__search=sword) | Q(description__search=sword))            
+            if qs.count() < 1:
+                messages.info(request, 'No results for your search '+sword)
+                return render(request, 'sales.html', context=context)
+            return render(request, 'search.html', context={'sobs': qs, 'type': 'Search Results for word'+sword})
+        try:
+          bbi = Pagebackground.objects.filter(page="C").order_by('-id')[0]
+          context['bbi']=bbi          
+        except:
+            pass 
+        try:
+          pbc = Productbackground.objects.filter(page="C").order_by('-id')[0]
+          context['pbc']=pbc                            
+        except:
+            pass
+        context['action'] = reverse('core:category_search',kwargs={'slug':slug})
+        return render(request, 'categories.html', context=context)                
+
+# changed
+def search(request, slug=None):
+    if request.method == 'GET':
+        qs = Item.objects.all().order_by('-id')
+        if slug:
+            qs = qs.filter(category=slug)
+        if int(request.GET.get('max_price')) - int(request.GET.get('min_price')) > 3:
+            min_price = int(request.GET.get('min_price')) - \
+                int(request.GET.get('min_price'))*0.05     
+            max_price = int(request.GET.get('max_price')) + \
+                int(request.GET.get('max_price'))*0.05
+            qs = qs.filter(Q(discount_price__gte=min_price) & Q(discount_price__lte=max_price))
+        if int(request.GET.get('max_dis_price')) - int(request.GET.get('min_dis_price')) > 3:
+            min_dis_per = int(request.GET.get('min_dis_price')) - \
+                int(request.GET.get('min_dis_price'))*0.05
+            max_dis_per = int(request.GET.get('min_dis_price')) + \
+                int(request.GET.get('max_dis_price'))*0.05
+            qs = qs.filter(Q(dis_per__gte=min_dis_per) & Q(dis_per__lte=max_dis_per))
+        if request.GET.get('new'):
+            qs = qs.filter(tag="New")
+        if request.GET.get('bestseller'):
+            qs = qs.filter(tag="BESTSELLER")        
+        if request.GET.get('htl'):
+            qs = qs.order_by('-discount_price')
+        paginator = Paginator(qs, 12)
+        page_number = request.GET.get('page')
+        qs1 = paginator.get_page(page_number)
+        msg = 'Filter results'
+        context = {'sobs': qs1, 'type': msg}
+        try:
+          bbi = Pagebackground.objects.filter(page="C").order_by('-id')[0]
+          context['bbi']=bbi          
+        except:
+            pass 
+        try:
+          pbc = Productbackground.objects.filter(page="C").order_by('-id')[0]
+          context['pbc']=pbc                            
+        except:
+            pass        
         return render(request, 'search.html', context=context)
 
+# changed
 def sales(request, slug):
     if request.method == 'GET':
-        items1 = Sales.objects.filter(sale_name=slug)
+        sword = request.GET.get('search', False)                        
+        items1 = Sales.objects.filter(sale_name=slug)[0]
         categories = Categories.objects.all()
-        paginator = Paginator(items1, 12)
+        itemsx = items1.item.all()
+        paginator = Paginator(itemsx, 12)
         page_number = request.GET.get('page')
         items = paginator.get_page(page_number)
-        context = {'object_list':items, 'cat':categories}
-        return render(request,'sales.html', context=context)
-    if request.method == 'POST':
-        if request.POST.get('search'):
-            query = request.POST.get('search')
-            qs = Sales.objects.filter(Q(item__title__search=query)|Q(item__category__search=query)|Q(item__description__search=query))
-            msg = 'Search results'
-            paginator = Paginator(qs, 12)
-            page_number = request.GET.get('page')
-            qs1 = paginator.get_page(page_number)
-            context = { 'sobs': qs1 , 'type':msg}
-            if len(qs)<1:
-                messages.info(request, "Invalid search")
-                return redirect('/ecommerce/')
-        else:
-            min_price = int(request.POST.get('min_price'))-int(request.POST.get('min_price'))*0.1
-            max_price = int(request.POST.get('max_price'))+int(request.POST.get('max_price'))*0.1
-            min_dis_per = int(request.POST.get('min_dis_price'))-int(request.POST.get('min_dis_price'))*0.1
-            max_dis_per = int(request.POST.get('max_dis_price'))+int(request.POST.get('max_dis_price'))*0.1
-            if request.POST.get('new'):
-                qs = Sales.objects.filter(sale_name=slug).filter(Q(item__dis_per__gte=min_dis_per)&Q(item__tag="New")&Q(item__dis_per__lte=max_dis_per)&Q(item__discount_price__gte=min_price)&Q(item__discount_price__lte=max_price)).order_by('-id')
-            if request.POST.get('bestseller'):
-                qs = Sales.objects.filter(sale_name=slug).filter(Q(item__dis_per__gte=min_dis_per)&Q(item__tag="BESTSELLER")&Q(item__dis_per__lte=max_dis_per)&Q(item__discount_price__gte=min_price)&Q(item__discount_price__lte=max_price)).order_by('-id')
-            if request.POST.get('bestseller') and request.POST.get('new'):
-                qs = Sales.objects.filter(sale_name=slug).filter(Q(item__dis_per__gte=min_dis_per)&Q(item__tag="New")&Q(item__tag="BESTSELLER")&Q(item__dis_per__lte=max_dis_per)&Q(item__discount_price__gte=min_price)&Q(item__discount_price__lte=max_price)).order_by('-id')
-            if not (request.POST.get('bestseller') and request.POST.get('new')):
-                qs = Sales.objects.filter(sale_name=slug).filter(Q(item__dis_per__gte=min_dis_per)&Q(item__dis_per__lte=max_dis_per)&Q(item__discount_price__gte=min_price)&Q(item__discount_price__lte=max_price)).order_by('-id')
-            if request.POST.get('htl'):
-                qs = qs.order_by('-item__discount_price')
-            paginator = Paginator(qs, 36)
-            page_number = request.GET.get('page')
-            qs1 = paginator.get_page(page_number)    
-            msg = 'Filter results'
-            context = { 'sobs': qs1 , 'type':msg}
-        return render(request, 'search.html', context=context)    
+        items.sale_name = items1.get_sale_name_display()
+        context = {'object_list': items, 'cat': categories}
+        if sword:
+            qs = Item.objects.filter(Q(title__search=sword) | Q(
+                category__search=sword) | Q(description__search=sword))            
+            if qs.count() < 1:
+                messages.info(request, 'No results for your search '+sword)
+                return render(request, 'sales.html', context=context)
+            return render(request, 'search.html', context={'sobs': qs, 'type': 'Search Results for word'+sword})
+        try:
+          bbi = Pagebackground.objects.filter(page="C").order_by('-id')[0]
+          context['bbi']=bbi          
+        except:
+            pass 
+        try:
+          pbc = Productbackground.objects.filter(page="C").order_by('-id')[0]
+          context['pbc']=pbc                            
+        except:
+            pass
+        context['action'] = reverse('core:search_sales',kwargs={'slug':slug})
+        return render(request, 'sales.html', context=context)
 
+def Xtrasales(request, slug):
+    if request.method == 'GET':
+        sword = request.GET.get('search', False)                        
+        items1 = Extrasales.objects.filter(sale_name=slug)[0]
+        categories = Categories.objects.all()
+        itemsx = items1.item.all()
+        paginator = Paginator(itemsx, 12)
+        page_number = request.GET.get('page')
+        items = paginator.get_page(page_number)
+        items.sale_name = items1.sale_name
+        context = {'object_list': items, 'cat': categories}
+        if sword:
+            qs = Item.objects.filter(Q(title__search=sword) | Q(
+                category__search=sword) | Q(description__search=sword))            
+            if qs.count() < 1:
+                messages.info(request, 'No results for your search '+sword)
+                return render(request, 'sales.html', context=context)
+            return render(request, 'search.html', context={'sobs': qs, 'type': 'Search Results for word'+sword})
+        try:
+          bbi = Pagebackground.objects.filter(page="C").order_by('-id')[0]
+          context['bbi']=bbi          
+        except:
+            pass 
+        try:
+          pbc = Productbackground.objects.filter(page="C").order_by('-id')[0]
+          context['pbc']=pbc                            
+        except:
+            pass
+        context['action'] = reverse('core:search_xtrasales',kwargs={'slug':slug})
+        return render(request, 'sales.html', context=context)    
+
+def search_xtrasales(request, slug):
+    search_sales(request, slug, model=Extrasales)
+
+# changed
+def search_sales(request, slug, model=Sales):
+    if request.method == 'GET':
+        qs = model.objects.filter(sale_name=slug)[0].item.all().order_by('-id')
+        if int(request.POST.get('max_price')) - int(request.GET.get('min_price')) > 3:
+            min_price = int(request.GET.get('min_price')) - \
+                int(request.GET.get('min_price'))*0.05     
+            max_price = int(request.GET.get('max_price')) + \
+                int(request.GET.get('max_price'))*0.05
+            qs = qs.filter(Q(discount_price__gte=min_price) & Q(discount_price__lte=max_price))
+        if int(request.GET.get('max_dis_price')) - int(request.POST.get('min_dis_price')) > 3:
+            min_dis_per = int(request.GET.get('min_dis_price')) - \
+                int(request.GET.get('min_dis_price'))*0.05
+            max_dis_per = int(request.POST.get('min_dis_price')) + \
+                int(request.GET.get('max_dis_price'))*0.05
+            qs = qs.filter(Q(dis_per__gte=min_dis_per) & Q(dis_per__lte=max_dis_per))
+        if request.GET.get('new'):
+            qs = qs.filter(tag="New")
+        if request.GET.get('bestseller'):
+            qs = qs.filter(tag="BESTSELLER")        
+        if request.GET.get('htl'):
+            qs = qs.order_by('-discount_price')
+        paginator = Paginator(qs, 12)
+        page_number = request.GET.get('page')
+        qs1 = paginator.get_page(page_number)
+        msg = 'Filter results'
+        context = {'sobs': qs1, 'type': msg}
+        try:
+          bbi = Pagebackground.objects.filter(page="C").order_by('-id')[0]
+          context['bbi']=bbi          
+        except:
+            pass 
+        try:
+          pbc = Productbackground.objects.filter(page="C").order_by('-id')[0]
+          context['pbc']=pbc                            
+        except:
+            pass        
+        return render(request, 'search.html', context=context)        
 
 @login_required
-def refund(request, slug):
-    myorderitem = get_object_or_404(Item, slug=slug)
-    myorders = Myorder.objects.get(user=request.user, item=myorderitem, status='404')
-    myorders.status = '200'
+def withdraw(request):
+    if request.method == "GET":
+        return render(request,'withdraw.html')
+    if request.method == "POST":
+        amt = float(request.POST.get('amt'))
+        n = 0
+        try:
+            wds = Withdraw.objects.filter(user=request.user.userprofile).filter(at__gte=datetime.now()-timedelta(days=1))
+            n = wds.count()
+        except:
+            pass        
+        if float(request.user.userprofile.clubjoin.usermoney)>=amt and n < 1:            
+            if amt >=50 and amt <= 500:
+                Withdraw.objects.create(user=request.user.userprofile,amount=amt)
+                messages.info(request,'Request is sent.')
+                return redirect('core:Profile')
+            else:
+                messages.warning(request,'Amount should be in given range.')
+        else:
+            if not float(request.user.userprofile.clubjoin.usermoney)>=amt:
+                messages.warning(request,'Insufficient balance.')
+            if n>=1:
+                messages.warning(request,'Only one request per day.')
+        return redirect('core:withdraw')        
+
+@login_required
+def refund(request, pk):    
+    myorders = Myorder.objects.get(user=request.user, id=pk)
+    myorderitem = myorders.item
+    myorders.status = 'R'
     myorders.save()
-    amt = myorders.orderitem.get_total_discount_item_price()
-    if request.user.userprofile.Isclubmem:
-        amt = myorders.orderitem.get_total_club_discount_item_price()
+    amt = myorders.orderitem.price_inc_ship    
     collect_money(request,amt)
-    de_brokrage_income(request,myorders.orderitem)
+    try:
+        de_brokrage_income(request,myorders.orderitem)
+    except:
+        pass
     server = smtplib.SMTP_SSL('smtp.gmail.com',465)
     server.login('presimaxinfo@gmail.com','Mama_presimax_bagundi') 
     msg = EmailMessage()
     recipients = ['hemanthraju9966@gmail.com', 'navi87362@gmail.com']
-    msg.set_content("This is a computer generated email, don't reply to this mail.\n"+ str(request.user.username) +" has request refund for item with name" + str(myorderitem.title) + "and amount with shippping charges Rs. "+str(myorderitem.schargeinc))
+    msg.set_content("This is a computer generated email, don't reply to this mail.\n"+ str(request.user.username) +" has request refund for item with name" + str(myorderitem.title) + "and amount with shippping charges Rs. "+str(myorders.orderitem.price_inc_ship))
     msg['Subject'] = 'Order Cancellation'
     msg['From'] = "presimaxinfo@gmail.com"
     msg['To'] = ", ".join(recipients)
     server.send_message(msg)
     msg1 = EmailMessage()
-    msg1.set_content("This is a computer generated email, don't reply to this mail.\n This mail is to confirm your order cancellation for "+  str(myorderitem.title)+" on PRESIMAX of Rs." + str(myorderitem.schargeinc) + " \nIf you want refund then please contact to +91 94932 59030 else refund is not processed.")
+    msg1.set_content("This is a computer generated email, don't reply to this mail.\n This mail is to confirm your order cancellation for "+  str(myorderitem.title)+" on PRESIMAX of Rs." + str(myorders.orderitem.price_inc_ship) + " \nIf you want refund then please contact to +91 94932 59030 else refund is not processed.")
     msg1['Subject'] = 'Order Cancellation'
     msg1['From'] = "presimaxinfo@gmail.com"
     msg1['To'] = request.user.email
@@ -1421,25 +1501,23 @@ def refund(request, slug):
 class Profile(LoginRequiredMixin, View):
     template_name = "profile.html"
     def get(self, *args, **kwargs):
-        club_member = self.request.user.userprofile
-        context={'club_member':club_member}
-        return render(self.request,self.template_name,context=context)
+        return render(self.request,self.template_name)
     def post(self, *args, **kwargs):
         if self.request.method == 'POST':
             club_member = user=self.request.user.userprofile
             if self.request.FILES.get('image'):
                 self.request.user.userprofile.userphoto = self.request.FILES.get('image')
-            if (len(self.request.POST.get('userphonenumber'))>9 and len(self.request.POST.get('userphonenumber'))<20): 
-                self.request.user.userprofile.phone_number = self.request.POST.get('userphonenumber')
-            if len(self.request.POST.get('username'))>0:
+            if self.request.POST.get('userphonenumber'):
+                if (len(self.request.POST.get('userphonenumber'))>9 and len(self.request.POST.get('userphonenumber'))<20): 
+                    self.request.user.userprofile.phone_number = self.request.POST.get('userphonenumber')            
+            if self.request.POST.get('username'):
                 self.request.user.username = self.request.POST.get('username')
                 self.request.user.save()
-            if len(self.request.POST.get('email'))>0:
+            if self.request.POST.get('email'):
                 self.request.user.email = self.request.POST.get('email')
                 self.request.user.save()
             self.request.user.userprofile.save()
-            context={'club_member':club_member}
-            return render(self.request,self.template_name,context=context)
+            return redirect("core:Profile")
 
 def test(request):
     cjs = ClubJoin.objects.filter(fund_transfered=True)
@@ -1518,6 +1596,29 @@ def refreshprod(request):
             i.save()
     return render(request, "refreshhome.html")
 
+@login_required
+def downliners(request):
+    if request.method == "GET":
+        if request.user.userprofile.Isclubmem:
+            cjs = None            
+            try:
+                cjs = ClubJoin.objects.filter(referer=request.user.userprofile)
+            except:
+                pass            
+            context = { 'object_list':cjs }
+            try:
+              bbi = Pagebackground.objects.filter(page="C").order_by('-id')[0]
+              context['bbi']=bbi          
+            except:
+                pass 
+            try:
+              pbc = Productbackground.objects.filter(page="C").order_by('-id')[0]
+              context['pbc']=pbc                            
+            except:
+                pass 
+            return render(request, 'downliners.html',context)
+                    
+ 
 def error_404(request, exception):
         data = {}
         return render(request,'404error.html', data)

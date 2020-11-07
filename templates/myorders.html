@@ -1,70 +1,94 @@
 {% extends "base.html" %}
-{%load static%}
+{% load static %}
+{% load cart_template_tags %}
+{% load timedelta %}
+{% load myorders_template_tags %}
+{% load reviews_template_tags %}
+{% block head_title %}Orders | Presimax{% endblock %}
 {% block content %}
+{% include 'nav.html' %}
+<link rel="stylesheet" href="{% static 'css/myorders.css' %}">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <main>
-<style>
-.card-horizontal {
-  display: flex;
-  flex: 1 1 auto;
-}
-body{
-background-color:#dbdbdb;
-}
-.card{
-margin-bottom: 5px;
-}
-.myimg{
-height:240px;
-width:240px;
-padding-left:10px;
-object-fit: scale-down !important;
-}
-@media only screen and (max-width: 1000px) {
-.myimg{
-height:200px;
-width:160px;
-object-fit: scale-down !important;
-}
-.btn-sm{
-padding:3px;
-margin:2px;
-}
-}
-</style>
-      
-  <div class="container" style="margin-bottom:15px">
-  <h3>My Orders</h3>
-  {% for items in myorders %}
-    {% ifequal items.status '201' %}
-    {% else %}
-  <div class="card">
-    <div class="card-horizontal rounded">
-        <div class="img-wrapper rounded">
-            <img class="myimg rounded" src="{{ items.item.image.url }}" alt="Card image cap">
+<!-- odered products -->
+<div class="orderd-sec" style="margin-top: 5rem;">     
+      <div class="ordered-prods">      
+      {% for items in myorders %}
+      {% ifequal items.status '201' %}
+      {% else %}
+      <div class="product">
+        <div class="hor-prod">
+          <div class="img-prod">
+            <img class="c4" src="{{ items.item.image.url }}" alt="order-image">
+          </div>
+          <div class="prod-details pl-1 pt-2">
+            <strong>
+              <span>{{items.item.get_category_display}}</span><br>
+                  {{items.item.title|truncatechars:15}} <span class="ml-2">&#8377; {{items.orderitem.price_inc_ship|floatformat:"0" }}</span> <br></b></strong>          
+              {% ifequal items.status 'R' %}
+            <p class="p-1">Refund request is sent. We will contact you soon.</p>
+            {% else %}
+            <strong><b><span class="big-font" style="color: #2e8b57;">Handing you in {{ items.mydelivery_date | date:"M, d" }} - {{ items.mydelivery_date | add_xdays | date:"M, d" }}</span></b></strong>{% endifequal %}          
+            <br>{% if items.item.has_size %}<b >size :</b>{{items.orderitem.size}}{% endif %}<span class="ml-2"><b>Quantity :</b> {{ items.orderitem.quantity }}</span>
+          </div>                        
         </div>
-        <div class="card-body">
-           <h5 class="card-title">{{ items.item.title }}</h5>
-           {% if request.user.userprofile.Isclubmem %}
-           <p class="card-text">Rs. {{ items.item.club_discount_price }}</p>
-           {% else %}
-           <p class="card-text">Rs. {{ items.item.discount_price }}</p>
-           {% endif %}
-           <a class="btn-success btn-sm" href="{{ items.item.get_absolute_url }}">Buy again!</a>
-           {% ifequal items.status '200' %}
-           <p class="card-text">Refund request is sent. We will contact you soon.</p>
-           {% else %}
-           <a class="btn-danger btn-sm" href="{{ items.item.get_refund_url }}">Refund Request</a>
-           {% endifequal %}
+        <div class="view-details">
+          <hr>
+          <div style="cursor: pointer;" onclick="toggle_hidden('#{{forloop.counter}}')" class="visible">
+              <span class="pl-2 pb-1 pt-1"><b>View more</b></span> <span style="float: right;font-size:1.7rem" id="{{forloop.counter}}ch" class="bx bx-chevron-down mr-2"></span>
+          </div>
+          <div id="{{ forloop.counter }}" class="hidden p-1">
+            <hr>
+            <div class="tracking">
+              <div style="cursor: pointer;" onclick="toggle_hidden('#tr{{forloop.counter}}')" class="order-tracking"> <strong><b>Track your order</b></strong> </div>
+              <div id='tr{{forloop.counter}}' class="m-1 p-2 hidden">    
+                <nav class="order-nav m-2 p-2" >    
+                  <center>
+                    <span class='bx bx-basket' data-toggle="tooltip" data-placement="top" title="Order placed" style="color: #2e8b57;"> - - <span class="large-screen"> - - - - </span> </span>
+                    <span class='bx bxs-truck' data-toggle="tooltip" data-placement="top" title="Order Packed" {% if items.status == 'P' or items.status == 'S' or items.status == 'D' %} style="color: #2e8b57;" {% endif %} > - - <span class="large-screen"> - - - - </span> </span>
+                    <span class='bx bx-package' data-toggle="tooltip" data-placement="top" title="Shipped" {% if items.status == 'S' or items.status == 'D' %} style="color: #2e8b57;" {% endif %} > - - <span class="large-screen"> - - - - </span> </span>
+                    <span class='bx bx-check-square' data-toggle="tooltip" data-placement="top" title="Out for Delivery" {% if items.status == 'D' %} style="color: #2e8b57;" {% endif %} > </span>
+                  </center>
+                </nav>
+              </div>
+            </div> 
+            <hr>
+            <div class="buy-again">
+              <a href="{{ items.item.get_absolute_url }}"> <strong><b>Buy again</b></strong> </a>
+            </div>        
+            <hr>
+            <div class="refund">
+              {% ifequal items.status 'R' %}
+            <p class="p-1">Refund request is sent. We will contact you soon.</p>
+            {% else %}
+            <a href="{% url 'core:refund' items.id %}" style="color: tomato;" ><strong><b>Cancel Order</b></strong></a>
+            {% endifequal %}
+            </div>                          
+          </div>                 
         </div>
-        </div>
-        <div class="card-footer">
-        <small class="text-muted">ordered on {{ items.myordered_date }}</small><br>
-        <small class="text-muted">Expected delivery on {{ items.mydelivery_date }}</small>
-    </div>
-</div>
-{% endifequal %}
-    {% endfor %}
-    </div>
+      </div>
+      {% endifequal %}  
+      {% empty %}
+      <center>
+      <span style="font-size:2rem;margin-top:5rem;width:100vw;text-align: center;"><strong><b> No Orders </b><strong></span>
+      </center>
+      {% endfor %}
+      </div>
+  </div>    
+  <div style="margin-top: 5rem;"></div>
+<!-- odered products -->
 </main>
-
 {% endblock content %}
+{% block extra_scripts %}
+<script>
+function toggle_hidden(id){
+  $(id).slideToggle(500,'swing');
+  $(id+'ch').toggleClass('bx-chevron-up');
+}
+</script>
+<script>
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+  })
+</script>
+{% endblock extra_scripts %}

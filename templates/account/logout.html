@@ -8,7 +8,7 @@
     <div class="container">
       <section class="mb-4">
         <div class="row wow fadeIn">
-          <div class='col-6 offset-3'>
+          <div class='p-3' style="margin:auto" >
             <h1>{% trans "Sign Out" %}</h1>
             <p>{% trans 'Are you sure you want to sign out?' %}</p>
             <form method="post" action="{% url 'account_logout' %}">
@@ -16,7 +16,7 @@
               {% if redirect_field_value %}
               <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
               {% endif %}
-              <button class='btn btn-primary' type="submit">{% trans 'Sign Out' %}</button>
+              <button class='btn' style="background-color:#ff8c00" type="submit">{% trans 'Sign Out' %}</button>
             </form>
           </div>
         </div>

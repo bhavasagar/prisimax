@@ -1,0 +1,116 @@
+<style>
+.round-do-btn {
+    border-radius: 4px;
+    background: var(--presimax-color);
+    color: #fff;
+    padding: 7px 10px;
+    display: inline-block;        
+    margin: 0 auto;
+    text-align: center;
+    justify-content: center;
+    border: solid 2px var(--presimax-color); 
+    transition: all 0.5s ease-in-out 0s;
+}  
+.round-do-btn:hover,
+.round-do-btn:focus{
+    background: transparent;
+    color:  var(--presimax-color);
+    text-decoration: none;
+} 
+.round-cancel-btn {
+    border-radius: 4px;
+    color: var(--presimax-color);
+    background-color: #fff;    
+    padding: 7px 45px;
+    display: inline-block;        
+    margin: 0 auto;
+    text-align: center;
+    justify-content: center;
+    border: solid 2px var(--presimax-color); 
+    transition: all 0.5s ease-in-out 0s;
+}
+</style>
+<form action="{{ action }}" method="GET" >
+    {% csrf_token %}
+    <!-- Full Height Modal Right -->
+    <div class="modal fade right" id="fullHeightModalRight" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+      aria-hidden="true">
+    
+      <div class="modal-dialog modal-full-height modal-right" role="document">
+    
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title w-100" id="myModalLabel" >Filters</h4>
+            <button type="button" style="opacity:0" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" style="padding-left:10px">
+           <div class="d-flex my-4 p-3 card">
+            <h5 class="ml-1">Sort</h5>
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input " name="lth" id="lth">
+                <label class="custom-control-label" style="margin-left:0px" for="lth">Price Low to High</label>
+            </div>
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input " name="htl" id="htl">
+                <label class="custom-control-label" style="margin-left:0px" for="htl">Price High to Low</label>
+            </div>
+          </div>
+          <div class="d-flex justify-content-center my-4 p-3 card">
+            <h5 class="ml-1">Price</h5>
+            <div class="row">
+            <div class="col mr-1">
+            <h6 class="ml-2">Min Price</h6>
+            <div class="w-60">
+              <br><input type="range" name="min_price" class="custom-range mt-3" id="customRange11" min="30" max="90000">
+            </div>
+            <span class="font-weight-bold valueSpan2 " style="position:absolute;top:27%;left:70%;"></span>
+          </div>
+          <div class="col">
+          <h6 class="ml-2">Max Price</h6>
+          <br><input type="range" name="max_price" class="custom-range mt-3" id="customRange10" min="30" max="90000">
+            </div>
+            <span class="font-weight-bold valueSpan" style="position:absolute;top:50%;left:80%;right:0"></span>
+          </div>
+          </div>
+          <div class="d-flex justify-content-center my-4 p-3 card">
+            <h5 class="ml-1">Discount Percent</h5>
+            <div class="row">
+            <div class="col mr-1">
+            <h6 class="ml-2">Min Percent</h6>
+            <div class="w-60">
+              <br><input type="range" name="min_dis_price" class="custom-range mt-3" id="customRange12" min="0" max="100">
+            </div>
+            <span class="font-weight-bold valueSpan3 " style="position:absolute;top:27%;left:70%;"></span>
+            </div>
+            <div class="col">
+            <h6 class="ml-2">Max Percent</h6>
+            <div class="w-60">
+              <br><input type="range" name="max_dis_price" class="custom-range mt-3" id="customRange14" min="0" max="100">
+            </div>
+            <span class="font-weight-bold valueSpan5" style="position:absolute;top:27%;left:70%;"></span>
+            </div>
+            </div>
+    
+          </div>
+          <div class="d-flex my-4 p-3 card">
+            <h5 class="ml-1">Types</h5>
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input " name="new" id="new">
+                <label class="custom-control-label" style="margin-left:0px" for="new">New</label>
+            </div>
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input " name="bestseller" id="bestseller">
+                <label class="custom-control-label" style="margin-left:0px" for="bestseller">Bestseller</label>
+            </div>
+          </div>
+          </div>
+          <div class="modal-footer justify-content-center">
+            <button type="button" class="round-cancel-btn " data-dismiss="modal">Close</button>
+            <button type="submit" class="round-do-btn ">Apply Filters</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    </form>

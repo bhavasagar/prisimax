@@ -1,101 +1,162 @@
 {% extends "base.html" %}
-
+{% load static %}
+{% load cart_template_tags %}
+{% load myorders_template_tags %}
+{% load reviews_template_tags %}
 {% block content %}
-  <main>
-    <div class="container">
-
-    <div class="table-responsive text-nowrap">
-    <h2>Order Summary</h2>
-    <table class="table">
-        <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">Item title</th>
-            <th scope="col">Price</th>
-            <th scope="col">Quantity</th>
-            <th scope="col">Discount Price</th>
-            <th scope="col">Shipping charge</th>
-            <th scope="col">Total Item Price(shipping charges included)</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for order_item in object.items.all %}
-        <tr>
-            <th scope="row">{{ forloop.counter }}</th>
-            <td>{{ order_item.item.title }}</td>
-            <td>{{ order_item.item.price }}</td>
-            <td>
-                <a href="{% url 'core:remove-single-item-from-cart' order_item.item.slug %}"><i class="fas fa-minus mr-2"></i></a>
-                {{ order_item.quantity }}
-                <a href="{% url 'core:add-to-cart' order_item.item.slug %}"><i class="fas fa-plus ml-2"></i></a>
-            </td>
-            {% if order_item.item.discount_price %}
-            {% if request.user.userprofile.Isclubmem %}
-             <td>Rs. {{ order_item.item.club_discount_price }}</td>
-            {% else %}
-             <td>Rs. {{ order_item.item.discount_price }}</td>
+{% include 'nav.html' %}
+<title>My Shopping cart | Presimax</title>
+<link rel="stylesheet" href="{% static 'css/ordersummary.css' %}">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<main>
+<nav class="order-nav m-2 p-2" style="margin-top:0rem" >    
+    <center>
+      <a href="{% url 'core:order-summary' %}"><span class='bx bx-basket' style="color: #ff8c00;"> - - <span class="large-screen"> - - - - - - </span> </span></a>
+      <a href="/checkout/"> <span class='bx bx-package' > - - <span class="large-screen"> - - - - - - </span> </span></a>
+      <span class='bx bx-receipt'> </span>
+      </center>
+</nav>
+<!-- order details -->
+<div class="order-summary m-2 p-2">
+<!-- odered products -->
+<div class="great-dis-sec m-1">    
+    <!-- <div class="heading ml-1 mt-1 mb-2"><span class="p-1">Shopping cart</span></div></center> -->
+        <div class="great-dis-prods">
+        {% for item in object.items.all %}
+        <div class="product-hor">
+            <div class="hor-prod-img">
+            <img class="c4 gif-img" src="https://media4.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" alt="loading">
+            <a href="{{ item.item.get_absolute_url }}"><img class="c4 prod-img" src="{{ item.item.image.url }}" style="display: none;"
+                alt="prod-image"><a href="{{ item.item.get_absolute_url }}">
+                <span class="great-tag">{{ item.item.tag }}</span></a>                
+            </div>
+            <div class="hor-prod-details pt-3 pl-1 pr-1 pb-1">
+            <strong><b>            
+            <span>{{item.item.get_category_display}}</span><br>
+                {{item.item.title|truncatechars:15}}<br></b></strong>
+            {% url 'core:refer-buynow' referid object.slug as buy_now %}  
+            <span class="small-font">
+            {% if item.item.has_size %}
+            <div class="size pp">
+              <label for="size">Size</label>
+              <select id="size_{{ forloop.counter }}" name="size" class="fc">                
+                {% for size in item.item.size.sizes_choice %}
+                {% if item.size == size %}
+                <option value="{{ size }}"  selected="selected">{{ size }}</option>
+                {% else %}
+                <option value="{{ size }}" >{{ size }}</option>
+                {% endif %}
+                {% endfor %}
+              </select>
+            </div>
             {% endif %}
-            {% else %}
-             <td>Rs. {{ order_item.item.price }}</td>
-            {% endif %}
-             <td>Rs. {{ order_item.get_shipping_charges }} </td>
-            <td>
-            {% if order_item.item.discount_price %}
-            {% if request.user.userprofile.Isclubmem %}
-                Rs. {{ order_item.get_total_club_discount_item_price }}
-                <span class="badge badge-primary">Saving Rs. {{ order_item.get_club_amount_saved }}</span>
-            {% else %}
-                Rs. {{ order_item.get_total_discount_item_price }}
-                <span class="badge badge-primary">Saving Rs. {{ order_item.get_amount_saved }}</span>
-            {% endif %}
-            {% else %}
-                Rs. {{ order_item.get_total_item_price }}
-            {% endif %}
-            <a style='color: red;' href="{% url 'core:remove-from-cart' order_item.item.slug %}">
-                <i class="fas fa-trash float-right"></i>
-            </a>
-            </td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan='5'>Your cart is empty</td>
-        </tr>
-        <tr>
-            <td colspan="5">
-            <a class='btn btn-primary float-right' href="{%url 'core:home' %}">Continue shopping</a>
-            </td>
-        </tr>
+            <br>
+            <div class="quantity pp">
+              <p>Quantity</p>
+              <div class="product-count">
+                {% url 'core:remove-single-item-from-cart' item.item.slug as remove_item %}
+                {% url 'core:add-to-cart' item.item.slug as add_item%}
+                <div onclick="decrease_qty('{{remove_item}}','{{ forloop.counter }}')" class="qtyminus qt">-</div>
+                <input type="text" name="quantity" id="qty_{{ forloop.counter }}" value="{{ item.quantity }}" class="qty qt">
+                <div onclick="increase_qty('{{ add_item }}','{{ forloop.counter }}')" class="qtyplus qt">+</div>
+              </div>
+            </div>    
+            </span>   
+            <br> 
+            <span>                
+                <br> &#8377;{{ item.price|floatformat:"0" }}<del class="ml-1"> &#8377;{{item.mrp_price|floatformat:"0"}} </del> </span>
+                <span class="ml-2" style="color: tomato;float:right;">{{item.item.dis_per|floatformat:"0"}}% off</span>
+                <br><span class="small-font">Including Shipping charges</span>
+                <br>&#8377;{{ item.price_inc_ship|floatformat:"0" }}<br><strong><b><span class="ml-1">You saved {{item.get_amount_saved}}</span></b></strong>
+            </div>            
+        </div>    
+        <script>
+        function decrease_qty(url,id){
+            var size = $('#size_'+id).val();                        
+            var csrftoken = '{{ csrf_token }}';
+            var qty = parseInt($('#qty_'+id).val());
+            $('#qty_'+id).html(qty - 1);
+            $('#qty_'+id).val(qty - 1); 
+            //alert(qty);
+            qty=qty-1; 
+            //alert(qty);                      
+            $.post(url,{ size:size,quantity:qty,csrfmiddlewaretoken:csrftoken }).done(function( data ) {
+                console.log( "Data Loaded: " + data );
+               $('#qty_'+id).load(window.location.href + '#qty_'+id );
+                });
+        }
+        function increase_qty(url,id){
+            var size = $('#size_'+id).val();                        
+            var csrftoken = '{{ csrf_token }}';
+            var qty = parseInt($('#qty_'+id).val());
+            $('#qty_'+id).html(qty + 1);
+            $('#qty_'+id).val(qty + 1); 
+            //alert(qty);
+            qty=qty+1; 
+            //alert(qty);                      
+            $.post(url,{ size:size,quantity:qty,csrfmiddlewaretoken:csrftoken }).done(function( data ) {
+                console.log( "Data Loaded: " + data );
+              });
+        }
+        </script>      
+        <div class="details-footer mb-2 pt-1">            
+            <a class="delete" style='color: tomato;' href="{% url 'core:remove-from-cart' item.item.slug %}"><span class="bx bx-trash-alt" style="font-size: 1.7rem;"></span></a>
+            <a class="buy" href="{{ buy_now }}" class="dark-mode">Buy Now</a>
+        </div>      
         {% endfor %}
+        </div>
+    </div>    
+    <!-- great discounts -->
+<div class="final-bill p-2" style="margin-top:-0.02rem" > 
+    <div class="total-bill"> <span class="heading m-2 ml-1" >Price Breakdown </span> <span class="mr-3" style="float:right">( {{ request.user|cart_item_count }} items )</div>       
+    <div class="bill-details p-3 m-1">
+        <div class="price m-1">
+            <span class="price-title" >Total MRP </span>
+            <span class="price-value"><b>&#8377;{{ object.get_total_mrp }}</b></span>
+        </div>
+        <br>
+        <div class="price m-1">
+            <span class="price-title" >Presimax price </span>
+            <span class="price-value"><b>&#8377;{{ object.get_total }}</b></span>
+        </div>
+        <br>
+        <div class="price m-1">
+            <span class="price-title" >Total saved amount </span>
+            <span class="price-value"><b>&#8377;{{ object.get_total_saved }}</b></span>
+        </div>        
         {% if object.coupon %}
-        <tr>
-            <td colspan="5"><b>Coupon</b></td>
-            <td><b>-Rs. {{ object.coupon.amount }}</b></td>
-        </tr>
+        <br>
+        <div class="price m-1">
+            <span class="price-title" >Coupon </span>
+            <span class="price-value"><b>&#8377;{{ object.coupon.amount }}</b></span>
+        </div>
         {% endif %}
-        {% if object.get_total %}
-        <tr>
-            <td colspan="6"><b>Order Total</b></td>
-            {% if request.user.userprofile.Isclubmem %}
-            <td><b>Rs. {{ object.get_club_total }}</b></td>
-            {% else %}
-            <td><b>Rs. {{ object.get_total }}</b></td>
-            {% endif %}
-        </tr>
-        <tr>
-            <td colspan="5">
-            <a class='btn btn-warning float-right ml-2' href='/checkout/'>Proceed to checkout</a>
-            <a class='btn btn-primary float-right' href='/'>Continue shopping</a>
-            </td>
-        </tr>
-        {% endif %}
-        </tbody>
-    </table>
-
+        <br>
+        <div class="price m-1">
+            <span class="price-title" >Shipping charges </span>
+            <span class="price-value"><b>&#8377;{{ object.get_total_ship }}</b></span>
+        </div>
     </div>
-
-    </div>
-  </main>
-
+    <br>
+    <hr>
+    <div class="total-bill"> <span class="heading m-2 ml-1" >Total </span> <span class="mr-3" style="float:right">
+        <strong><b>&#8377; {{ object.get_total }}</b></strong></div>
+    <center>
+    <hr>
+    <a href="/checkout/" class="checkout-btn m-2 p-2">Place Order</a>
+    </center>
+</div>
+</div>
+<!-- order details -->
+</main>
+{% include 'navbar.html' %}
 {% endblock content %}
+{% block extra_scripts %}
+<script>
+    $(document).ready(function () {
+        console.log("ready!");
+        $('img').not('.logo-image').toggle();
+    });
+</script>
 
-
+{% endblock extra_scripts %}

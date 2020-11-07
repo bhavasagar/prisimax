@@ -1,1234 +1,566 @@
-{% extends "base1.html" %}
-{%load static%}
-{% block head_title %}Presimax | Online Store{% endblock %}
-{% block extra_head %}
-<link href="https://fonts.googleapis.com/css2?family=Fondamento&display=swap" rel="stylesheet"> 
-<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap" rel="stylesheet"> 
+{% load static %}
+{% load social_share %}
+{% load humanize %}
+{% load cart_template_tags %}
+{% load myorders_template_tags %}
+{% load reviews_template_tags %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/gif" sizes="16x16">
+  <title>Presimax | Store</title>  
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+  <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'css/mdb.min.css' %}" rel="stylesheet">
+  <link href="{% static 'css/style.min.css' %}" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/home.css' %}">
+  <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.0/dist/aos.css">
+</head>
 <style>
-.scrolling-wrapper{
-	overflow-x: auto;
-   margin-top:-30px;
-   padding:10px;
-}
-
-
-.subtitle{
-	font-size: 1.25em;
-	opacity: 0.65;
-}
-
-.card-block{
-	transition: all 0.2s ease-in-out !important;
-  text-align: center;
-	&:hover{
-		transform: translateY(-5px);
-		box-shadow: none;
-	}
-}
-.caption
-{
-text-align:center;
-color:#0092cc;
-opacity:0.8;
-font-weight:1000;
-font-family: 'Fondamento', cursive;
-margin-top:3px;
-}
-.cat{
-width:100px;
-height:100px;
-border-radius:50% !important;
-}
-
-.c1{
-width:180px;
-height:180px;
-}
-
-h5{
-margin-left:10px !important;
-}
-.scrolltext{
-  font-size:1.5em;
+  #home {
+    color: var(--presimax-brand-color);
   }
-@media only screen and (max-width: 1000px) {
-
-  body{
-  background-color:#f0f0f0 !important;
-  }
-  .scrolltext{
-  font-size:0.965em;
-  }
-  .mytext{
-  text-transform: capitalize !important;
-  font-size:1.45em;}
-  .mytext1{
-  text-transform: capitalize !important;
-  font-size:0.986em}
-  .mytext2{
-  text-transform: capitalize !important;
-  font-size:2.15em}
-  
-  .card-block{
-  transition: all 0.2s ease-in-out !important;
-  text-align: center;
-  object-fit: fill !important;
-  }
- .colx > .caption
-{
-text-align:center !important;
-margin-left:-2px;
-color:#373c3d;
-text-transform: capitalize !important;
-opacity:1;
-font-weight:1000;
-font-family: 'Fondamento', cursive;
-font-size:0.765em !important;
-margin-top:3px;
-}
-.c1{
-  width:120px;
-  height:120px;
-  color:#f0f;
-  background-color: #000 !important;
-  transition: all 0.2s ease-in-out !important;
-  text-align: center;
-  margin-right:-15px !important;
-  }
-  
-.cat{
-width:79px;
-height:79px;
-border-radius:50% !important;
-margin-left:-15px !important;
-}
-.mycard{
-width:170px !important;
-height:320px !important;
-display:block;
-overflow: hidden;
-font-size: 0.5em !important;
-margin-right:-15px !important;
-margin-bottom:-15px !important;
-} 
-.img-responsive{
-object-fit: fill !important;
-}
-}
-.mycard{
-width:auto;
-height:520px;
-display:block;
-overflow: hidden;
-} 
-.img-responsive{
-width:100% !important;
-height:100% !important;
-object-fit: fill !important;
-}
-.gradient_line{ 
-    margin: 0 0 50px 0;
-    display: block;
-    border: none;
-    height: 1px;
-    background: #0071B9;
-    background: linear-gradient(to right, white, #0071B9, #26ABFF, #0071B9, white);
-}
-
-.card-body
-{
-font-family: 'Fondamento';
-}
-a.disabled {
-  pointer-events: none;
-  cursor: default;
-}
-.disabled{
-  pointer-events: none;
-  cursor: default;
-}
-.scroll-left {
-height: 50px; 
-overflow: hidden;
-position: relative;
-}
-.scroll-left p {
-position: absolute;
-width: 100%;
-height: 100%;
-margin: 0;
-line-height: 20px;
-
--moz-transform:translateX(100%);
--webkit-transform:translateX(100%); 
-transform:translateX(100%);
-
--moz-animation: scroll-left 20s linear infinite;
--webkit-animation: scroll-left 20s linear infinite;
-animation: scroll-left 20s linear infinite;
-}
-@-moz-keyframes scroll-left {
-0% { -moz-transform: translateX(100%); }
-100% { -moz-transform: translateX(-100%); }
-}
-@-webkit-keyframes scroll-left {
-0% { -webkit-transform: translateX(100%); }
-100% { -webkit-transform: translateX(-100%); }
-}
-@keyframes scroll-left {
-0% { 
--moz-transform: translateX(100%); 
--webkit-transform: translateX(100%);
-transform: translateX(100%); 
-}
-100% { 
--moz-transform: translateX(-100%); 
--webkit-transform: translateX(-100%);
-transform: translateX(-100%); 
-}
-}
-
-.carousel {
-  background:#007aeb;
-}
-
-.carousel-item .img-fluid {
-  width:100%;
-}
-
-.carousel-item a {
-  display: block;
-  width:100%;
-}
-@media (min-width:767px) {
-.carousel-item a {
-height:300px;
-object-fit: cover !important;
-}
-.carousel-item .img-fluid {
-  height:300px;
-  object-fit: fill !important;
-}
-}
-@media (max-width:767px) {
-.carousel-item a {
-height:200px;
-object-fit: cover !important;
-}
-.carousel-item .img-fluid {
-  height:200px;
-  object-fit: cover !important;
-}
-#inline,#inline1,#inline2{
-display:inline-block;
-}
-.sizh:hover{
-font-size:30px;
-color:black;
-}
-@media only screen and (min-width: 600px) {
-  .mobile{
-  display:none;
-  }
-}
 </style>
-{% endblock extra_head%}
 
-{% block content %}
-<main>
-<div class="ml-1 mr-1">
-<div class="container-fluid" style="margin-top:3px;margin-bottom:10px">
-<nav class="navbar" style="background-color:#8dbbe0;border-radius:10px;margin-bottom:-35px">
-      <form action="." method="POST" class="form-inline" size="50" style="display: flex;justify-content: space-between;"  >
-          {% csrf_token %}
-          
-        <input class="form-control" style="display:inline-block;background-color:#d7eafa;" name="search" type="search" placeholder="Search" aria-label="Search">
-      </form>
-      <!-- Button trigger modal -->
-<button type="button" class="btn-sm btn" style="position:absolute;left:73%;font-size:1em;color:#fff" data-toggle="modal" data-target="#fullHeightModalRight">
-  <i class="fas fa-filter mr-3"></i>Filters
-</button>
-<form action="." method="POST" >
-{% csrf_token %}
-<!-- Full Height Modal Right -->
-<div class="modal fade right" id="fullHeightModalRight" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-  aria-hidden="true">
-
-  <div class="modal-dialog modal-full-height modal-right" role="document">
-
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title w-100" id="myModalLabel" >Filters</h4>
-        <button type="button" style="opacity:0" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body" style="padding-left:10px">
-      <div class="d-flex justify-content-center my-4 p-3 card">
-        <h5 class="ml-1">Price</h5>
-        <div class="row">
-        <div class="col mr-1">
-        <h6 class="ml-2">Min Price</h6>
-        <div class="w-60">
-          <br><input type="range" name="min_price" class="custom-range mt-3" id="customRange11" min="30" max="90000">
+<body class="bg">
+  
+  {% if messages %}
+  <div aria-live="polite" aria-atomic="true" style="position: fixed; top: 7rem; right: 2rem;z-index:1500">
+    {% for message in messages %}
+    <div style="position: relative; top: 0; right: 0;z-index:1500">      
+      <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false">
+        <div class="toast-header" >
+          <span style="background:#ff8c00;width:20px;height:20px;" class="rounded mr-2"></span>
+          <strong class="mr-auto">Presimax</strong>
+          <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
-        <span class="font-weight-bold valueSpan2 " style="position:absolute;top:27%;left:70%;"></span>
-      </div>
-      <div class="col">
-      <h6 class="ml-2">Max Price</h6>
-      <br><input type="range" name="max_price" class="custom-range mt-3" id="customRange10" min="30" max="90000">
+        <div class="toast-body">
+          {{ message }}
         </div>
-        <span class="font-weight-bold valueSpan" style="position:absolute;top:50%;left:80%;right:0"></span>
-      </div>
-      </div>
-      <div class="d-flex justify-content-center my-4 p-3 card">
-        <h5 class="ml-1">Discount Percent</h5>
-        <div class="row">
-        <div class="col mr-1">
-        <h6 class="ml-2">Min Percent</h6>
-        <div class="w-60">
-          <br><input type="range" name="min_dis_price" class="custom-range mt-3" id="customRange12" min="0" max="100">
-        </div>
-        <span class="font-weight-bold valueSpan3 " style="position:absolute;top:27%;left:70%;"></span>
-        </div>
-        <div class="col">
-        <h6 class="ml-2">Max Percent</h6>
-        <div class="w-60">
-          <br><input type="range" name="max_dis_price" class="custom-range mt-3" id="customRange14" min="0" max="100">
-        </div>
-        <span class="font-weight-bold valueSpan5" style="position:absolute;top:27%;left:70%;"></span>
-        </div>
-        </div>
-
-      </div>
-      <div class="d-flex my-4 p-3 card">
-        <h5 class="ml-1">Types</h5>
-        <div class="custom-control custom-checkbox">
-            <input type="checkbox" class="custom-control-input " name="new" id="new">
-            <label class="custom-control-label" style="margin-left:0px" for="new">New</label>
-        </div>
-        <div class="custom-control custom-checkbox">
-            <input type="checkbox" class="custom-control-input " name="bestseller" id="bestseller">
-            <label class="custom-control-label" style="margin-left:0px" for="bestseller">Bestseller</label>
-        </div>
-      </div>
-      </div>
-      <div class="modal-footer justify-content-center">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary">Apply Filters</button>
-      </div>
+      </div>      
     </div>
+    {% endfor %}
   </div>
-</div>
-</form>
-    </nav>
+  {% endif %}
+  
+  <nav class="nav-bar pt-1 pb-1">
+    <a href="{% url 'core:order-summary' %}"><span style="float: left;" class="bx bxs-cart-download fa-2x ml-3"></span></a>
+    <center>
+      <img src="https://www.presimax.online/media/images/plog.jpeg" class="logo-image" alt="presimax-logo">
+    </center>
+    <span style="float: right;" class="bx bx-bell fa-2x mr-3"></span>
+    </div>
+  </nav>
+  <br clear="all">
+  <main>
+    <form action="" name="search-form">
+      <nav class="search-bar pt-2 pb-2 pl-2">
+        <div class="large-screen mr-5">
+          <a href="#" id="">Buy a Mask</a> |
+          <a href="#" id="">Today's Deals</a> |
+          <a href="#" id="">Great Disocunts on</a>
+        </div>
+        <select id="cat" name="category" class="fc">
+          <option>All</option>
+          {% for ct in cat %}
+          <option>{{ ct.name }}</option>
+          {% endfor %}
+        </select>
+        <input type="text" placeholder="  Search" name="search" {% if search %} value="{{ search }}" {% endif %}>
+        <div onClick="document.forms['search-form'].submit();" class="search-lens fas fa-search"></div>
+        <div class="large-screen ml-5">
+          <a href="#" id="">Best selers</a> |
+          <a href="#" id="">Most sold products</a> |
+          <a href="#" id="">Top rated</a>
+        </div>
+      </nav>
+    </form>
+    <!-- nav end -->
+    <!-- categories -->
+    <p class="heading ml-4 mt-1" style="font-size:1.2rem">Categories</p>
+    <div id="categories" class="categories ml-1 pl-3">
+      <div class="category">
+        <div class="cat-img-sec">
+          <img class="cat-img gif-img" src="https://media4.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" alt="loading">
+          <a href="/" >
+          <img class="cat-img" style="display: none;"
+            src="https://www.presimax.online/media/images/PicsArt_07-09-10.36.46.jpg"></a>
+          <p class="cat-cap">All</p>
+        </div>
+      </div>
+      {% for ct in cat %}
+      <div class="category">      
+        <img class="cat-img gif-img" src="https://media4.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" alt="loading">
+        <a href="{{ ct.get_absolute_url }}" >
+        <img class="cat-img" style="display: none;" src="{{ct.image.url}}"></a>
+        <p class="cat-cap">{{ ct.name }}</p>
+      </div>
+      {% endfor %}
+    </div>
+    <!-- categories -->
+    <!-- car start -->
+    <div id="carousel" class="carousel slide carousel-fade" data-ride="carousel" data-interval="6000">
+      <ol class="carousel-indicators" style="dislplay:none">
+        <li data-target="#carousel" style="dislplay:none" data-slide-to="0" class="active"></li>
+        {% for item in ctop|slice:"1:" %}
+        <li data-target="#carousel" style="dislplay:none" data-slide-to="{{ forloop.counter }}"></li>
+        {% endfor %}
+      </ol>
+      <div class="carousel-inner" role="listbox">
+        <div class="carousel-item active">
+          <a href="{{ ctop.0.urlf }}">
+            <picture>
+              <source srcset="{{ ctop.0.img.url }}" media="(min-width: 1400px)">
+              <source srcset="{{ ctop.0.img.url }}" media="(min-width: 769px)">
+              <source srcset="{{ ctop.0.img.url }}" media="(min-width: 577px)">
+              <img srcset="{{ ctop.0.img.url }}" alt="responsive image" class="d-block img-fluid">
+            </picture>
+
+            <div class="carousel-caption">
+              <div>
+                <h2>{{ ctop.0.head }}</h2>
+                <p>{{ ctop.0.des }}</p>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        {% for item1 in ctop|slice:"1:" %}
+        <div class="carousel-item">
+          <a href="{{ item1.urlf }}">
+            <picture>
+              <source srcset="{{ item1.img.url }}" media="(min-width: 1400px)">
+              <source srcset="{{ item1.img.url }}" media="(min-width: 769px)">
+              <source srcset="{{ item1.img.url }}" media="(min-width: 577px)">
+              <img srcset="{{ item1.img.url }}" alt="responsive image" class="d-block img-responsive img-fluid">
+            </picture>
+
+            <div class="carousel-caption justify-content-center align-items-center">
+              <div>
+                <h2>{{ item1.head }}</h2>
+                <p>{{ item1.des }}</p>
+              </div>
+            </div>
+          </a>
+        </div>
+        {% endfor %}
+      </div>
+
+      <a class="carousel-control-prev" href="#carousel" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+      </a>
+      <a class="carousel-control-next" href="#carousel" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+      </a>
+    </div>
+    <!-- car end -->
+     <!-- posters -->
+    {% if poster.0 %}
+    <div class="poster-sec">
+      <a href="{{ poster.0.urlf }}"><img class="poster" src="{{ poster.0.image.url }}" alt="Poster"></a>
+    </div>
+    {% endif %} 
+    <!-- posters -->
+    <!-- dod deals -->
+    <section class="deals p-3">
+      <h3 class="heading"> Delight Ustav Sales </h3>
+      <div class="products">
+        {% for item in deals_of_day.0.item.all %}
+        <div data-aos="flip-up" class="item">
+          <div class="item-image">
+            <img class="c1 gif-img" src="https://media4.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" alt="loading">
+            <img src="{{ item.image.url }}" style="display: none;" class="c1 image-fluid" alt="product-image">
+            <span class="tag">{{ item.tag }}</span>
+            <span class="discount">{{item.dis_per|floatformat:"0"}}%<br>off</span>
+            <div class="item-details-overlay">
+              <center>
+                <p class="h2">{{item.get_category_display|truncatechars:15}}</p>
+                <p class="h2">{{item.title|truncatechars:7}}@ &#8377;{% if request.user.userprofile.Isclubmem %}
+                  {{ item.club_discount_price|floatformat:"0" }}{% else %}{{item.discount_price|floatformat:"0"}}{% endif %}
+                </p>
+                <a href="{{ item.get_absolute_url }}">
+                  <p class="button-details">View details ></p>
+                </a>
+              </center>  
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+    <!-- dod deals -->
     
-    <h5 class="mt-3 center" style="margin-top:-30px;margin-bottom:-25px;font-weight:600;font-size:1em;font-family: 'Roboto Slab', serif;">Categories</h5>
-    <div style="margin-top:-30px;margin-left:2px;" class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-1">
-			<a href="/ecommerce/" >
-			<div class="col colx">
-				<img class="card card-block cat" src="https://www.presimax.online/media/images/PicsArt_07-09-10.36.46.jpg">
-        <p class="caption">All</p>
-			</div>
-      </a>
-      {% for catg in cat %}
-      <a href="{{ catg.get_absolute_url }}" >
-			<div class="col colx">
-				<img class="card card-block cat" src="{{ catg.image.url }}">
-        <p class="caption" style="text-transform: capitalize">{{ catg.name }}</p>
-			</div>
-      </a>
-      {% endfor %}
+     <!-- posters -->
+    {% if poster.1 %}
+    <div class="poster-sec">
+      <a href="{{ poster.1.urlf }}"><img class="poster" src="{{ poster.1.image.url }}" alt="Poster"></a>
     </div>
+    {% endif %}
+    <!-- posters -->
     
-</div>
-<hr class="gradient_line" />
-
-<div id="carousel" class="carousel slide carousel-fade" data-ride="carousel" data-interval="6000">
-        <ol class="carousel-indicators">
-            <li data-target="#carousel" data-slide-to="0" class="active"></li>
-            {% for item in ctop %}
-            <li data-target="#carousel" data-slide-to="{{ forloop.counter }}"></li>
-            {% endfor %}
-        </ol>
-        <div class="carousel-inner" role="listbox">
-            <div class="carousel-item active">
-                <a href="{{ ctop.0.urlf }}">
-                     <picture>
-                      <source srcset="{{ ctop.0.img.url }}" media="(min-width: 1400px)">
-                      <source srcset="{{ ctop.0.img.url }}" media="(min-width: 769px)">
-                       <source srcset="{{ ctop.0.img.url }}" media="(min-width: 577px)">
-                      <img srcset="{{ ctop.0.img.url }}" alt="responsive image" class="d-block img-fluid">
-                    </picture>
-
-                    <div class="carousel-caption">
-                        <div>
-                            <h2>{{ ctop.0.head }}</h2>
-                            <p>{{ ctop.0.des }}</p>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            
-            {% for item1 in ctop %}
-            <div class="carousel-item">
-                <a href="{{ item1.urlf }}">
-                     <picture>
-                      <source srcset="{{ item1.img.url }}" media="(min-width: 1400px)">
-                      <source srcset="{{ item1.img.url }}" media="(min-width: 769px)">
-                       <source srcset="{{ item1.img.url }}" media="(min-width: 577px)">
-                      <img srcset="{{ item1.img.url }}" alt="responsive image" class="d-block img-responsive img-fluid">
-                    </picture>
-
-                    <div class="carousel-caption justify-content-center align-items-center">
-                        <div>
-                            <h2>{{ item1.head }}</h2>
-                            <p>{{ item1.des }}</p>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            {% endfor %}
-        </div>
-        
-        <a class="carousel-control-prev" href="#carousel" role="button" data-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="sr-only">Previous</span>
-        </a>
-        <a class="carousel-control-next" href="#carousel" role="button" data-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="sr-only">Next</span>
-        </a>
-    </div>
-<hr class="gradient_line" />
-
-<div style="margin-top:-9px;margin-bottom:15px" class="scroll-left">
-<p style="color#373c3d;font-weight:750" class="scrolltext">The price indicated like this <i class="fas fa-crown" style="color:#eec64f;">Rs.XXX</i> is only for our club membership holders.</p>
-</div>
-<hr style="margin-top:0px" class="gradient_line" />
-<div class="card pt-1">
-<!--Section: Products v.3-->
-<h5 class="mt-2 mb-1" style="font-weight:600;font-size:1.2em;font-family: 'Roboto Slab', serif;">{{ object_list9.0.get_sale_name_display }} </h5>
-<div class="custom-control custom-switch mt-2 mb-1" style="position:absolute;right:25px;">
-  <div class="btn-group btn-toggle mt-1 mb-1"> 
-    <input onclick="window.location.href='{{ object_list9.0.get_absolute_url }}';" class="custom-control-input btn btn-link btn-sm p-1 font-weight-bolder" style="margin-top:-2%" type="checkbox" id="customSwitches">
-    <label class="custom-control-label" for="customSwitches">More</label>
-  </div>
-</div>
-      <section class="text-center mb-4" >
-
-        <div style="margin-left:5px;margin-top:-20px" class="row wow fadeIn">
-           <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-2">
-			{% for item in object_list9 %}
-      <a href="{{ item.item.get_absolute_url }}" >
-			<div class="col">
-				<img class="card card-block c1" src="{{ item.item.image.url }}">
-        <p class="caption ">{{item.item.title|truncatechars:15}} | {{item.item.dis_per}}% off</p>
-			</div>
-      </a>
-      {% endfor %}
-       <a href="{{ object_list9.0.get_absolute_url }}" style="margin-right:15px;padding-right:25px">
-			<div class="col">
-				<img class="card card-block c1" src="https://www.presimax.online/media/images/more.png">
-			</div>
-      </a>
-      
-          </div>
-        </div>
-
-      </section>
-      <!--Section: Products v.3-->
-</div>
-<hr class="gradient_line" />
-<div class="card p-1" >
-<!--Section: Products v.3-->
-<h5 class="mt-3" style="font-weight:600;font-size:1.2em;font-family: 'Roboto Slab', serif;">New Arrivals</h5>
-      <section class="text-center mb-2">
-
-        <div style="margin-left:5px;margin-top:-20px" class="row wow fadeIn">
-           <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4">
-          {% for item in object_list %}
-          <div class="col-lg-3 col-md-6">
-
-            <div class="card mycard rounded">
-
-              <div class="view overlay" style="padding:2px">
-                <img style="width:360px;height:360px" src="{{ item.image.url }}" class="card-img-top img-responsive rounded">
+    <!-- deals -->
+    <section class="deals p-3">
+      <h3 class="heading"> New Arrivals </h3>
+      <div class="products">
+        {% for item in object_list %}
+        <div data-aos="zoom-in" class="item">
+          <div class="item-image">
+            <img class="c1 gif-img" src="https://media4.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" alt="loading">
+            <img src="{{ item.image.url }}" style="display: none;" class="c1 image-fluid" alt="product-image">
+            <span class="tag">{{ item.tag }}</span>
+            <span class="discount">{{item.dis_per|floatformat:"0"}}%<br>off</span>
+            <div class="item-details-overlay">
+              <center>
+                <p class="h2">{{item.get_category_display|truncatechars:7}}</p>
+                <p class="h2">{{item.title|truncatechars:7}}@ &#8377;{% if request.user.userprofile.Isclubmem %}
+                  {{ item.club_discount_price|floatformat:"0" }}{% else %}{{item.discount_price|floatformat:"0"}}{% endif %}
+                </p>
                 <a href="{{ item.get_absolute_url }}">
-                  <div class="mask rgba-white-slight"></div>
+                  <p class="button-details">View details ></p>
                 </a>
-              </div>
-
-              <div class="card-body text-center" >
-                <a href="" class="mytext grey-text">
-                  <h5 class="mytext">{{ item.get_category_display|truncatechars:14 }}</h5>
-                </a>
-                <h5>
-                  <strong>
-                    <a href="{{ item.get_absolute_url }}" class="dark-grey-text mytext1">{{ item.title|truncatechars:7 }}
-                    </a>
-                  </strong>
-                </h5>
-
-                <h5 class="mytext2 blue-text">
-                  <strong>
-                  {% if item.discount_price %}
-                  <i class="fas fa-crown" style="color:#eec64f;">Rs. {{ item.club_discount_price }}</i><br>
-                  Rs. {{ item.discount_price }}
-                  <span class="badge badge-pill danger-color">{{item.dis_per}}% off</span>
-                  {% else %}
-                  {{ item.price }}
-                  {% endif %}
-                  </strong>
-                </h5>
-
-              </div>
-
+              </center>
             </div>
-
-          </div>
-          {% endfor %}
           </div>
         </div>
-
-     
-        <div style="margin-left:5px;margin-top:-20px" class="row wow fadeIn">
-           <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4">
-          {% for item in object_list1 %}
-          <div class="col-lg-3 col-md-6">
-
-            <div class="card mycard rounded">
-
-              <div class="view overlay" style="padding:2px">
-                <img style="width:360px;height:360px" src="{{ item.image.url }}" class="card-img-top img-responsive rounded">
-                <a href="{{ item.get_absolute_url }}">
-                  <div class="mask rgba-white-slight"></div>
-                </a>
-              </div>
-
-              <div class="card-body text-center" >
-                <a href="" class="mytext grey-text">
-                  <h5 class="mytext">{{ item.get_category_display|truncatechars:14 }}</h5>
-                </a>
-                <h5>
-                  <strong>
-                    <a href="{{ item.get_absolute_url }}" class="dark-grey-text mytext1">{{ item.title|truncatechars:7 }}
-                    </a>
-                  </strong>
-                </h5>
-
-                <h5 class="mytext2 blue-text">
-                  <strong>
-                  {% if item.discount_price %}
-                  <i class="fas fa-crown" style="color:#eec64f;">Rs. {{ item.club_discount_price }}</i><br>
-                  Rs. {{ item.discount_price }}
-                  <span class="badge badge-pill danger-color">{{item.dis_per}}% off</span>
-                  {% else %}
-                  {{ item.price }}
-                  {% endif %}
-                  </strong>
-                </h5>
-
-              </div>
-
-            </div>
-
-          </div>
-          {% endfor %}
-          </div>
-        </div>
-
-      </section>
-      <!--Section: Products v.3-->
-</div>
-<hr class="gradient_line" />
-<div class="card p-1" >
-<!--Section: Products v.3-->
-<style>
-
-#clockdiv{
-	font-family: sans-serif;
-	color: #fff;
-	display: inline-block;
-	font-weight: 100;
-	text-align: center;
-	font-size: 1.2em;
-}
-
-#clockdiv > div{
-	padding: 5px;
-	border-radius: 3px;
-	background: #00ced9;
-	display: inline-block;
-}
-
-#clockdiv div > span{
-	padding: 5px;
-	border-radius: 3px;
-	background: #009fab;
-	display: inline-block;
-}
-
-.smalltext{
-	padding-top: 5px;
-	font-size: 0.5em;
-}
-</style>
-<h5 class="mt-3" style="font-weight:600;font-size:1.2em;font-family: 'Roboto Slab', serif;">{{ object_list10.0.get_sale_name_display  }}</h5>
-<div class="custom-control custom-switch mt-2 mb-2" style="position:absolute;right:25px;">
-  <div class="btn-group btn-toggle mt-1 mb-1"> 
-    <input onclick="window.location.href='{{ object_list10.0.get_absolute_url }}';" class="{{ fstatus }} custom-control-input btn btn-link btn-sm p-1 font-weight-bolder" style="margin-top:-2%" type="checkbox" id="customSwitches1">
-    <label class="custom-control-label" for="customSwitches1">More</label>
-  </div>
-</div>
-<center>
-<div style="margin-top:-9%" id="clockdiv">
-  <h6 style="color:#009fab;font-weight:600">{{ fmsg }}</h6>
-  <div>
-    <span class="days"></span>
-    <div class="smalltext">Days</div>
-  </div>
-  <div>
-    <span class="hours"></span>
-    <div class="smalltext">Hours</div>
-  </div>
-  <div>
-    <span class="minutes"></span>
-    <div class="smalltext">Minutes</div>
-  </div>
-  <div>
-    <span class="seconds"></span>
-    <div class="smalltext">Seconds</div>
-  </div>
-</div>
-</center>
-      <section class="text-center mb-3"  style="margin-top:-15px" >
-
-        <div style="margin-left:5px;" class="row wow fadeIn">
-           <div class="scrolling-wrapper row flex-row flex-nowrap mt-2 pb-4">
-			
-			{% for item in object_list10 %}
-      <a class="{{ fstatus }}" href="{{ item.item.get_absolute_url }}" >
-			<div class="col">
-				<img class="card card-block c1" src="{{ item.item.image.url }}">
-        <p class="caption ">{{item.item.title|truncatechars:15}} | {{item.item.dis_per}}% off</p>
-			</div>
-      </a>
-      {% endfor %}
-      <a href="{{ object_list10.0.get_absolute_url }}" style="margin-right:15px;padding-right:25px">
-			<div class="col">
-				<img class="card card-block c1" src="https://www.presimax.online/media/images/more.png">
-			</div>
-      </a>
-          </div>
-        </div>
-
-      </section>
-      <!--Section: Products v.3-->
-</div>
-<!--
-<hr class="gradient_line" />
-<div class="row wow fadeIn mb-1 mobile">
-<div class="col" style="margin-right:-5px">
-<div id="carousel1" class="carousel slide carousel-fade" data-ride="carousel1" data-interval="6000">
-        <ol class="carousel-indicators">
-            <li data-target="#carousel1" data-slide-to="0" class="active"></li>
-            {% for item in cmid %}
-            <li data-target="#carousel1" data-slide-to="{{ forloop.counter }}"></li>
-            {% endfor %}
-        </ol>
-        <div class="carousel-inner" role="listbox">
-            <div class="carousel-item1 active">
-                <a href="{{ cmid.0.urlf }}">
-                      <img src="{{ cmid.0.img.url }}" alt="responsive image" class="d-block img-responsive">
-
-                    <div class="carousel-caption">
-                        <div>
-                            <h2>{{ cmid.0.head }}</h2>
-                            <p>{{ cmid.0.des }}</p>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            
-            {% for item1 in cmid %}
-            <div class="carousel-item1">
-                <a href="{{ item1.urlf }}">
-                      <img src="{{ item1.img.url }}" alt="responsive image" class="d-block img-responsive">
-
-                    <div class="carousel-caption justify-content-center align-items-center">
-                        <div>
-                            <h2>{{ item1.head }}</h2>
-                            <p>{{ item1.des }}</p>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            {% endfor %}
-        </div>
-        
-        <a class="carousel-control-prev" href="#carousel1" role="button" data-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="sr-only">Previous</span>
-        </a>
-        <a class="carousel-control-next" href="#carousel1" role="button" data-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="sr-only">Next</span>
-        </a>
-    </div>
-    </div>
-    <div class="col" style="margin-left:-5px">
-<div id="carousel2" class="carousel slide carousel-fade" data-ride="carousel2" data-interval="6000">
-        <ol class="carousel-indicators">
-            <li data-target="#carousel2" data-slide-to="0" class="active"></li>
-            {% for item in cbot %}
-            <li data-target="#carousel2" data-slide-to="{{ forloop.counter }}"></li>
-            {% endfor %}
-        </ol>
-        <div class="carousel-inner" role="listbox">
-            <div class="carousel-item1 active">
-                <a href="{{ cbot.0.urlf }}">
-                      <img src="{{ cbot.0.img.url }}" alt="responsive image" class="d-block img-responsive">
-
-                    <div class="carousel-caption">
-                        <div>
-                            <h2>{{ cbot.0.head }}</h2>
-                            <p>{{ cbot.0.des }}</p>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            
-            {% for item1 in cbot %}
-            <div class="carousel-item1">
-                <a href="{{ item1.urlf }}">
-                      <img src="{{ item1.img.url }}" alt="responsive image" class="d-block img-responsive">
-
-                    <div class="carousel-caption justify-content-center align-items-center">
-                        <div>
-                            <h2>{{ item1.head }}</h2>
-                            <p>{{ item1.des }}</p>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            {% endfor %}
-        </div>
-        
-        <a class="carousel-control-prev" href="#carousel2" role="button" data-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="sr-only">Previous</span>
-        </a>
-        <a class="carousel-control-next" href="#carousel2" role="button" data-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="sr-only">Next</span>
-        </a>
-    </div>
-    </div>
+        {% endfor %}
+      </div>
+    </section>
+    <!-- deals -->          
     
-</div> -->
-<hr class="gradient_line"  style="margin-top:-45px"/>
-<div class="card p-1" >
-
-<!--Section: Products v.3-->
-<h5 class="mt-3" style="font-weight:600;font-size:1.2em;font-family: 'Roboto Slab', serif;">Our BestSeller's Products</h5>
-      <section class="text-center " >
-
-        <div style="margin-left:5px;margin-top:-20px" class="row wow fadeIn">
-           <div class="scrolling-wrapper row flex-row flex-nowrap mt-3 pb-4">
-          {% for item in object_list6 %}
-          <div class="col-lg-3 col-md-6">
-
-            <div class="card mycard rounded">
-
-              <div class="view overlay" style="padding:2px">
-                <img style="width:360px;height:360px" src="{{ item.image.url }}" class="card-img-top img-responsive rounded">
-                <a href="{{ item.get_absolute_url }}">
-                  <div class="mask rgba-white-slight"></div>
-                </a>
-              </div>
-
-              <div class="card-body text-center" >
-                <a href="" class="mytext grey-text">
-                  <h5 class="mytext">{{ item.get_category_display|truncatechars:14 }}</h5>
-                </a>
-                <h5>
-                  <strong>
-                    <a href="{{ item.get_absolute_url }}" class="dark-grey-text mytext1">{{ item.title|truncatechars:7 }}
-                    </a>
-                  </strong>
-                </h5>
-
-                <h5 class="mytext2 blue-text">
-                  <strong>
-                  {% if item.discount_price %}
-                  <i class="fas fa-crown" style="color:#eec64f;">Rs. {{ item.club_discount_price }}</i><br>
-                  Rs. {{ item.discount_price }}
-                  <span class="badge badge-pill danger-color">{{item.dis_per}}% off</span>
-                  {% else %}
-                  {{ item.price }}
-                  {% endif %}
-                  </strong>
-                </h5>
-
-              </div>
-
-            </div>
-
-          </div>
-          {% endfor %}
-          </div>
-        </div>
-
-      </section>
-      <!--Section: Products v.3-->
-      <!--Section: Products v.3-->
-      <section class="text-center mb-4" >
-
-        <div style="margin-left:5px;margin-top:-20px" class="row wow fadeIn">
-           <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4">
-          {% for item in object_list7 %}
-          <div class="col-lg-3 col-md-6">
-
-            <div class="card mycard rounded">
-
-              <div class="view overlay" style="padding:2px">
-                <img style="width:360px;height:360px" src="{{ item.image.url }}" class="card-img-top img-responsive rounded">
-                <a href="{{ item.get_absolute_url }}">
-                  <div class="mask rgba-white-slight"></div>
-                </a>
-              </div>
-
-              <div class="card-body text-center" >
-                <a href="" class="mytext grey-text">
-                  <h5 class="mytext">{{ item.get_category_display|truncatechars:14 }}</h5>
-                </a>
-                <h5>
-                  <strong>
-                    <a href="{{ item.get_absolute_url }}" class="dark-grey-text mytext1">{{ item.title|truncatechars:7 }}
-                    </a>
-                  </strong>
-                </h5>
-
-                <h5 class="mytext2 blue-text">
-                  <strong>
-                  {% if item.discount_price %}
-                  <i class="fas fa-crown" style="color:#eec64f;">Rs. {{ item.club_discount_price }}</i><br>
-                  Rs. {{ item.discount_price }}
-                  <span class="badge badge-pill danger-color">{{item.dis_per}}% off</span>
-                  {% else %}
-                  {{ item.price }}
-                  {% endif %}
-                  </strong>
-                </h5>
-
-              </div>
-
-            </div>
-
-          </div>
-          {% endfor %}
-          </div>
-        </div>
-
-      </section>
-      <!--Section: Products v.3-->
-
-</div>
-<hr class="gradient_line" />
-<div class="card p-1" >
-<!--Section: Products v.3-->
-<h5 class="mt-3" style="font-weight:600;font-size:1.2em;font-family: 'Roboto Slab', serif;">Sunday Sale</h5>
-<h6 class="ml-2" style="font-weight:500;font-size:1em;font-family: 'Roboto Slab', serif;">{{msg}}</h6>
-<div class="custom-control custom-switch mt-2 mb-1" style="position:absolute;right:25px;">
-  <div class="btn-group btn-toggle mt-1 mb-1"> 
-    <input onclick="window.location.href='{{ object_list11.0.get_absolute_url }}';" class="{{ status }} custom-control-input btn btn-link btn-sm p-1 font-weight-bolder" style="margin-top:-2%" type="checkbox" id="customSwitches2">
-    <label class="custom-control-label" for="customSwitches2">More</label>
-  </div>
-</div>
-      <section class="text-center" >
-      
-        <div style="margin-left:5px;margin-top:-20px" class="row wow fadeIn">
-           <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4">
-          {% for item in object_list11 %}
-         <div class="col-lg-3 col-md-6 ">
-
-            <div class="card mycard rounded">
-
-              <div class="view overlay" style="padding:2px">
-                <img style="width:360px;height:360px" src="{{ item.item.image.url }}" class="card-img-top img-responsive rounded">
-                <a class="{{ status }}" href="{{ item.item.get_absolute_url }}">
-                  <div class="mask rgba-white-slight"></div>
-                </a>
-              </div>
-
-              <div class="card-body text-center">
-                <a href="" class="grey-text mytext {{ status }}">
-                  <h5 class="mytext">{{ item.item.get_category_display|truncatechars:14 }}</h5>
-                </a>
-                <h5>
-                  <strong>
-                    <a href="{{ item.item.get_absolute_url }}" class="dark-grey-text mytext1 {{ status }}">{{ item.item.title|truncatechars:7 }}
-                    </a>
-                  </strong>
-                </h5>
-
-                <h4 class="mytext2 blue-text">
-                  <strong>
-                  {% if item.item.discount_price %}
-                  <i class="fas fa-crown" style="color:#eec64f;">Rs. {{ item.item.club_discount_price }}</i><br>
-                  Rs. {{ item.item.discount_price }}
-                  <span class="badge badge-pill danger-color">{{item.item.dis_per}}% off</span>
-                  {% else %}
-                  {{ item.item.price }}
-                  {% endif %}
-                  </strong>
-                </h4>
-
-              </div>
-
-            </div>
-
-          </div>
-          {% endfor %}
-          </div>
-        </div>
-
-      
-
-        <div style="margin-left:5px;margin-top:-20px" class="row wow fadeIn ">
-           <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4">
-          {% for item in object_list12 %}
-          <div class="col-lg-3 col-md-6 ">
-
-            <div class="card mycard rounded">
-
-              <div class="view overlay" style="padding:2px">
-                <img style="width:360px;height:360px" src="{{ item.item.image.url }}" class="card-img-top img-responsive rounded">
-                <a class="{{ status }}" href="{{ item.item.get_absolute_url }}">
-                  <div class="mask rgba-white-slight"></div>
-                </a>
-              </div>
-
-              <div class="card-body text-center">
-                <a href="" class="grey-text mytext {{ status }}">
-                  <h5 class="mytext">{{ item.item.get_category_display|truncatechars:14 }}</h5>
-                </a>
-                <h5>
-                  <strong>
-                    <a href="{{ item.item.get_absolute_url }}" class="dark-grey-text mytext1 {{ status }}">{{ item.item.title|truncatechars:7 }}
-                    </a>
-                  </strong>
-                </h5>
-
-                <h4 class="mytext2 blue-text">
-                  <strong>
-                  {% if item.item.discount_price %}
-                  <i class="fas fa-crown" style="color:#eec64f;">Rs. {{ item.item.club_discount_price }}</i><br>
-                  Rs. {{ item.item.discount_price }}
-                  <span class="badge badge-pill danger-color">{{item.item.dis_per}}% off</span>
-                  {% else %}
-                  {{ item.item.price }}
-                  {% endif %}
-                  </strong>
-                </h4>
-
-              </div>
-
-            </div>
-
-          </div>
-          {% endfor %}
-          </div>
-        </div>
-
-      </section>
-      <!--Section: Products v.3-->
-</div>
-<hr class="gradient_line" />
-<div class="card p-1" >
-<!--Section: Products v.3-->
-<h5 class="mt-3" style="margin-left:5px;margin-top:-20;font-weight:600;font-size:1.2em;font-family: 'Roboto Slab', serif;">{{ object_list8.0.get_sale_name_display }} </h5>
-<div class="custom-control custom-switch mt-2 mb-1" style="position:absolute;right:25px;">
-  <div class="btn-group btn-toggle mt-1 mb-1"> 
-    <input onclick="window.location.href='{{ object_list8.0.get_absolute_url }}';" class="custom-control-input btn btn-link btn-sm p-1 font-weight-bolder" style="margin-top:-2%" type="checkbox" id="customSwitches3">
-    <label class="custom-control-label" for="customSwitches3">More</label>
-  </div>
-</div>
-      <section class="text-center mb-4" >
-
-        <div style="margin-left:5px;margin-top:-20px" class="row wow fadeIn">
-           <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4">
-          <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4">
-			
-		{% for item in object_list8 %}
-     <a href="{{ item.item.get_absolute_url }}" >
-			<div class="col">
-				<img class="card card-block c1" src="{{ item.item.image.url }}">
-        <p class="caption ">{{item.item.title|truncatechars:15}} | {{item.item.dis_per}}% off</p>
-			</div>
-      </a>
-      {% endfor %}
-      <a href="{{ object_list8.0.get_absolute_url }}" style="margin-right:15px;padding-right:25px">
-			<div class="col">
-				<img class="card card-block c1" src="https://www.presimax.online/media/images/more.png">
-			</div>
-      </a>
+    <!-- posters -->
+    {% if poster.2 %}
+    <div class="poster-sec">
+      <a href="{{ poster.2.urlf }}"><img class="poster" src="{{ poster.2.image.url }}" alt="Poster"></a>
     </div>
+    {% endif %}
+    <!-- posters -->
+    
+    <!-- highlights -->
+    {% if sp1_s or sp2_s or sp3_s %}
+    <center>
+      <p class="heading">Special Deals</p>
+    </center>
+    {% if sp1 %}
+    <div class="three-special-deals p-1">
+      <div class="special-deal p-3">
+        <p class="heading dark-mode">{{ sp1.sale_name }}</p>
+        <div class="grid-4x4">
+          {% for item in sp1.item.all %}
+          {% if forloop.counter < 5 %}
+          <div data-aos="flip-down" class="rep-products hover-up">
+            <a href="{{ item.get_absolute_url }}"><img class="c3 gif-img" src="https://media4.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" alt="loading">
+            <img class="c3" style="display: none;" src="{{ item.image.url }}" alt="prod-img">
+            <span class="discount">{{item.dis_per|floatformat:"0"}}%<br>off</span>
+            <p class="des p-1 dark-mode">{{item.title|truncatechars:15}} - {{ item.description|truncatechars:30 }}</p></a>
           </div>
-        </div>
-
-      </section>
-      <!--Section: Products v.3-->
-</div>
-<hr class="gradient_line" />
-<div class="card p-1" >
-<!--Section: Products v.3-->
-<h5 class="mt-3" style="font-weight:600;font-size:1.2em;font-family: 'Roboto Slab', serif;">More than 30% Off on discount price</h5>
-      <section class="text-center mb-4">
-
-        <div style="margin-left:5px;margin-top:-20px" class="row wow fadeIn">
-           <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4">
-          {% for item in object_list2 %}
-          <div class="col-lg-3 col-md-6">
-
-            <div class="card mycard rounded">
-
-              <div class="view overlay" style="padding:2px">
-                <img style="width:360px;height:360px" src="{{ item.image.url }}" class="card-img-top img-responsive rounded">
-                <a href="{{ item.get_absolute_url }}">
-                  <div class="mask rgba-white-slight"></div>
-                </a>
-              </div>
-
-              <div class="card-body text-center" >
-                <a href="" class="mytext grey-text">
-                  <h5 class="mytext">{{ item.get_category_display|truncatechars:14 }}</h5>
-                </a>
-                <h5>
-                  <strong>
-                    <a href="{{ item.get_absolute_url }}" class="dark-grey-text mytext1">{{ item.title|truncatechars:7 }}
-                    </a>
-                  </strong>
-                </h5>
-
-                <h5 class="mytext2 blue-text">
-                  <strong>
-                  {% if item.discount_price %}
-                  <i class="fas fa-crown" style="color:#eec64f;">Rs. {{ item.club_discount_price }}</i><br>
-                  Rs. {{ item.discount_price }}
-                  <span class="badge badge-pill danger-color">{{item.dis_per}}% off</span>
-                  {% else %}
-                  {{ item.price }}
-                  {% endif %}
-                  </strong>
-                </h5>
-
-              </div>
-
-            </div>
-
-          </div>
+          {% endif %}
           {% endfor %}
-          </div>
         </div>
-
-        <div style="margin-left:5px;margin-top:-20px" class="row wow fadeIn">
-           <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4">
-          {% for item in object_list3 %}
-          <div class="col-lg-3 col-md-6">
-
-            <div class="card mycard rounded">
-
-              <div class="view overlay" style="padding:2px">
-                <img style="width:360px;height:360px" src="{{ item.image.url }}" class="card-img-top img-responsive rounded">
-                <a href="{{ item.get_absolute_url }}">
-                  <div class="mask rgba-white-slight"></div>
-                </a>
-              </div>
-
-              <div class="card-body text-center" >
-                <a href="" class="mytext grey-text">
-                  <h5 class="mytext">{{ item.get_category_display|truncatechars:14 }}</h5>
-                </a>
-                <h5>
-                  <strong>
-                    <a href="{{ item.get_absolute_url }}" class="dark-grey-text mytext1">{{ item.title|truncatechars:7 }}
-                    </a>
-                  </strong>
-                </h5>
-
-                <h5 class="mytext2 blue-text">
-                  <strong>
-                  {% if item.discount_price %}
-                  <i class="fas fa-crown" style="color:#eec64f;">Rs. {{ item.club_discount_price }}</i><br>
-                  Rs. {{ item.discount_price }}
-                  <span class="badge badge-pill danger-color">{{item.dis_per}}% off</span>
-                  {% else %}
-                  {{ item.price }}
-                  {% endif %}
-                  </strong>
-                </h5>
-
-              </div>
-
-            </div>
-
+        <div class="special-deal-end">
+          <hr>
+          <a href="{{ sp1.get_absolute_url }}" class="dark-mode" style='float:right'>See More ></a>
+        </div>
+      </div>
+      {% endif %}
+      {% if sp2 %}
+      <div class="special-deal p-3">
+        <p class="heading dark-mode">{{ sp2.sale_name }}</p>
+        <div class="grid-4x4">
+          {% for item in sp2.item.all %}
+          {% if forloop.counter < 5 %}
+          <div data-aos="flip-down" class="rep-products hover-up">
+            <a href="{{ item.get_absolute_url }}"><img class="c3 gif-img" src="https://media4.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" alt="loading">
+            <img class="c3" style="display: none;" src="{{ item.image.url }}" alt="prod-img">
+            <span class="discount">{{item.dis_per|floatformat:"0"}}%<br>off</span>
+            <p class="des p-1 dark-mode">{{item.title|truncatechars:15}} - {{ item.description|truncatechars:30 }}</p></a>
           </div>
+          {% endif %}
           {% endfor %}
-          </div>
         </div>
-
-      </section>
-      <!--Section: Products v.3-->
-</div>
-<hr class="gradient_line" />
-<div class="card p-1" >
-<!--Section: Products v.3-->
-<h5 class="mt-3" style="font-weight:600;font-size:1.2em;font-family: 'Roboto Slab', serif;">Great Discounts on</h5>
-      <section class="text-center mb-4">
-
-        <div style="margin-left:5px;margin-top:-20px" class="row wow fadeIn">
-           <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4">
-          {% for item in object_list4 %}
-          <div class="col-lg-3 col-md-6">
-
-            <div class="card mycard rounded">
-
-              <div class="view overlay" style="padding:2px">
-                <img style="width:360px;height:360px" src="{{ item.image.url }}" class="card-img-top img-responsive rounded">
-                <a href="{{ item.get_absolute_url }}">
-                  <div class="mask rgba-white-slight"></div>
-                </a>
-              </div>
-
-              <div class="card-body text-center" >
-                <a href="" class="mytext grey-text">
-                  <h5 class="mytext">{{ item.get_category_display|truncatechars:14 }}</h5>
-                </a>
-                <h5>
-                  <strong>
-                    <a href="{{ item.get_absolute_url }}" class="dark-grey-text mytext1">{{ item.title|truncatechars:7 }}
-                    </a>
-                  </strong>
-                </h5>
-
-                <h5 class="mytext2 blue-text">
-                  <strong>
-                  {% if item.discount_price %}
-                  <i class="fas fa-crown" style="color:#eec64f;">Rs. {{ item.club_discount_price }}</i><br>
-                  Rs. {{ item.discount_price }}
-                  <span class="badge badge-pill danger-color">{{item.dis_per}}% off</span>
-                  {% else %}
-                  {{ item.price }}
-                  {% endif %}
-                  </strong>
-                </h5>
-
-              </div>
-
-            </div>
-
-          </div>
+        <div class="special-deal-end dark-mode">
+          <hr>
+          <a href="{{ sp2.get_absolute_url }}" style='float:right'>See More ></a>
+        </div>
+      </div>
+      {% endif %}
+      {% if sp3 %}
+      <div class="special-deal p-3">
+        <p class="heading dark-mode">{{ sp3.sale_name }}</p>
+        <div class="grid-4x4">
+          {% for item in sp3.item.all %}
+          {% if forloop.counter < 5 %}
+          <div data-aos="flip-down" class="rep-products hover-up">
+            <a href="{{ item.get_absolute_url }}"><img class="c3 gif-img" src="https://media4.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" alt="loading">
+            <img class="c3" style="display: none;" src="{{ item.image.url }}" alt="prod-img">
+            <span class="discount">{{item.dis_per|floatformat:"0"}}%<br>off</span>
+            <p class="des dark-mode p-1">{{item.title|truncatechars:15}} - {{ item.description|truncatechars:30 }}</p>
+          </div></a>
+          {% endif %}
           {% endfor %}
+        </div>
+        <div class="special-deal-end dark-mode">
+          <hr>
+          <a href="{{ sp3.get_absolute_url }}" style='float:right'>See More ></a>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+    {% endif %}
+    <!-- highlights -->
+    
+      <!-- posters -->
+    {% if poster.3 %}
+    <div class="poster-sec">
+      <a href="{{ poster.3.urlf }}"><img class="poster" src="{{ poster.3.image.url }}" alt="Poster"></a>
+    </div>
+    {% endif %}
+    <!-- posters -->
+    
+    <!-- best main deals -->
+    <div class="main-deals p-3">
+      <h3 class="heading"> Bestselling Products </h3>
+      <div class="products">
+        {% for item in Bestsellers %}
+        <div data-aos="zoom-out" class="main-deal-product">
+          <a href="{{ item.get_absolute_url }}">
+            <div class="main-deal-product-image">
+              <img class="c2 gif-img" src="https://media4.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" alt="loading">
+              <img class="c2" style="display: none;" src="{{ item.image.url }}" alt="prod-img">
+              <span class="discount">{{item.dis_per|floatformat:"0"}}%<br>off</span>
+          </a>
+          <center>
+            <span class="h2 presimax-color">{{item.get_category_display|truncatechars:7}}</span><br>
+            <a href="{{ item.get_absolute_url }}"><span class="h2 dark-mode">{{item.title|truncatechars:7}} @
+                &#8377;{% if request.user.userprofile.Isclubmem %}
+                {{ item.club_discount_price|floatformat:"0" }}{% else %}{{item.discount_price|floatformat:"0"}}{% endif %}</span></a><br>
+          </center>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    </div>
+    <!-- best main deals -->
+    
+    <!-- posters -->
+    {% if poster.4 %}
+    <div class="poster-sec">
+      <a href="{{ poster.4.urlf }}"><img class="poster" src="{{ poster.4.image.url }}" alt="Poster"></a>
+    </div>
+    {% endif %}
+    <!-- posters -->
+      
+    <!-- sunday sale -->
+    {% if sunday_status %}
+    <div class="sunday-sale p-2">
+      <h3 class="heading ml-2"> Sunday Sale </h3>
+      <div class="products">
+        {% for item in sunday_sale.0.item.all %}
+        <div  data-aos="flip-right" class="item">
+          <div class="item-image">
+            <img class="c1 gif-img" src="https://media4.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" alt="loading">
+            <img src="{{ item.image.url }}" class="c1 image-fluid" style="display: none;" alt="product-image">
+            <span class="tag">{{ item.tag }}</span>
+            <span class="discount">{{item.dis_per|floatformat:"0"}}%<br>off</span>
+            <center class="dark-mode">
+              <span>&#8377;{% if request.user.userprofile.Isclubmem %}
+                {{ item.club_discount_price|floatformat:"0" }}{% else %}{{item.discount_price|floatformat:"0"}}{% endif %}
+                @ ends in {{ sunday_sale.0.end|naturaltime }}</span>
+            </center>
+            <div class="item-details-overlay">
+              <center>
+                <p class="h2">{{item.get_category_display|truncatechars:7}}</p>
+                <p class="h2">{{item.title|truncatechars:7}}@ &#8377;{% if request.user.userprofile.Isclubmem %}
+                  {{ item.club_discount_price|floatformat:"0" }}{% else %}{{item.discount_price|floatformat:"0"}}{% endif %}
+                </p>
+                <a href="{{ item.get_absolute_url }}">
+                  <p class="button-details">View details ></p>
+                </a>
+              </center>
+            </div>
           </div>
         </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+    <!-- sunday sale -->
+    
+    <!-- posters -->
+    {% if poster.5 %}
+    <div class="poster-sec">
+      <a href="{{ poster.5.urlf }}"><img class="poster" src="{{ poster.5.image.url }}" alt="Poster"></a>
+    </div>
+    {% endif %}
+    <!-- posters -->
+    
+    <!-- flashsale -->
+    {% if fsale %}
+    <div class="flashsale p-3">
+      <p class="heading">Flashsale</p>
+      <div class="falshsale-products">
+        <div class="products">
+          {% for item in flash_sale.0.item.all %}
+          <div data-aos="flip-left" class="main-deal-product">
+            <a href="{{ item.get_absolute_url }}">
+              <div class="main-deal-product-image">
+                <img class="c2 gif-img" src="https://media4.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" alt="loading">
+                <img class="c2" src="{{ item.image.url }}" style="display: none;" alt="prod-image">
+                <span class="discount">{{item.dis_per|floatformat:"0"}}%<br>off</span>
+            </a>
+            <center class="dark-mode">
+              <span class="h2 presimax-color">{{item.get_category_display|truncatechars:7}}</span><br>
+              <a href="{{ item.get_absolute_url }}"><span>{{item.title|truncatechars:7}} @
+                  &#8377;{% if request.user.userprofile.Isclubmem %}
+                  {{ item.club_discount_price|floatformat:"0" }}{% else %}{{item.discount_price|floatformat:"0"}}{% endif %}</span></a><br>
+              <span class="ftime" >ends in {{ flash_sale.0.end|naturaltime }}</span>
+            </center>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    </div>
+    {% endif %}
+    <!-- flashsale -->
+    
+    <!-- posters -->
+    {% if poster.6 %}
+    <div class="poster-sec">
+      <a href="{{ poster.6.urlf }}"><img class="poster" src="{{ poster.6.image.url }}" alt="Poster"></a>
+    </div>
+    {% endif %}
+    <!-- posters -->
+    
+    <!-- DoW sale -->
+    <div class="sunday-sale p-2">
+      <h3 class="heading ml-2"> Deals of Week </h3>
+      <div class="products">
+        {% for item in Deals_of_week.0.item.all %}
+        <div data-aos="zoom-in" class="item">
+          <div class="item-image">
+            <img class="c1 gif-img" src="https://media4.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" alt="loading">
+            <img src="{{ item.image.url }}" class="c1 image-fluid" style="display: none;" alt="product-image">
+            <span class="tag">{{ item.tag }}</span>
+            <span class="discount">{{item.dis_per|floatformat:"0"}}%<br>off</span>
+            <center class="dark-mode">
+              <span>&#8377;{% if request.user.userprofile.Isclubmem %}
+                {{ item.club_discount_price|floatformat:"0" }}{% else %}{{item.discount_price|floatformat:"0"}}{% endif %}</span>
+            </center>
+            <div class="item-details-overlay">
+              <center>
+                <p class="h2">{{item.get_category_display|truncatechars:7}}</p>
+                <p class="h2">{{item.title|truncatechars:7}}@ &#8377;{% if request.user.userprofile.Isclubmem %}
+                  {{ item.club_discount_price|floatformat:"0" }}{% else %}{{item.discount_price|floatformat:"0"}}{% endif %}
+                </p>
+                <a href="{{ item.get_absolute_url }}">
+                  <p class="button-details">View details ></p>
+                </a>
+              </center>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <!-- DoW sale -->
+    <!-- posters -->
+    {% if poster.7 %}
+    <div class="poster-sec mb-2 ">
+      <a href="{{ poster.7.urlf }}"><img class="poster" src="{{ poster.7.image.url }}" alt="Poster"></a>
+    </div>
+    {% endif %}
+    <!-- posters -->
+    <!-- posters -->
+    {% if poster.8 %}
+    <div class="poster-sec mb-2">
+      <a href="{{ poster.8.urlf }}"><img class="poster" src="{{ poster.8.image.url }}" alt="Poster"></a>
+    </div>
+    {% endif %}
+    <!-- posters -->
+    <!-- posters -->
+    {% if poster.9 %}
+    <div class="poster-sec mb-2">
+      <a href="{{ poster.9.urlf }}"><img class="poster" src="{{ poster.9.image.url }}" alt="Poster"></a>
+    </div>
+    {% endif %}
+    <!-- posters -->
+    <!-- great discounts -->
+    <div class="great-dis-sec p-3" style="margin-bottom: 5rem;">
+      <p class="heading">Great Discounts</p>
+      <div class="great-dis-prods">
+        {% for item in great_discounts %}
+        <div data-aos="zoom-in" class="product-hor">
+          <div class="hor-prod-img">
+            <img class="c4 gif-img" src="https://media4.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" alt="loading">
+            <a href="{{ item.get_absolute_url }}"><img class="c4" src="{{ item.image.url }}" style="display: none;"
+                alt="prod-image"><a href="{{ item.get_absolute_url }}">
+                <span class="great-tag">{{ item.tag }}</span>
+              </a>
+          </div>
+          <div class="hor-prod-details">
+            <p class="h2 presimax-color">{{item.get_category_display|truncatechars:10}}</p>
+            <a href="{{ item.get_absolute_url }}" class="dark-mode">
+              <p class="h2">{{item.title|truncatechars:7}}<br>@ &#8377;{% if request.user.userprofile.Isclubmem %}
+                {{ item.club_discount_price|floatformat:"0" }}{% else %}{{item.discount_price|floatformat:"0"}}{% endif %}
+              </p>
+              <p class="button-details">View details</p>
+            </a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <div style="margin-top: 5rem;"></div>
+    <!-- great discounts -->
+    {% include 'navbar.html' %}
+  </main>
+  {% include "scripts.html" %}
+  <script>
+    {% if pbc %}
+    document.documentElement.style.setProperty('--product-back', '{{ pbc.color }}');
+    document.documentElement.style.setProperty('--presimax-black', '{{ pbc.font_color }}');
+    document.documentElement.style.setProperty('--presimax-white-orange', '{{ pbc.category_font_color }}');
+    {% endif %}
+  </script>
+  <script>
+    {% if bbi %}
+    $(".bg").css("background-image", "url('{{ bbi.image.url }}')");
+    document.documentElement.style.setProperty('--presimax-body-color', '{{ bbi.font_color }}');
+    {% endif %}
+  </script>
+  <script>
+    $('.item').on('click', function () {
+      $('.item').not(this).find('.item-details-overlay').hide();
+      $(this).find('.item-details-overlay').toggle();
+    })
+  </script>
+  <script>
+    $(document).ready(function () {
+      console.log("ready!");
+      $('img').not('.poster').not('.logo-image').toggle();
+    });
+  </script>
+  <script>
+    $('#aball').on('click', function () {
+      $('.ball-clicked').toggle();
+    })
+  </script>  
+  <script>
+    $(document).ready(function () {
+      $('.toast').toast('show')
+    });
+  </script>
+</body>
 
-      </section>
-</div>
-      <!--Section: Products v.3-->
-          <script>!function(e,t,a){var c=e.head||e.getElementsByTagName("head")[0],n=e.createElement("script");n.async=!0,n.defer=!0, n.type="text/javascript",n.src=t+"/static/js/chat_widget.js?config="+JSON.stringify(a),c.appendChild(n)}(document,"https://app.engati.com",{bot_key:"81661c3093914988",welcome_msg:true,branding_key:"default",server:"https://app.engati.com",e:"p" });</script>
-</div>
-</main>
-
-{% endblock content %}
-{% block extra_scripts %}
-<script>
-      $(document).ready(function() {
-
-  const $valueSpan = $('.valueSpan2');
-  const $value = $('#customRange11');
-  $valueSpan.html($value.val());
-  $value.on('input change', () => {
-
-    $valueSpan.html($value.val());
-  });
-});
-$(document).ready(function() {
-
-  const $valueSpan = $('.valueSpan3');
-  const $value = $('#customRange12');
-  $valueSpan.html($value.val()+"%");
-  $value.on('input change', () => {
-
-    $valueSpan.html($value.val()+"%");
-  });
-});
-$(document).ready(function() {
-
-  const $valueSpan = $('.valueSpan5');
-  const $value = $('#customRange14');
-  $valueSpan.html($value.val()+"%");
-  $value.on('input change', () => {
-
-    $valueSpan.html($value.val()+"%");
-  });
-});
-$(document).ready(function() {
-
-  const $valueSpan = $('.valueSpan');
-  const $value = $('#customRange10');
-  $valueSpan.html($value.val());
-  $value.on('input change', () => {
-
-    $valueSpan.html($value.val());
-  });
-});
-
-function getTimeRemaining(endtime) {
-  var t = Date.parse(endtime) - Date.parse(new Date());
-  var seconds = Math.floor((t / 1000) % 60);
-  var minutes = Math.floor((t / 1000 / 60) % 60);
-  var hours = Math.floor((t / (1000 * 60 * 60)) % 24);
-  var days = Math.floor(t / (1000 * 60 * 60 * 24));
-  return {
-    'total': t,
-    'days': days,
-    'hours': hours,
-    'minutes': minutes,
-    'seconds': seconds
-  };
-}
-
-function initializeClock(id, endtime) {
-  var clock = document.getElementById(id);
-  var daysSpan = clock.querySelector('.days');
-  var hoursSpan = clock.querySelector('.hours');
-  var minutesSpan = clock.querySelector('.minutes');
-  var secondsSpan = clock.querySelector('.seconds');
-
-  function updateClock() {
-    var t = getTimeRemaining(endtime);
-
-    daysSpan.innerHTML = t.days;
-    hoursSpan.innerHTML = ('0' + t.hours).slice(-2);
-    minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
-    secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
-
-    if (t.total <= 0) {
-      clearInterval(timeinterval);
-    }
-  }
-
-  updateClock();
-  var timeinterval = setInterval(updateClock, 1000);
-}
-var d = new Date();
-d.setDate(d.getDate()+parseInt({{ day }}));
-d.setHours(parseInt({{ hours }}));
-d.setMinutes(parseInt({{ minutes }}));
-d.setSeconds(parseInt({{ seconds }}));
-var deadline = d;
-initializeClock('clockdiv', deadline);
-    </script>
-{% endblock extra_scripts %}
+</html>

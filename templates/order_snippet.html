@@ -1,16 +1,54 @@
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&family=Source+Sans+Pro:wght@200;300;400;600;700&display=swap');
+    :root{
+        --presimax-color:  #ff8c00;
+        --presimax-brand-light-color:  #ff8c00;
+        --presimax-brand-color:  #ff8c00;
+        --presimax-font-1: font-family: 'Crimson Text', serif;
+        --presimax-font-2: font-family: 'Source Sans Pro', sans-serif;    
+        --link-color: #0099CC;
+        --prsimax-silver: #C0C0C0;
+    }
+    body{
+        font-family: var(--presimax-font-2)
+        }
+    .heading{
+        text-transform: capitalize;
+        font-weight: 400;
+        font-family: var(--presimax-font-1);
+    }
+    .round-do-btn {
+        border-radius: 4px;
+        background: var(--presimax-color);
+        color: #fff;
+        padding: 7px 45px;
+        display: inline-block;        
+        margin: 0 auto;
+        text-align: center;
+        justify-content: center;
+        border: solid 2px var(--presimax-color); 
+        transition: all 0.5s ease-in-out 0s;
+        }  
+    .round-do-btn:hover,
+    .round-do-btn:focus{
+        background: transparent;
+        color:  var(--presimax-color);
+        text-decoration: none;
+    } 
+    </style>
 <div class="col-md-12 mb-4">
     <h4 class="d-flex justify-content-between align-items-center mb-3">
     <span class="text-muted">Your cart</span>
-    <span class="badge badge-secondary badge-pill">{{ order.items.count }}</span>
+    <span class="badge badge-pill"  style="background: #ff8c00;color: #fff;">{{ order.items.count }}</span>
     </h4>
     <ul class="list-group mb-3 z-depth-1">
     {% for order_item in order.items.all %}
     <li class="list-group-item d-flex justify-content-between lh-condensed">
         <div>
         <h6 class="my-0">{{ order_item.quantity }} x {{ order_item.item.title}}</h6>
-        <small class="text-muted">{{ order_item.item.description}}</small>
+        <small class="text-muted">{{ order_item.item.description | truncatechars:30 }}</small>
         </div>
-        <span class="text-muted">Rs. {{ order_item.get_final_price }}</span>
+        <span class="text-muted">&#8377;{{ order_item.price_inc_ship }}</span>
     </li>
     {% endfor %}
     {% if order.coupon %}
@@ -19,12 +57,12 @@
         <h6 class="my-0">Promo code</h6>
         <small>{{ order.coupon.code }}</small>
         </div>
-        <span class="text-success">Rs. {{ order.coupon.amount }}</span>
+        <span class="text-success">&#8377;{{ order.coupon.amount }}</span>
     </li>
     {% endif %}
     <li class="list-group-item d-flex justify-content-between">
         <span>Total (INR)</span>
-        <strong>Rs. {{ order.get_total }}</strong>
+        <strong>&#8377;{{ order.get_total }}</strong>
     </li>
     </ul>
 
@@ -34,7 +72,7 @@
         <div class="input-group">
             {{ couponform.code }}
             <div class="input-group-append">
-            <button class="btn btn-secondary btn-md waves-effect m-0" type="submit">Redeem</button>
+            <button class="btn btn-md waves-effect m-0" style="background: #ff8c00;color: #fff;" type="submit">Redeem</button>
             </div>
         </div>
     </form>

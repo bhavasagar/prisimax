@@ -21,7 +21,8 @@ INSTALLED_APPS = [
     'crispy_forms',
     'django_countries',
     'django.contrib.postgres',
-    'django_social_share', 
+    'django_social_share',
+    'django.contrib.humanize', 
 
     'core'
 ]

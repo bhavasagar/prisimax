@@ -1,7 +1,65 @@
-<nav class="navbar" style="background-color:#8dbbe0;border-radius:10px;margin-bottom:10px">
-      <form action="." method="POST" class="form-inline" size="50" style="display: flex;justify-content: space-between;"  >
-          {% csrf_token %}
-          
-        <input class="form-control" style="display:inline-block;background-color:#d7eafa;" name="search" type="search" placeholder="Search" aria-label="Search">
-      </form>
-    </nav>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display+SC:wght@400;700&family=Playfair+Display:wght@400;500;600&family=Raleway:wght@100;200;300;400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bitter&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap');
+:root{
+    --presimax-brand-color:  #ff8c00;
+    --presimax-brand-light-color:  #ff8c00;
+    --presimax-font-1: 'Playfair Display', serif;
+    --presimax-font-2: 'Raleway', sans-serif;    
+    --presimax-font-3: 'Bitter', serif;
+    --link-color: #0099CC;
+    --presimax-silver: #C0C0C0;
+    --presimax-light-white: #DCDCDC;
+    --presimax-black: #0b0704;
+    --presimax-white: #f8f9f5;
+    --product-back-ex: #f8f9f5;
+    --product-back: #fdde6c;
+    --presimax-white-orange: #fdf9ef;
+    --presimax-tag-opacity: .7;
+    --heading-font:'Nunito Sans', sans-serif;
+    --end: -95%;
+}
+.fas,.far,.fa{
+    font-weight: 600;
+}
+.presimax-color{
+    color: var(--presimax-white-orange);
+}
+body{
+    color: var(--presimax-body-color);
+    font-family: var(--presimax-font-2);   
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover; 
+    margin: auto;   
+    background: #F5F5F5; 
+  }
+.nav-bar{
+    justify-content: space-between;
+    display: flex;
+    background: #fff;    
+    color: #ff8c00 !important;            
+    font-weight: 300;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 1030;
+    transition: .5s ease-in-out,padding .5s ease-in-out;
+}
+.logo-image{
+    width: 9rem;
+    height: 3rem;
+}
+</style>
+<nav class="nav-bar p-2">
+  <a href="{% url 'core:order-summary' %}"><span style="float: left;" class="bx bxs-cart-download fa-2x ml-3"></span></a>
+  <center>
+    <img src="https://www.presimax.online/media/images/plog.jpeg" class="logo-image" alt="presimax-logo">
+  </center>
+  <span style="float: right;" class="bx bx-bell fa-2x mr-3"></span>
+  </div>
+</nav>

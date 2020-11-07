@@ -176,6 +176,7 @@ margin-right:-120px
 {% endblock extra_head%}
 {% block content %}
 <main>
+<div style="margin-bottom:5rem"></div>
 <form action="." method="POST" class="form-inline" size="50" style="display: flex;justify-content: space-between;"  >
           {% csrf_token %}
 <div class="container-fluid" style="margin-bottom:10px">
@@ -201,9 +202,9 @@ margin-right:-120px
     </ul>
     {% ifequal request.user.userprofile.paid_amt "250" %}
     
-    <button type="submit" name="amt" value="250" style="background-color:#3fbbe8;color:#fff" class='polyFourth poly3'>Pay 250</button>
+    <button type="submit" name="amt" value="250" style="background-color:#ff8c00;color:#fff" class='polyFourth poly3'>Pay 250</button>
     {% else %}
-    <button type="submit" name="amt" value="500" style="background-color:#3fbbe8;color:#fff" class='polyFourth poly3'>Pay 500</button>
+    <button type="submit" name="amt" value="500" style="background-color:#ff8c00;color:#fff" class='polyFourth poly3'>Pay 500</button>
     {% endifequal %}
   </div>
   </div>
@@ -227,9 +228,9 @@ margin-right:-120px
     </ul>
 
     {% ifequal request.user.userprofile.paid_amt "250" %}
-    <a style="background-color:#3fbbe8;color:#fff" href='/club/' class='polyFirst poly2'> Club </a>
+    <a style="background-color:#ff8c00;color:#fff" href='/club/' class='polyFirst poly2'> Club </a>
     {% else %}
-    <button name="amt" value="250" style="background-color:#3fbbe8;color:#fff" type="submit" class='polyFirst poly2'>Pay 250</button>
+    <button name="amt" value="250" style="background-color:#ff8c00;color:#fff" type="submit" class='polyFirst poly2'>Pay 250</button>
     {% endifequal %}
 
   </div>
@@ -250,10 +251,10 @@ margin-right:-120px
       <li>Team is not alloted</li>
     </ul>
 
-    <a style="background-color:#3fbbe8;color:#fff" href='/ecommerce/' class='polyFirst poly2'> Order directly </a>
-    
+    <a style="background-color:#ff8c00;color:#fff" href='/ecommerce/' class='polyFirst poly2'> Order directly </a>    
   </div>
   <div>
+  <div style="margin-top:10rem"></div>
 </div>
 </div>
 </form>

@@ -38,7 +38,13 @@ from .views import (
     faqs,
     orderplaced,
     buy_now,
-    reviewform
+    reviewform,
+    search_sales,
+    search_xtrasales,
+    Xtrasales,
+    search,
+    withdraw,
+    downliners
 )
 
 app_name = 'core'
@@ -48,6 +54,7 @@ urlpatterns = [
     path('checkout/', CheckoutView.as_view(), name='checkout'),
     path('orderplaced/', orderplaced, name='orderplaced'),
     path('club/', club.as_view(), name='club'),
+    path('refer-club/<slug>/', club.as_view(), name='refer-club'),
     path('travels/', travels.as_view(), name='travels'),
     path('order-summary/', OrderSummaryView.as_view(), name='order-summary'),
     path('product/<slug>/', ItemDetailView.as_view(), name='product'),
@@ -67,7 +74,7 @@ urlpatterns = [
     path('orderpayment/', orderpayment, name='orderpayment'),
     path('ordercallback/', ordercallback, name='ordercallback'),
     path('clubpayment/', clubpayment, name='clubpayment'),
-    path('', landing, name='landing'),
+    path('', HomeView.as_view(), name='landing'),
     path('simp/', simp, name='simp'),
     path('privacy/', privacy, name='privacy'),
     path('returnpolicy/', returnpolicy, name='returnpolicy'),
@@ -76,12 +83,19 @@ urlpatterns = [
     path('sitemap.xml/', sitemap, name='sitemap.xml'),
     path('robots.txt/', robots, name='robots.txt'),
     path('myorders/', Myorders.as_view(), name='myorders'),
-    path('refund/<slug>/', refund, name='refund'),
+    path('refund/<int:pk>/', refund, name='refund'),
     path('profile/', Profile.as_view(), name='Profile'),
     path('refreshpaid/', test, name='test'),
     path('refreshprod/', refreshprod, name='refreshprod'),
     path('categories/<slug>/', categories, name='categories'),
     path('sales/<slug>/', sales, name='sales'),
+    path('special-sales/<slug>/', Xtrasales, name='Xtrasales'),
     path('contact/', contact, name='contact'),
     path('faqs/', faqs, name='faqs'),
+    path('sale/<slug>/', search_sales, name='search_sales'),
+    path('extrasale/<slug>/', search_xtrasales, name='search_xtrasales'),
+    path('products/<slug>/', search, name='category_search'),
+    path('products/', search, name='normal_search'),
+    path('withdraw/', withdraw, name='withdraw'),
+    path('downliners/', downliners, name='downliners'),
 ]

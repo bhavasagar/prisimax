@@ -1,541 +1,367 @@
 {% extends "base.html" %}
+{% load static %}
 {% load social_share %}
+{% load humanize %}
 {% load reviews_template_tags %}
 {% block content %}
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/product.css' %}">
 <style>
-  body{
-    font-family: 'Poppins', sans-serif;
-  }
-  .heading{
-    text-transform: capitalize;
-    font-weight: 400;
-  }
-  .details{
-    display: block;
-    margin: 0 auto;
-  }
-  .box{
-    width: 100% !important;
-    margin: 0 auto;
-  }  
-  .prod-img{
-    width: 85%;
-    height: auto;
-    max-width: 320px;
-    max-height: 300px;
-    object-fit: contain;
-    margin: 0 auto;
-    align-items: center;
-    justify-content: center;
-  }    
-  strong{
-    font-size: larger;
-    font-weight: 400;
-  }
-  .more-pics>img{
-    width: 20%;
-    height: auto;
-  }
-  div.scrollmenu {
-    overflow: auto;
-    white-space: nowrap;
-  }
-  
-  div.scrollmenu>img {
-    display: inline-block;
-    color: white;
-    text-align: center;
-    text-decoration: none;
-  }
-  .more-pics{
-    width: 80%;
-  }  
-  .lef{
-    position: relative;
-    left: 0;
-  }
-  .rig{
-    position: relative;
-    right: 0;
-  }
-  .prod-details{
-    font-weight: 400;
-  }
-  .price-section>span{
-    margin: 2%;
-    opacity: 0.6;
-  }
-  .cmp{
-    color:#ff8c00;  
-  }
-  .price-active{    
-    font-size: 1.5em !important;
-    opacity: 1 !important;
-    color:#ff8c00;
-  }
-  .fc{
-    display: block;
-    width: 100%;
-    max-width: 10em;
-    height: calc(1.5em + .75rem + 2px);
-    padding: .375rem .75rem;
-    font-size: 1rem;
-    font-weight: 400;
-    line-height: 1.5;
-    background-color: #fff;
-    background-clip: padding-box;
-    border: 1px solid #ced4da;
-    border-radius: .25rem;
-    transition: .15s ease-in-out,box-shadow .15s ease-in-out;
-  }
-  .product-count .qtyminus,
-  .product-count .qtyplus {
-    width: 34px;
-      height: 34px;
-      background: #ff8c00;
-      text-align: center;
-      font-size: 19px;
-      line-height: 36px;
-      color: #fff;
-      cursor: pointer;
-  }  
-  .product-count{
-    display: flex;
-    flex-direction: row;
-  }
-  .product-count .qtyminus {
-    border-radius: 3px 0 0 3px; 
-    display: none;
-  }
-  .product-count .qtyplus {
-    border-radius: 0 3px 3px 0; 
-  }
-  .product-count .qty {
-    width: 60px;
-    text-align: center;
-  }
-  .round-do-btn {
-    border-radius: 4px;
-    background: #ff8c00;
-    color: #fff;
-    padding: 7px 45px;
-    display: inline-block;    
-    width: 90%;
-    margin: 0 auto;
-    text-align: center;
-    justify-content: center;
-    border: solid 2px #ff8c00; 
-    transition: all 0.5s ease-in-out 0s;
-  }
-  .round-blue-btn,.round-red-btn{
-    border-radius: 4px;
-    background: lightblue;
-    color: #fff;
-    display: inline-block;    
-    text-align: center;
-    justify-content: center;
-    border: solid 2px lightblue; 
-    transition: all 0.5s ease-in-out 0s;
-  }
-  .round-red-btn{
-    background: tomato;
-    border: solid 2px tomato; 
-  }
-  .round-do-btn:hover,
-  .round-do-btn:focus{
-    background: transparent;
-    color: #ff8c00;
-    text-decoration: none;
-  } 
-  .round-blue-btn:hover,.round-blue-btn:focus {
-    color: lightblue;
-    background: transparent;    
-    text-decoration: none;
-  }
-  .round-red-btn:hover,.round-red-btn:focus {
-    color: tomato;
-    background: transparent;    
-    text-decoration: none;
-  }
-  .links{
-    margin: 0 auto !important;
-  }
-  .meta-product-section{
-    width: 100%;
-    flex: 100%;
-  }
-  .product-info-tabs {
-    margin-top: 25px; 
-  }
-  .product-info-tabs .nav-tabs {
-    border-bottom: 2px solid #d8d8d8;
-  }
-  .product-info-tabs .nav-tabs .nav-item {
-    margin-bottom: 0;
-  }
-  .product-info-tabs .nav-tabs .nav-link {
-    border: none; 
-    border-bottom: 2px solid transparent;
-    color: #323232;
-  }
-  .product-info-tabs .nav-tabs .nav-item .nav-link:hover {
-    border: none; 
-  }
-  .product-info-tabs .nav-tabs .nav-item.show .nav-link, 
-  .product-info-tabs .nav-tabs .nav-link.active, 
-  .product-info-tabs .nav-tabs .nav-link.active:hover {
-    border: none; 
-    border-bottom: 2px solid #d8d8d8;
-    font-weight: bold;
-  }
-  .product-info-tabs .tab-content .tab-pane {
-    padding: 30px 20px;
-    font-size: 15px;
-    line-height: 24px;
-    color: #7a7a7a;
-  }
-  .share-link{
-    display: inline;
-  }
-  .share-icons{
-    display: flex;
-    flex-direction: row;
-  }
-  .share-icons>div{
-    margin: 2%;
-  }
-  ul,li{
-    list-style: none;
-  }
-  .rating:hover{
-    color: #eec64f;
-    cursor: pointer;
-  }
-  .form-control:focus{
-    box-shadow: none;
-    border: none;
-  }
-  .ratings {
-    position: relative;
-    vertical-align: middle;
-    display: inline-block;
-    color: #b1b1b1;
-    overflow: hidden;
-  }
-  
-  .full-stars{
-    position: absolute;
-    left: 0;
-    top: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    color: #fde16d;
-  }
-  
-  .empty-stars:before,
-  .full-stars:before {
-    content: "\2605\2605\2605\2605\2605";
-    font-size: 14pt;
-  }
-  
-  .empty-stars:before {
-    -webkit-text-stroke: 1px #848484;
-  }
-  
-  .full-stars:before {
-    -webkit-text-stroke: 1px orange;
-  }
-  
-  @-moz-document url-prefix() {
-    .full-stars{
-      color: #ECBE24;
-    }
-  }
-
-  @media only screen and (min-width: 600px) {
-    .box{
-      display: inline;
-      width: 48%;
-    }
-    .details{
-      display: flex;
-      flex-direction: row;
-      margin: 0 auto;
-    }
-    .prod-img{
-      width: 50%;
-      height: auto;
-      margin: 0 auto;
-    }        
-    .more-pics>img{
-      display: inline;
-      width: 15%;
-      height: auto;
-      margin: 0.3% !important;
-    }
-  }
+.preview-section,#preview{
+position: fixed;
+width: 90vw;
+height:90vh;
+right:5%;
+left:5%;
+top:5%;
+bottom:5%;
+z-index:1070;
+display:none;
+background-size: cover; 
+background-repeat:no;
+}
+.preview-section{
+position: fixed;
+width: 100vw;
+height:100vh;
+right:0%;
+left:0%;
+top:0%;
+bottom:0%;
+background: rgba(0,0,0,0.6);
+}
 </style>
-<main>
-<form method="POST">
-{% csrf_token %}
-  <div class="product m-1 p-2">    
-    <h3 class="heading ml-3 mb-3">{{ object.title }} Details <a href="#product-share"><span class="float-right fas fa-share-alt mr-5"> </span></a></h3>    
-    <div class="details">
-      <div class="box img-box">
-        <center>
-          <img class="prod-img mb-1" id='00' src="{{ object.image.url }}" alt="{{ object.title }}">        
-        </center> 
-        <center> 
-          <div class="pics">            
-            <div class="more-pics p-1 mb-2 scrollmenu">
-              {% if object.pics %}
-              <img class="prod-img" src="{{ object.image.url }}" alt="{{ object.title }}">              
-              {% for i in object.pics.all %}
-              <img class="prod-img" src="{{ i.image.url }}" id='{{ forloop.counter }}' alt="{{ i.image.name }}">                              
-              {% endfor %}            
-              {% endif %}         
+<link rel="stylesheet" type="text/css" href="{% static 'css/jquery.spzoom.css' %}">
+<script type="text/javascript" src="{% static 'js/jquery.spzoom.js' %}"></script>
+<main> 
+<div style="margin-bottom:5rem"></div>
+  <form method="POST">
+    {% csrf_token %}
+    <div class="product m-1 p-2">
+      <div class="details">
+        <div class="box img-box">
+          <center>                        
+            <img class="prod-img mb-1" id='00' onclick="preview()" src="{{ object.image.url }}" alt="{{ object.title }}">
+          </center>
+          <div class="preview-section">
+      			<img id="preview" onclick="preview()" src='{{ object.image.url }}' >
+      		</div>
+          <center>
+            <div class="pics">
+              <div class="more-pics p-1 mb-2 scrollmenu">
+                {% if object.pics %}
+                <img class="prod-img small-img" src="{{ object.image.url }}" alt="{{ object.title }}">
+                {% for i in object.pics.all %}
+                <img class="prod-img small-img" src="{{ i.image.url }}" id='{{ forloop.counter }}'
+                  alt="{{ i.image.name }}">
+                {% endfor %}
+                {% endif %}
+              </div>
             </div>
-            <!-- <div class="lef"><span class="fas fa-chevron-left"></span></div>
-            <div class="rig"><span class="fas fa-chevron-right"></span></div> -->
+          </center>
+        </div>
+        <div class="box  mt-1 ml-2">
+          <h4 class="heading"> {{ object.title }} </h4>
+          <div class="prod-details ml-2 p-2">
+            <div class="review">
+              <div class="ratings">
+                <div class="empty-stars"></div>
+                <div class="full-stars" style="width:{{ object.rating | scale_hund }}%"></div>
+              </div>
+
+              <a href="#reviews">({{ object | review_count }} reviews)</a>
+            </div>
+            <hr>
+            <div class="price-section ml-3">
+              <span class="normal-price"><del>M.R.P : &#8377;{{ object.price }}</del></span>
+              <br clear="all">
+              <label class="mt-2">Price</label>
+              {% if request.user.userprofile.Isclubmem %}
+              <span class="cmp price-active" title="club discount price">
+                &#8377;{{ object.club_discount_price }}</span><span
+                class="dp"><del>&#8377;{{ object.discount_price }}</del></span>
+              {% else %}
+              <span class="cmp" title="club discount price"><del>
+                  &#8377;{{ object.club_discount_price }}</del></span><span
+                class="dp price-active">&#8377;{{ object.discount_price }}</span>
+              <br>
+              want more discount, <a href="{% url 'core:club' %}" class="link-text">join Presimax club for great
+                discounts.</a>
+              {% endif %}
+            </div>
+            <hr>
+            <div class="description mt-2 mb-2">
+              <span class="badge mr-1">{{ object.get_category_display }}</span>
+              <p class="mt-2 mb-1 ml-3">{{ object.description }}</p>
+              {% ifequal 'yes' hasdealer %}
+              <p class="bold-text">Purchase from <span style="font-family: 'Grenze Gotisch', cursive;">{{ itemd.name }}
+              </p>
+              {% endifequal %}
+            </div>
+            <hr>
+            {% if object.has_size %}
+            <div class="size pp">
+              <label for="size">Size</label>
+              <select id="size" name="size" class="fc">
+                {% for size in object.size.sizes_choice %}
+                <option>{{ size }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            {% endif %}
+            <br>
+            <div class="quantity pp">
+              <p>Quantity</p>
+              <div class="product-count">
+                <div class="qtyminus qt" onclick="decrease_qty()">-</div>
+                <input type="text" name="quantity" id="qty" value="1" class="qty qt">
+                <div class="qtyplus qt" onclick="increase_qty()">+</div>
+              </div>
+            </div>
+            <hr>
+            <center>
+              <div class="links mt-4 mb-2">
+                {% if referid != '0' %}
+                {% url 'core:refer-add-to-cart' referid object.slug as url1 %}
+                <button class="round-do-btn mt-4 mb-2" style="width: 90%;"
+                  onclick="javascript: form.action='{{ url1 }}';"> <span class="fas fa-shopping-cart white"></span>
+                  Add to Cart</button><br>
+                {% url 'core:refer-buynow' referid object.slug as url2 %}
+                <button class="round-do-btn mt-4" style="width: 90%;" onclick="javascript: form.action='{{ url2 }}';">
+                  <span class="fas fa-file-invoice"></span> Buy Now</button><br>
+                {% else %}
+                {% url 'core:add-to-cart' object.slug as url3 %}
+                <button style="width: 90%;" onclick="javascript: form.action='{{ url3 }}';"
+                  class="round-do-btn mt-4 mb-2">Add to Cart</button><br>
+                {% url 'core:buynow' object.slug as url4 %}
+                <button style="width: 90%;" onclick="javascript: form.action='{{ url4 }}';"
+                  class="round-do-btn mt-4">Buy Now</button><br>
+                {% endif %}
+              </div>
+            </center>
+            <hr>
+            <div class="product-share mt-3 mb-4" id="product-share">
+              <p>
+                Presimax gives you oppertunity to share and earn. For more details <a href="#share-benifits">click
+                  here.</a>
+              </p>
+              {% if request.user.is_authenticated %}
+              {% url 'core:refered_product' request.user.id object.slug as share_url %}
+              <div class="p-3 share-icons">
+                {% post_to_facebook  share_url  "<span class='fab fa-facebook-f fa-2x share-link mb-2'></span>" %}
+                {% post_to_twitter "A Product from Presimax: {{object.title}}. Check it out!"  share_url "<span class='fab fa-twitter fa-2x mb-2 share-link'></span>" %}
+                {% post_to_gplus  share_url "<span class='fab fa-google-plus-g fa-2x mb-2 share-link'><span>" %}
+                {% send_email object.title "A Product from Presimax: {{object.title}}. Check it out!"  share_url  "<span class='far fa-envelope fa-2x mb-2 share-link'><span> " %}
+                {% post_to_reddit "A Product from Presimax: {{object.title}}" share_url " <span class='fab fa-reddit-alien fa-2x mb-2 share-link'><span> " %}
+                {% post_to_telegram "A Product from Presimax: {{object.title}}"  share_url " <span class='fab fa-telegram fa-2x mb-2 share-link'><span> " %}
+                {% post_to_whatsapp  share_url  "<span class='fab fa-whatsapp fa-2x mb-2 share-link'" %}</a></span>
+              </div>
+              {% else %}
+              <a href="{% url 'account_login' %}" class="round-blue-btn">
+                Login to get shareable url
+              </a>
+              {% endif %}
+            </div>
           </div>
-        </center>   
+        </div>
       </div>
-      <div class="box  mt-1 ml-2">
-        <h4 class="heading"> {{ object.title }} </h4>
-        <div class="prod-details ml-2 p-2">
-          <div class="review">
+  </form>
+  <hr>
+  <h4 class="heading ml-2">Add your Review</h4>
+  <center>
+    <p class="m-1 p-1">
+      Aready purchased this product Add your review here.
+    </p>
+  </center>
+  {% if request.user.is_authenticated %}
+  <form action="{% url 'core:reviewform' request.user.id object.slug %}" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="m-2 p-2">
+      <div class="row">
+        <div class="comment-box">
+          <h4>Add a comment</h4>
+          <div class="container">
+            <input id="ratinginp" type="hidden" name="rating" value="5">
+            <span value="1" class="fa fa-star rating" id="star1" onclick="functionx(this,1)"></span>
+            <span value="2" class="fa fa-star rating" id="star2" onclick="functionx(this,2)"></span>
+            <span value="3" class="fa fa-star rating" id="star3" onclick="functionx(this,3)"></span>
+            <span value="4" class="fa fa-star rating" id="star4" onclick="functionx(this,4)"></span>
+            <span value="5" class="fa fa-star rating" id="star5" onclick="functionx(this,5)"></span>
+          </div>
+          <div class="comment-area"> <textarea class="form-control" name="text" placeholder="what is your view?"
+              rows="4"></textarea> </div>
+          <div class="text-center">
+            <div class="form-group">
+              <label for="comment">Add pictures:</label>
+              <input id="fileupload" name="imgs" type="file" multiple="multiple">
+              <br>
+              <br>
+              <div id="dvPreview"></div>
+            </div>
+            <style>
+              .btn-inline {
+                display: inline;
+              }
+            </style>
+            <button class="round-cancel-btn ">Cancel</button>
+            <button type="submit" class="round-do-btn btn-inline ml-2">Send</button>
+          </div>
+        </div>
+      </div>
+  </form>
+  {% else %}
+  <p class="ml-2"><a href="{% url 'account_login' %}">Sign in to add your review</a></p>
+  {% endif %}
+  <!-- hre i am
+{{reviews}} -->
+  <div class="meta-product-section product-info-tabs mt-4 mb-4 p-3">
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active" id="description-tab" data-toggle="tab" href="#description" role="tab"
+          aria-controls="description" aria-selected="true">Description</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="reviews-tab" data-toggle="tab" href="#reviews" role="tab" aria-controls="reviews"
+          aria-selected="false">Reviews</a>
+      </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+      <div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="description-tab">{{ object.description }}</div>
+      <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
+        <div class="review-section">
+          {% for review in reviews %}
+          <div class="review mt-2 mb-2">
+            {% if review.user.userprofile.userphoto %}
+            <div class="review-user" style="display: flex;flex-direction:row">
+              <img class="reveiw-user-photo" width="60" height="60" src="{{ review.user.userprofile.userphoto.url }}" alt="">
+              <p class="review-username mt-1 ml-2" style="text-transform: capitalize;">{{ review.user.username }}</p>
+            </div>
+            {% endif %}
             <div class="ratings">
               <div class="empty-stars"></div>
-              <div class="full-stars" style="width:{{ rating }}%"></div>
+              <div class="full-stars" style="width:{{ review.rating | scale_hund }}%">                                
+              </div>    
+              <span class="review-time">(updated at {{ review.modified | naturaltime }})</span>          
             </div>
-          
-           <a href="#reviews">({{ object | review_count }} reviews)</a></div>  
-          <label class="mt-2">Price</label>                   
-          <div class="price-section ml-3">
-            {% if request.user.userprofile.Isclubmem %}
-            <span class="cmp price-active fas fa-crown" style="color:#eec64f;" title="club discount price">  &#8377;{{ object.club_discount_price }}</span><span class="dp"><del>&#8377;{{ object.discount_price }}</del></span>
-            <span class="normal-price"><del>&#8377;{{ object.price }}</del></span>
-            {% else %}
-            <span class="cmp fas fa-crown" style="color:#eec64f;" title="club discount price"><del> &#8377;{{ object.club_discount_price }}</del></span><span class="dp price-active">&#8377;{{ object.discount_price }}</span>
-            <span class="normal-price"><del>&#8377;{{ object.price }}</del></span>
-            <br>
-            want more discount, <a href="{% url 'core:club' %}">join Presimax club to get it for golden price.</a> 
-            {% endif %}            
-          </div>
-          <div class="description mt-2 mb-2">
-            <span class="badge purple mr-1">{{ object.get_category_display }}</span>
-            <p class="mt-2 mb-1 ml-3">{{ object.description }}</p>
-            {% ifequal 'yes' hasdealer %}
-            <p style="font-family: 'Grenze Gotisch';text-transform:uppercase" class="lead font-weight-bold">Dealer Name</p>
-            
-            <p style="font-family: 'Grenze Gotisch', cursive;">{{ itemd.name }}</p>
-            {% endifequal %}
-          </div>
-          {% if object.has_size %}
-            <div class="size">
-              <label for="size">Size</label>
-								<select id="size" name="size" class="fc">                  
-                  {% for size in object.size.sizes_choice %}
-                  <option>{{ size }}</option>
-                  {% endfor %}              
-								</select>
+            <div class="review-details">
+              <p class="review-text">{{ review.review }}</p>
             </div>
-          {% endif %}
-          <label for="qty">Quantity</label> 
-          <div class="product-count">            
-            <div class="qtyminus" onclick="decrease_qty()">-</div>
-            <input type="text" name="quantity" id="qty" value="1" class="qty">
-            <div class="qtyplus" onclick="increase_qty()">+</div>
-          </div>     
-          <center>
-          <div class="links mt-4 mb-2">
-            {% if referid != '0' %}
-            {% url 'core:refer-add-to-cart' referid object.slug as url1 %}
-            <button class="round-do-btn mt-4 mb-2" onclick="javascript: form.action='{{ url1 }}';"> <span class="fas fa-shopping-cart white"></span>              
-              Add to Cart</button><br>
-            {% url 'core:refer-buynow' referid object.slug as url2 %}
-            <button class="round-do-btn mt-4"  onclick="javascript: form.action='{{ url2 }}';"> <span class="fas fa-file-invoice"></span> Buy Now</button><br>
-            {% else %}
-            {% url 'core:add-to-cart' object.slug as url3 %}
-            <button onclick="javascript: form.action='{{ url3 }}';" class="round-do-btn mt-4 mb-2">Add to Cart</button><br>
-            {% url 'core:buynow' object.slug as url4 %}
-            <button onclick="javascript: form.action='{{ url4 }}';" class="round-do-btn mt-4">Buy Now</button><br>
-            {% endif %}
-          </div>
-          </center> 
-          <div class="product-share mt-3 mb-4" id="product-share">
-            <p>
-              Presimax gives you oppertunity to share and earn. For more details <a href="#share-benifits">click here.</a>
-            </p>
-            {% if request.user.is_authenticated %}
-            {% url 'core:refered_product' request.user.id object.slug as share_url %}            
-            <div class="p-3 share-icons">
-                {% post_to_facebook  share_url  "<span style='color:blue' class='fab fa-facebook-f fa-2x share-link mb-2'></span>" %}
-                {% post_to_twitter "A Product from Presimax: {{object.title}}. Check it out!"  share_url "<span class='fab fa-twitter fa-2x mb-2 share-link' style='color: #1DA1F2;'></span>" %} 
-                {% post_to_gplus  share_url "<span class='fab fa-google-plus-g fa-2x mb-2 share-link' style='color: #db3236;'" %}                
-                {% send_email object.title "A Product from Presimax: {{object.title}}. Check it out!"  share_url  "<span class='far fa-envelope fa-2x mb-2 share-link' style='color: yellow;'" %}
-                {% post_to_reddit "A Product from Presimax: {{object.title}}" share_url " <span class='fab fa-reddit-alien fa-2x mb-2 share-link' style='color: #FF4500;' " %}
-                {% post_to_telegram "A Product from Presimax: {{object.title}}"  share_url " <span class='fab fa-telegram fa-2x mb-2 share-link' style='color: #0088cc;' " %}
-                {% post_to_whatsapp  share_url  "<span class='fab fa-whatsapp fa-2x mb-2 share-link' style='color: #4FCE5D;'" %}</a></span>
+            <div class="review-images">
+              {% for image in review.images.all %}
+              <img src="{{ image.image.url }}" width="100" height="100" class="review-images" alt="review-images">
+              {% empty %}
+              {% endfor %}
             </div>
-            {% else %}
-            <a href="{% url 'account_login' %}" class="round-blue-btn">
-                Login to get shareable url
-            </a>
-          {% endif %}          
-          </div>          
-        </div>         
-      </div>                 
-    </div>
-    </form>
-    <h4 class="heading ml-2">Add your Review</h4>          
-          <p class="m-1 p-1">
-            Aready purchased this product Add your review here.
-          </p>          
-          {% if request.user.is_authenticated %}
-          <form action="{% url 'core:reviewform' request.user.id object.slug %}" method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-                <div class="m-2 p-2">
-                    <div class="row">
-                    {% if user.username.userphoto %}
-                        <div class="col-2"> <img src="{{ user.username.userphoto.url }}" width="70" class="rounded-circle mt-2"> </div>
-                        {% endif %}                                                                         
-                            <div class="comment-box">
-                                <h4>Add a comment</h4>
-                                <div class="container">
-                                  <input id="ratinginp" type="hidden" name="rating" value="5">
-                                  <span value="1" class="fa fa-star rating" id="star1" onclick="functionx(this,1)"></span>
-                                  <span value="2" class="fa fa-star rating" id="star2" onclick="functionx(this,2)"></span>
-                                  <span value="3" class="fa fa-star rating" id="star3" onclick="functionx(this,3)"></span>
-                                  <span value="4" class="fa fa-star rating" id="star4" onclick="functionx(this,4)"></span>
-                                  <span value="5" class="fa fa-star rating" id="star5" onclick="functionx(this,5)"></span>
-                                </div>
-                                <div class="comment-area"> <textarea class="form-control" name="text" placeholder="what is your view?" rows="4"></textarea> </div>
-                                <div class="text-center">
-                                    <div class="form-group">
-                                    <label for="comment">Add pictures:</label>
-                                    <input id="fileupload" name="imgs" type="file" multiple="multiple">                                    
-                                    <br>
-                                    <br>
-                                    <div id="dvPreview"></div>
-                                 </div>
-                                <style>
-                                  .btn-inline{
-                                    display: inline;
-                                  }
-                                </style>                                                                      
-                                <button class="round-red-btn btn-inline" >Cancel</button>    
-                                <button type="submit" class="round-blue-btn btn-inline ml-2">Send</button>                                   
-                            </div>                                              
-                    </div>
-                </div>                
-            </form>
-            {% else %}
-            <p class="ml-2"><a href="{% url 'account_login' %}">Sign in to add your review</a></p>
-            {% endif %}
-    <div class="meta-product-section product-info-tabs mt-4 mb-4 p-3">
-      <ul class="nav nav-tabs" id="myTab" role="tablist">
-        <li class="nav-item">
-          <a class="nav-link active" id="description-tab" data-toggle="tab" href="#description" role="tab" aria-controls="description" aria-selected="true">Description</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" id="reviews-tab" data-toggle="tab" href="#reviews" role="tab" aria-controls="reviews" aria-selected="false">Reviews</a>
-        </li>
-      </ul>
-      <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="description-tab">this is extra description.</div>
-        <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">this is about reviews</div>          
+          </div>
+            <br><hr>
+          {% empty %}
+            No reviews
+          {% endfor %}
+        </div>
       </div>
-    </div> 
-    <div id="share-benifits" class="p-1 ml-2">
-      <h4 class="heading ml-1">Share this product</h4>
-      <p class="p-2">Benifits of Sharing is product. Do you want to earn money through sharing <a href="#product-share">click here</a></p>
-      <ul>
-        <li>If the total purchase(excluding shipping charges) price of this product is in between <strong> &#8377;200 to &#8377;400, you will recieve &#8377;25 </strong>.</li>
-        <li>If the total purchase(excluding shipping charges) price of product is in between <strong> &#8377;401 to &#8377;900, you will recieve &#8377;40 </strong>.</li>
-        <li>If the total purchase(excluding shipping charges) price of product is in between <strong> &#8377;901 to &#8377;1900, you will recieve &#8377;50 </strong>.</li>
-        <li>If the total purchase(excluding shipping charges) price of product is in between <strong> &#8377;1901 to &#8377;4000, you will recieve &#8377;75 </strong>.</li>
-        <li>If the total purchase(excluding shipping charges) price of product is greater than <strong> &#8377;4000, you will recieve &#8377;100 .</strong></li>
-      </ul>
     </div>
+  </div>
+  <div id="share-benifits" style="display: none;" class="p-1 ml-2">
+    <h4 class="heading ml-1">Share this product</h4>
+    <p class="p-2">Benifits of Sharing is product. Do you want to earn money through sharing <a
+        href="#product-share">click here</a></p>
+    <ul>
+      <li>If the total purchase(excluding shipping charges) price of this product is in between <strong> &#8377;200 to
+          &#8377;400, you will recieve &#8377;25 </strong>.</li>
+      <li>If the total purchase(excluding shipping charges) price of product is in between <strong> &#8377;401 to
+          &#8377;900, you will recieve &#8377;40 </strong>.</li>
+      <li>If the total purchase(excluding shipping charges) price of product is in between <strong> &#8377;901 to
+          &#8377;1900, you will recieve &#8377;50 </strong>.</li>
+      <li>If the total purchase(excluding shipping charges) price of product is in between <strong> &#8377;1901 to
+          &#8377;4000, you will recieve &#8377;75 </strong>.</li>
+      <li>If the total purchase(excluding shipping charges) price of product is greater than <strong> &#8377;4000, you
+          will recieve &#8377;100 .</strong></li>
+    </ul>
+  </div>
   </div>
 </main>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 <script>
-function check_qty(qty){  
-  if(qty>1){
-    $('.qtyminus').css('display','block');
+  function check_qty(qty) {
+    if (qty > 1) {
+      $('.qtyminus').css('display', 'block');
+    }
+    else {
+      $('.qtyminus').css('display', 'none');
+    }
   }
-  else{
-    $('.qtyminus').css('display','none');
-  }}
-function increase_qty(){
-  var qty = parseInt($('#qty').val());
-  $('#qty').html(qty+1);  
-  $('#qty').val(qty+1);
-  check_qty(qty+1);
-}
-function decrease_qty(){
-  var qty = parseInt($('#qty').val());
-  $('#qty').html(qty-1);  
-  $('#qty').val(qty-1);
-  check_qty(qty-1);
+  function increase_qty() {
+    var qty = parseInt($('#qty').val());
+    $('#qty').html(qty + 1);
+    $('#qty').val(qty + 1);
+    check_qty(qty + 1);
+  }
+  function decrease_qty() {
+    var qty = parseInt($('#qty').val());
+    $('#qty').html(qty - 1);
+    $('#qty').val(qty - 1);
+    check_qty(qty - 1);
+  }
+</script>
+<script>
+  $('.small-img').click(function () {
+    var mainsrc = $('#00').attr('src');
+    var newsrc = $(this).attr('src');
+    $('#00').attr('src', newsrc);
+    $('#preview').attr('src', newsrc);    
+  });  
+</script>
+<script> 
+function preview() {     
+    $('.preview-section').toggle();
+    $('#preview').toggle();    
 }
 </script>
 <script>
-  $('.prod-img').click(function(){
-  var mainsrc = $('#00').attr('src');
-  var newsrc = $(this).attr('src');
-  $('#00').attr('src',newsrc);
-  });
-  </script>
-  <script language="javascript" type="text/javascript">
-    $(function () {
-        $("#fileupload").change(function () {
-            if (typeof (FileReader) != "undefined") {
-                var dvPreview = $("#dvPreview");
-                dvPreview.html("");
-                var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.jpg|.jpeg|.gif|.png|.bmp)$/;
-                $($(this)[0].files).each(function () {
-                    var file = $(this);
-                    if (regex.test(file[0].name.toLowerCase())) {
-                        var reader = new FileReader();
-                        reader.onload = function (e) {
-                            var img = $("<img />");
-                            img.attr("style", "height:100px;width: 100px");
-                            img.attr("src", e.target.result);
-                            dvPreview.append(img);
-                        }
-                        reader.readAsDataURL(file[0]);
-                    } else {
-                        alert(file[0].name + " is not a valid image file.");
-                        dvPreview.html("");
-                        return false;
-                    }
-                });
-            } else {
-                alert("This browser does not support HTML5 FileReader.");
+  $(function () {
+    $("#fileupload").change(function () {
+      if (typeof (FileReader) != "undefined") {
+        var dvPreview = $("#dvPreview");
+        dvPreview.html("");
+        var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.jpg|.jpeg|.gif|.png|.bmp)$/;
+        $($(this)[0].files).each(function () {
+          var file = $(this);
+          if (regex.test(file[0].name.toLowerCase())) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+              var img = $("<img />");
+              img.attr("style", "height:100px;width: 100px");
+              img.attr("src", e.target.result);
+              dvPreview.append(img);
             }
+            reader.readAsDataURL(file[0]);
+          } else {
+            alert(file[0].name + " is not a valid image file.");
+            dvPreview.html("");
+            return false;
+          }
         });
+      } else {
+        alert("This browser does not support HTML5 FileReader.");
+      }
     });
-    function functionx(ths,sno){
+  });
+  function functionx(ths, sno) {
     $('#ratinginp').val(sno);
-    for (var i=1;i<=5;i++){
-    var cur=document.getElementById("star"+i)
-    cur.className="fa fa-star"
+    for (var i = 1; i <= 5; i++) {
+      var cur = document.getElementById("star" + i)
+      cur.className = "fa fa-star"
     }
-    
-    for (var i=1;i<=sno;i++){
-    var cur=document.getElementById("star"+i)
-    if(cur.className=="fa fa-star")
-    {
-    cur.className="fa fa-star checked"
+
+    for (var i = 1; i <= sno; i++) {
+      var cur = document.getElementById("star" + i)
+      if (cur.className == "fa fa-star") {
+        cur.className = "fa fa-star checked"
+      }
     }
-    }
-    }
-    </script>
+  }
+</script>
 {% endblock content %}

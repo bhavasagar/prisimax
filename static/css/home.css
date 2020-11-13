@@ -193,6 +193,8 @@ a.disabled {
     display: flex;
     overflow-x: auto;
     flex-direction: row;    
+    width:98vw;
+    margin:0 auto;
 }    
 .flash-prod{
     display: flex;    

@@ -3,6 +3,7 @@
 {% load social_share %}
 {% load humanize %}
 {% load reviews_template_tags %}
+{% load similar_prod %}
 {% block content %}
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800&display=swap" rel="stylesheet">
@@ -74,15 +75,15 @@ background: rgba(0,0,0,0.6);
             </div>
             <hr>
             <div class="price-section ml-3">
-              <span class="normal-price"><del>M.R.P : &#8377;{{ object.price }}</del></span>
+              <span class="normal-price">M.R.P :<del> &#8377;{{ object.price }}</del></span>
               <br clear="all">
-              <label class="mt-2">Price</label>
+              <label class="mt-2">Club Price</label>
               {% if request.user.userprofile.Isclubmem %}
-              <span class="cmp price-active" title="club discount price">
-                &#8377;{{ object.club_discount_price }}</span><span
+              <span data-toggle="tooltip" data-placement="top" title="Price for club users" class="cmp price-active" title="club discount price">
+                 &#8377;{{ object.club_discount_price }}</span><span
                 class="dp"><del>&#8377;{{ object.discount_price }}</del></span>
               {% else %}
-              <span class="cmp" title="club discount price"><del>
+              <span data-toggle="tooltip" data-placement="top" title="Price for club users" class="cmp" title="club discount price"><del>
                   &#8377;{{ object.club_discount_price }}</del></span><span
                 class="dp price-active">&#8377;{{ object.discount_price }}</span>
               <br>
@@ -215,7 +216,7 @@ background: rgba(0,0,0,0.6);
   {% endif %}
   <!-- hre i am
 {{reviews}} -->
-  <div class="meta-product-section product-info-tabs mt-4 mb-4 p-3">
+  <div class="meta-product-section product-info-tabs mt-3 mb-2 p-1">
     <ul class="nav nav-tabs" id="myTab" role="tablist">
       <li class="nav-item">
         <a class="nav-link active" id="description-tab" data-toggle="tab" href="#description" role="tab"
@@ -262,24 +263,16 @@ background: rgba(0,0,0,0.6);
       </div>
     </div>
   </div>
-  <div id="share-benifits" style="display: none;" class="p-1 ml-2">
-    <h4 class="heading ml-1">Share this product</h4>
-    <p class="p-2">Benifits of Sharing is product. Do you want to earn money through sharing <a
-        href="#product-share">click here</a></p>
-    <ul>
-      <li>If the total purchase(excluding shipping charges) price of this product is in between <strong> &#8377;200 to
-          &#8377;400, you will recieve &#8377;25 </strong>.</li>
-      <li>If the total purchase(excluding shipping charges) price of product is in between <strong> &#8377;401 to
-          &#8377;900, you will recieve &#8377;40 </strong>.</li>
-      <li>If the total purchase(excluding shipping charges) price of product is in between <strong> &#8377;901 to
-          &#8377;1900, you will recieve &#8377;50 </strong>.</li>
-      <li>If the total purchase(excluding shipping charges) price of product is in between <strong> &#8377;1901 to
-          &#8377;4000, you will recieve &#8377;75 </strong>.</li>
-      <li>If the total purchase(excluding shipping charges) price of product is greater than <strong> &#8377;4000, you
-          will recieve &#8377;100 .</strong></li>
-    </ul>
   </div>
-  </div>
+</div>  
+  
+<div class="p-1">
+{% similar_prod object as smp %}
+{% include "similarprod.html" %}
+</div>
+
+<div style="margin-bottom:5rem;opacity:0">fdsfds</div>
+
 </main>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
@@ -363,5 +356,22 @@ function preview() {
       }
     }
   }
+</script>
+<script>
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+  })
+</script>
+<script>
+  $(document).ready(function () {
+    console.log("ready!");
+    $('.c1').toggle();
+  });
+</script>
+<script>
+  $('.item').on('click', function () {
+    $('.item').not(this).find('.item-details-overlay').hide();
+    $(this).find('.item-details-overlay').toggle();
+  })
 </script>
 {% endblock content %}

@@ -1,7 +1,7 @@
 from .base import *
 import os
 
-DEBUG = False
+DEBUG = True
 ALLOWED_HOSTS = ['176.9.233.36','*','presimax.online','www.presimax.online']
 
 

@@ -9,15 +9,13 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
     path('', include('core.urls', namespace='core')),
-    path('sw.js', TemplateView.as_view(template_name="sw.js"))
+    path('sw.js', TemplateView.as_view(template_name="sw.js", content_type='text/javascript'))
 ]
 
 handler404 = 'core.views.error_404'
 handler500 = 'core.views.error_500'
 handler413 = 'core.views.error_413'
 
-urlpatterns += static(settings.SW_URL,
-                          document_root=settings.SW_ROOT)
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,

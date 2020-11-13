@@ -4,6 +4,7 @@
 {% load cart_template_tags %}
 {% load myorders_template_tags %}
 {% load reviews_template_tags %}
+{% load notifications %}
 {% load static %}
 
 <!DOCTYPE html>
@@ -75,7 +76,7 @@
           <option>{{ ct.name }}</option>
           {% endfor %}
         </select>
-        <input type="text" placeholder="  Search" name="search" {% if search %} value="{{ search }}" {% endif %}>
+        <input id="search" type="text" placeholder="  Search" onkeyup="searchOpen()" name="search" {% if search %} value="{{ search }}" {% endif %}>
         <div onClick="document.forms['search-form'].submit();" class="search-lens fas fa-search"></div>
         <div class="large-screen ml-5">
           <a href="#" id="">Best selers</a> |
@@ -164,19 +165,15 @@
         <span class="sr-only">Next</span>
       </a>
     </div>
-    <!-- car end -->
-     <!-- posters -->
-    {% if poster.0 %}
-    <div class="poster-sec">
-      <a href="{{ poster.0.urlf }}"><img class="poster" src="{{ poster.0.image.url }}" alt="Poster"></a>
-    </div>
-    {% endif %} 
-    <!-- posters -->
+    <!-- car end -->    
     <!-- dod deals -->
-    <section class="deals p-3">
-      <h3 class="heading"> Delight Ustav Sales </h3>
+    <section class="deals">
+      <a href="{% url 'core:sales' deals_of_day.0.sale_name %}">
+      <span style="float:right;color:#ff8c00" class="bx bx-chevron-right-circle bx-md mr-2"></span>
+      <h3 class="heading m-2"> Delight Ustav Sales </h3>      
+      </a>       
       <div class="products">
-        {% for item in deals_of_day.0.item.all %}
+        {% for item in deals_of_day.0.item.all|slice:"0:12" %}
         <div data-aos="flip-up" class="item">
           <div class="item-image">
             <img class="c1 gif-img" src="https://media4.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" alt="loading">
@@ -200,18 +197,20 @@
       </div>
     </section>
     <!-- dod deals -->
-    
      <!-- posters -->
-    {% if poster.1 %}
+    {% if poster.0 %}
+    {% if not poster.0.display == "N" %}
     <div class="poster-sec">
-      <a href="{{ poster.1.urlf }}"><img class="poster" src="{{ poster.1.image.url }}" alt="Poster"></a>
+      <a href="{{ poster.0.urlf }}"><img class="poster" src="{{ poster.0.image.url }}" alt="Poster"></a>
     </div>
+    {% endif %} 
     {% endif %}
     <!-- posters -->
+     
     
     <!-- deals -->
-    <section class="deals p-3">
-      <h3 class="heading"> New Arrivals </h3>
+    <section class="deals">
+      <h3 class="heading m-2"> New Arrivals </h3>
       <div class="products">
         {% for item in object_list %}
         <div data-aos="zoom-in" class="item">
@@ -237,14 +236,15 @@
       </div>
     </section>
     <!-- deals -->          
-    
     <!-- posters -->
-    {% if poster.2 %}
+    {% if poster.1 %}
+    {% if not poster.1.display == "N" %}
     <div class="poster-sec">
-      <a href="{{ poster.2.urlf }}"><img class="poster" src="{{ poster.2.image.url }}" alt="Poster"></a>
+      <a href="{{ poster.1.urlf }}"><img class="poster" src="{{ poster.1.image.url }}" alt="Poster"></a>
     </div>
     {% endif %}
-    <!-- posters -->
+    {% endif %}
+    <!-- posters -->    
     
     <!-- highlights -->
     {% if sp1_s or sp2_s or sp3_s %}
@@ -318,18 +318,18 @@
     </div>
     {% endif %}
     <!-- highlights -->
-    
-      <!-- posters -->
-    {% if poster.3 %}
+    <!-- posters -->
+    {% if poster.2 %}
+    {% if not poster.2.display == "N" %}
     <div class="poster-sec">
-      <a href="{{ poster.3.urlf }}"><img class="poster" src="{{ poster.3.image.url }}" alt="Poster"></a>
+      <a href="{{ poster.2.urlf }}"><img class="poster" src="{{ poster.2.image.url }}" alt="Poster"></a>
     </div>
     {% endif %}
-    <!-- posters -->
-    
+    {% endif %}
+    <!-- posters -->        
     <!-- best main deals -->
-    <div class="main-deals p-3">
-      <h3 class="heading"> Bestselling Products </h3>
+    <div class="main-deals">
+      <h3 class="heading m-2"> Bestselling Products </h3>
       <div class="products">
         {% for item in Bestsellers %}
         <div data-aos="zoom-out" class="main-deal-product">
@@ -351,21 +351,26 @@
     </div>
     </div>
     <!-- best main deals -->
-    
-    <!-- posters -->
-    {% if poster.4 %}
+     <!-- posters -->
+    {% if poster.3 %}
+    {% if not poster.3.display == "N" %}
     <div class="poster-sec">
-      <a href="{{ poster.4.urlf }}"><img class="poster" src="{{ poster.4.image.url }}" alt="Poster"></a>
+      <a href="{{ poster.3.urlf }}"><img class="poster" src="{{ poster.3.image.url }}" alt="Poster"></a>
     </div>
+    {% endif %}
     {% endif %}
     <!-- posters -->
       
     <!-- sunday sale -->
     {% if sunday_status %}
-    <div class="sunday-sale p-2">
-      <h3 class="heading ml-2"> Sunday Sale </h3>
+    <div class="sunday-sale">
+      <a href="{% url 'core:sales' sunday_sale.0.sale_name %}">
+      <span style="float:right;color:#ff8c00" class="bx bx-chevron-right-circle bx-md mr-2"></span>
+      <h3 class="heading m-2"> Sunday Sale </h3>      
+      </a>      
       <div class="products">
         {% for item in sunday_sale.0.item.all %}
+        {% if forloop.counter < 12 %}
         <div  data-aos="flip-right" class="item">
           <div class="item-image">
             <img class="c1 gif-img" src="https://media4.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" alt="loading">
@@ -390,6 +395,7 @@
             </div>
           </div>
         </div>
+        {% endif %}
         {% endfor %}
       </div>
     </div>
@@ -397,20 +403,27 @@
     <!-- sunday sale -->
     
     <!-- posters -->
-    {% if poster.5 %}
+    {% if poster.4 %}
+    {% if not poster.4.display == "N" %}
     <div class="poster-sec">
-      <a href="{{ poster.5.urlf }}"><img class="poster" src="{{ poster.5.image.url }}" alt="Poster"></a>
+      <a href="{{ poster.4.urlf }}"><img class="poster" src="{{ poster.4.image.url }}" alt="Poster"></a>
     </div>
     {% endif %}
+    {% endif %}
     <!-- posters -->
+        
     
     <!-- flashsale -->
     {% if fsale %}
-    <div class="flashsale p-3">
-      <p class="heading">Flashsale</p>
+    <div class="flashsale">
+      <a href="{% url 'core:sales' flash_sale.0.sale_name %}">
+      <span style="float:right;color:#ff8c00" class="bx bx-chevron-right-circle bx-md mr-2"></span>
+      <p class="heading m-2">Flashsale</p>      
+      </a>
       <div class="falshsale-products">
         <div class="products">
           {% for item in flash_sale.0.item.all %}
+          {% if forloop.counter < 12 %}
           <div data-aos="flip-left" class="main-deal-product">
             <a href="{{ item.get_absolute_url }}">
               <div class="main-deal-product-image">
@@ -427,6 +440,7 @@
             </center>
           </div>
         </div>
+        {% endif %}
         {% endfor %}
       </div>
     </div>
@@ -434,19 +448,27 @@
     {% endif %}
     <!-- flashsale -->
     
+    
     <!-- posters -->
-    {% if poster.6 %}
+    {% if poster.5 %}
+    {% if not poster.5.display == "N" %}
     <div class="poster-sec">
-      <a href="{{ poster.6.urlf }}"><img class="poster" src="{{ poster.6.image.url }}" alt="Poster"></a>
+      <a href="{{ poster.5.urlf }}"><img class="poster" src="{{ poster.5.image.url }}" alt="Poster"></a>
     </div>
     {% endif %}
+    {% endif %}
     <!-- posters -->
+       
     
     <!-- DoW sale -->
-    <div class="sunday-sale p-2">
-      <h3 class="heading ml-2"> Deals of Week </h3>
+    <div class="sunday-sale">
+      <a href="{% url 'core:sales' Deals_of_week.0.sale_name %}">
+      <span style="float:right;color:#ff8c00" class="bx bx-chevron-right-circle bx-md mr-2"></span>
+      <h3 class="heading m-2"> Deals of Week </h3>      
+      </a>      
       <div class="products">
         {% for item in Deals_of_week.0.item.all %}
+        {% if forloop.counter < 12 %}
         <div data-aos="zoom-in" class="item">
           <div class="item-image">
             <img class="c1 gif-img" src="https://media4.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" alt="loading">
@@ -470,36 +492,58 @@
             </div>
           </div>
         </div>
+        {% endif %}
         {% endfor %}
       </div>
     </div>
     <!-- DoW sale -->
+    
+    
+     <!-- posters -->
+    {% if poster.6 %}
+    {% if not poster.6.display == "N" %}
+    <div class="poster-sec">
+      <a href="{{ poster.6.urlf }}"><img class="poster" src="{{ poster.6.image.url }}" alt="Poster"></a>
+    </div>
+    {% endif %}
+    {% endif %}
+    <!-- posters -->
     <!-- posters -->
     {% if poster.7 %}
+    {% if not poster.7.display == "N" %}
     <div class="poster-sec mb-2 ">
       <a href="{{ poster.7.urlf }}"><img class="poster" src="{{ poster.7.image.url }}" alt="Poster"></a>
     </div>
     {% endif %}
+    {% endif %}
     <!-- posters -->
     <!-- posters -->
     {% if poster.8 %}
+    {% if not poster.8.display == "N" %}
     <div class="poster-sec mb-2">
       <a href="{{ poster.8.urlf }}"><img class="poster" src="{{ poster.8.image.url }}" alt="Poster"></a>
     </div>
     {% endif %}
+    {% endif %}
     <!-- posters -->
     <!-- posters -->
     {% if poster.9 %}
+    {% if not poster.9.display == "N" %}
     <div class="poster-sec mb-2">
       <a href="{{ poster.9.urlf }}"><img class="poster" src="{{ poster.9.image.url }}" alt="Poster"></a>
     </div>
     {% endif %}
-    <!-- posters -->
+    {% endif %}
+    <!-- posters --> 
     <!-- great discounts -->
-    <div class="great-dis-sec p-3" style="margin-bottom: 5rem;">
-      <p class="heading">Great Discounts</p>
+    <div class="great-dis-sec p-1" style="margin-bottom: 5rem;">
+      <a href="{% url 'core:sales' great_discounts.0.sale_name %}">
+      <span style="float:right;color:#ff8c00" class="bx bx-chevron-right-circle bx-md mr-2"></span>
+      <p class="heading m-2">Great Discounts</p>      
+      </a>        
       <div class="great-dis-prods">
-        {% for item in great_discounts %}
+        {% for item in great_discounts.0.item.all %}
+        {% if forloop.counter < 12 %}
         <div data-aos="zoom-in" class="product-hor">
           <div class="hor-prod-img">
             <img class="c4 gif-img" src="https://media4.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" alt="loading">
@@ -518,11 +562,92 @@
             </a>
           </div>
         </div>
+        {% endif %}
         {% endfor %}
       </div>
     </div>
-    <div style="margin-top: 5rem;"></div>
+    <div style="margin-top: 5rem;"></div>    
     <!-- great discounts -->
+
+<style>
+  .overlay-notif{
+    position: fixed;  
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom:0;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 1700;
+    justify-content:space-around;
+    align-items:center;
+  }
+  .notif-img{
+    width: 5rem;
+    height: 5rem;
+    margin:auto;    
+  }
+  .total-notif{
+    background:#fff;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    padding: .5rem;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    width:80vw;
+    color:#ff8c00 !important;
+  }
+  .pre-notif{  
+    border-bottom: .01rem solid #dcdcdc;
+  }
+  .notification{
+    display: flex;
+    flex-direction: row;        
+  }
+  .btn-notif{
+    background:#fff;
+    color:#ff8c00;
+    padding: 0.1rem;
+    margin: 0.5rem auto; 
+  }
+  
+@media only screen and (min-width: 600px) { 
+.total-notif{
+width:40vw;
+}
+}
+  
+</style>
+{% if request.user.is_authenticated %}
+{% notifications request request.user.id as notifs %}
+{% else %}
+{% notifications request "-1" as notifs %}
+{% endif %}
+{% if notifs %}
+<div class="overlay-notif">
+{% for note in notifs %}
+  <div id="{{ forloop.counter }}_note" class="total-notif rounded">
+  <div class="pre-notif">
+  <span style="float: right;color:#ff8c00;cursor:pointer;" onclick="notif('#{{ forloop.counter }}_note')" class="mr-3 bx bx-x bx-sm" ></span>
+  <span style="display: inline-block;background:#ff8c00;width:20px;height:20px;" class="rounded"></span>
+  <span  class="ml-2" >Presimax</span>
+  </div>
+  <div class="notification p-2">    
+    <div class="img-sec pt-3 pb-3 pl-2 pr-2">      
+      <img class="notif-img" src="{{ note.image.url }}" alt="image">
+    </div>
+    <div class="details pt-3 pb-3">
+      <strong><span>{{ note.title }}</span></strong><br>
+      <span>{{ note.description }}</span><br>
+      {% for btn in note.buttons.all %}
+      <a href="{{ btn.url }}"><span class="btn-notif">{{ btn.name }}</span></a>
+      {% endfor %}
+    </div>
+  </div>
+  </div>
+  {% endfor %}
+  {% endif %}
+</div>
     {% include 'navbar.html' %}
   </main>
   {% include "scripts.html" %}
@@ -548,7 +673,7 @@
   <script>
     $(document).ready(function () {
       console.log("ready!");
-      $('img').not('.poster').not('.logo-image').toggle();
+      $('img').not('.poster').not('.notif-img').not('.logo-image').toggle();
     });
   </script>
   <script>
@@ -561,6 +686,58 @@
       $('.toast').toast('show')
     });
   </script>
+<script type="application/javascript" src="https://sdki.truepush.com/sdk/v2.0.2/app.js" async></script>
+<script>
+var truepush = window.truepush || [];
+truepush.push(function(){
+    truepush.Init({
+        id: "5fa8a3e837c48ff1fb6225ae"
+        }, function(error){
+          if(error) console.error(error);
+        })
+    })
+</script>
+<script>
+function notif(id){
+$(id).toggle();
+if(id=="#1_note"){
+$('.overlay-notif').toggle();
+}
+}
+</script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<style>
+body .ui-autocomplete {
+  background:#fff;
+  color:#000;
+  width:min-content;
+}
+li{
+list-style:none;
+}
+body .ui-autocomplete .ui-menu-item .ui-corner-all {
+   background:#fff;
+}
+
+body .ui-autocomplete .ui-menu-item .ui-state-focus {
+   background:#fff;
+}
+</style>
+<script>
+
+
+function searchOpen() {
+url = "{% url 'core:auto' %}"
+var search = $('#search').val()
+var csrftoken = '{{ csrf_token }}';
+$.get(url,{ search:search,csrfmiddlewaretoken:csrftoken }).done(function( data ) {
+                console.log( "Data Loaded: " + data );
+               $( "#search" ).autocomplete ({
+        source: data
+    });
+                });
+}                
+</script>
 </body>
 
 </html>

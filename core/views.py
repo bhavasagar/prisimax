@@ -619,11 +619,11 @@ class HomeView(ListView):
             if catgeory and catgeory!='All':
                 cchoice = CATEGORYCHOICES[catgeory.lower().strip()]
                 qs = qs.filter(category=cchoice)
-            return render(self.request, 'search.html', context={'sobs': qs , 'type':'Search Results for word'+sword})
+            return render(self.request, 'search.html', context={'sobs': qs, 'type': 'Search Results for word - '+sword})            
         items = Item.objects.all().order_by('-id')[0:12]
-        items4 = Item.objects.filter(dis_per__gte=70).order_by('-id')
+        items4 = Sales.objects.filter(sale_name="GDO")
         items7 = Item.objects.filter(tag="BESTSELLER").order_by('-id')[0:16]
-        items8 = Sales.objects.filter(sale_name="DOW").order_by('-id')
+        items8 = Sales.objects.filter(sale_name="DOW")
         items11 = Sales.objects.filter(sale_name="DS")
         items9 = Sales.objects.filter(sale_name="DOD")
         items10 = Sales.objects.filter(sale_name="FO")
@@ -649,12 +649,16 @@ class HomeView(ListView):
         except:
             pass
         posters = get_model_or_nothing(Ads)
-        context['poster'] = posters
+        context['poster'] = posters.order_by('id')
         ctop = CarousalEcommerce.objects.all()
         context['ctop']=ctop
         context["sunday_status"]=False
         if datetime.now().strftime("%A")=="Monday":            
             context["sunday_status"]=True                        
+        if items11:
+            context["sunday_status"]=True
+        else:
+            context["sunday_status"]=False
         now = timezone.now()
         try:
             if len(items10)>0:
@@ -691,8 +695,10 @@ class HomeView(ListView):
           pbc = Productbackground.objects.filter(page="H").order_by('-id')[0]
           context['pbc']=pbc                            
         except:
-            pass 
-        return render(self.request, self.template_name, context)
+            pass
+        resp = render(self.request, self.template_name, context) 
+        resp.set_cookie(key='seen', value=1,expires=None)
+        return resp 
     
             
 class travels(ListView):
@@ -1282,7 +1288,7 @@ def categories(request, slug):
             if qs.count() < 1:
                 messages.info(request, 'No results for your search '+sword)
                 return render(request, 'sales.html', context=context)
-            return render(request, 'search.html', context={'sobs': qs, 'type': 'Search Results for word'+sword})
+            return render(request, 'search.html', context={'sobs': qs, 'type': 'Search Results for word - '+sword})
         try:
           bbi = Pagebackground.objects.filter(page="C").order_by('-id')[0]
           context['bbi']=bbi          
@@ -1355,7 +1361,7 @@ def sales(request, slug):
             if qs.count() < 1:
                 messages.info(request, 'No results for your search '+sword)
                 return render(request, 'sales.html', context=context)
-            return render(request, 'search.html', context={'sobs': qs, 'type': 'Search Results for word'+sword})
+            return render(request, 'search.html', context={'sobs': qs, 'type': 'Search Results for word - '+sword})
         try:
           bbi = Pagebackground.objects.filter(page="C").order_by('-id')[0]
           context['bbi']=bbi          
@@ -1386,7 +1392,7 @@ def Xtrasales(request, slug):
             if qs.count() < 1:
                 messages.info(request, 'No results for your search '+sword)
                 return render(request, 'sales.html', context=context)
-            return render(request, 'search.html', context={'sobs': qs, 'type': 'Search Results for word'+sword})
+            return render(request, 'search.html', context={'sobs': qs, 'type': 'Search Results for word - '+sword})
         try:
           bbi = Pagebackground.objects.filter(page="C").order_by('-id')[0]
           context['bbi']=bbi          
@@ -1618,6 +1624,37 @@ def downliners(request):
                 pass 
             return render(request, 'downliners.html',context)
                     
+
+import json
+
+def auto(request):
+    if request.method == 'GET':
+        qs = Item.objects.filter(title__icontains = request.GET.get('search'))
+        ns = Item.objects.filter(title__search = request.GET.get('search'))
+        qs = ns | qs
+        titles = []
+        for i in qs:
+          t = i.title
+          titles.append(t)          
+        data = json.dumps(titles[:50])
+    else:
+        data = 'fail'
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
+    if request.method == 'POST':
+        qs = Item.objects.filter(title__icontains = request.GET.get('search'))
+        ns = Item.objects.filter(title__search = request.GET.get('search'))
+        qs = ns | qs
+        titles = []
+        for i in qs:
+          t = i.title
+          titles.append(t)          
+        data = json.dumps(titles[:50])
+    else:
+        data = 'fail'
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
+
  
 def error_404(request, exception):
         data = {}

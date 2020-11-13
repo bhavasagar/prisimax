@@ -88,7 +88,8 @@ class CategoriesAdmin(admin.ModelAdmin):
     
 class ItemInline(admin.TabularInline):
     model = Sales.item.through    
-    feilds = ['item__name']    
+    feilds = ['item__name']
+    search_fields = ['sales__item__title']
     
 class SalesAdmin(admin.ModelAdmin):
     search_fields = ['sale_name', 'item__title']

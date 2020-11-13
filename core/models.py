@@ -44,9 +44,19 @@ PAGE_OPTS = (
     ('S','Sales')
 )
 
+NOTES = (
+    ('A', 'All'),
+    ('S', 'Specific')
+) 
+
 ORDER_CHOICES = (
     ('BN','Buy Now'),
     ('S', 'Save')
+)
+
+DISP_OPTS = (
+    ('D','Display'),
+    ('N', 'Hide')
 )
     
 ROW_CHOICES = (
@@ -89,14 +99,11 @@ POSITION_CHOICES = (
 )
 
 SALE_NAME_CHOICES = (
-    ('DOD','Deals of the day'),
-    ('NA','New Arrivals'),
-    ('FO','Flashsale On'),
-    ('BSP','BestSeller Products'),
+    ('DOD','Deals of the day'),    
+    ('FO','Flashsale On'),    
     ('DS','Sunday Sale'),
-    ('DOW','Deals of this week'),
-    ('MTTDP','More than 30% Off on discount price'),
-    ('GDO','Great Discounts on'),
+    ('DOW','Deals of this week'),    
+    ('GDO','Great Discounts on')
 )
 
 class UserProfile(models.Model):
@@ -215,7 +222,8 @@ class Itemdealer(models.Model):
         return self.item.title
 
 class Clickables(models.Model):
-    url = models.URLField(max_length = 200)    
+    url = models.URLField(max_length = 200)  
+    name =  models.CharField(max_length=50) 
     
     def __str__(self):
         return self.url
@@ -224,10 +232,11 @@ class Clickables(models.Model):
         verbose_name_plural = 'Clickables'
 
 class Notification(models.Model):
-    users = models.ManyToManyField(settings.AUTH_USER_MODEL,related_name='Subscribers')
+    users = models.ManyToManyField(settings.AUTH_USER_MODEL,related_name='Subscribers',blank=True)
     title = models.CharField(max_length=50)
     image = models.ImageField(upload_to='images/')
     description = models.CharField(max_length=500)
+    type = models.CharField(choices=NOTES,max_length=3)
     buttons = models.ManyToManyField(Clickables,related_name='Redirectors')
     
     def __str__(self):
@@ -240,7 +249,7 @@ class Categories(models.Model):
     link = models.URLField(max_length = 200)
     slug = models.SlugField() 
     
-    def __str__(self):
+    def __str__(self): 
         return self.name
     
     def get_absolute_url(self):
@@ -382,6 +391,7 @@ class Address(models.Model):
 class Ads(models.Model):
     image = models.ImageField(upload_to='images/ads/', null=True)
     urlf = models.URLField(max_length = 200,default="https://www.presimax.online/")
+    display = models.CharField(default="D",choices=DISP_OPTS,max_length=3)
     
     def __str__(self):
         return 'Ad '+str(self.id)

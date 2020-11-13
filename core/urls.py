@@ -44,7 +44,8 @@ from .views import (
     Xtrasales,
     search,
     withdraw,
-    downliners
+    downliners,
+    auto
 )
 
 app_name = 'core'
@@ -98,4 +99,5 @@ urlpatterns = [
     path('products/', search, name='normal_search'),
     path('withdraw/', withdraw, name='withdraw'),
     path('downliners/', downliners, name='downliners'),
+    path('auto/', auto, name='auto'),
 ]

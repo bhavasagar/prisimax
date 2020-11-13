@@ -7,6 +7,11 @@
 <link rel="stylesheet" href="{% static 'css/category.css' %}">
 <main>
 <hr>
+<style>
+.product-hor{
+background:var(--product-back-ex);
+}
+</style>
 <div style="margin-bottom:4.5rem;"></div>
 <div class=" m-2 p-2">  
   <span data-toggle="modal" data-target="#fullHeightModalRight" class="round-do-btn right-btn"> <span class="bx bx-filter-alt mr-1"></span> Filter</span>
@@ -102,7 +107,7 @@ $(document).ready(function() {
 <script>
   $(document).ready(function () {
     console.log("ready!");
-    $('img').not('.poster').not('.logo-image').toggle();
+    $('img').not('.poster').not('.notif-img').not('.logo-image').toggle();
   });
 </script>
 <script>

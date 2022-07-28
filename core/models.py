@@ -209,6 +209,7 @@ class Item(models.Model):
         return reverse("core:remove-from-cart", kwargs={
             'slug': self.slug
         })
+        
 
 
 
@@ -332,6 +333,7 @@ class Order(models.Model):
     start_date = models.DateTimeField(auto_now_add=True)
     ordered_date = models.DateTimeField()
     ordered = models.BooleanField(default=False)
+    mocreated = models.BooleanField(default=False)
     shipping_address = models.ForeignKey(
         'Address', related_name='shipping_address', on_delete=models.SET_NULL, blank=True, null=True)
     billing_address = models.ForeignKey(
@@ -374,7 +376,7 @@ class Order(models.Model):
 class Address(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE)
-    street_address = models.CharField(max_length=100)
+    street_address = models.CharField(max_length=500)
     apartment_address = models.CharField(max_length=100)
     country = CountryField(multiple=False)
     zip = models.CharField(max_length=100)
@@ -671,7 +673,20 @@ def cj_receiver(sender, instance, *args, **kwargs):
               instance.levelincome = instance.levelincome + 5*int(float(instance.level) - float(cj.level))
     except:
         pass                                     
+from datetime import datetime, timedelta
+def order_receiver(sender, instance, *args, **kwargs):
+    if instance.ordered==True and instance.mocreated==False:                     
+        oitms = instance.items.all()
+        for i in oitms:
+            i.ordered = True            
+            myorder = Myorder.objects.create(user=instance.user,item=i.item,myordered_date=datetime.now(),mydelivery_date=datetime.now()+timedelta(days=5))
+            myorder.orderitem = i
+            myorder.save()
+            i.save()
+        instance.mocreated=True
+        instance.save()        
 
 post_save.connect(userprofile_receiver, sender=settings.AUTH_USER_MODEL)
 pre_save.connect(orderitem_receiver, sender=OrderItem)
 pre_save.connect(cj_receiver, sender=ClubJoin)
+pre_save.connect(order_receiver, sender=Order)

@@ -9,6 +9,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
     path('', include('core.urls', namespace='core')),
+    path('', include('sellers.urls', namespace='sellers')),
     path('sw.js', TemplateView.as_view(template_name="sw.js", content_type='text/javascript'))
 ]
 

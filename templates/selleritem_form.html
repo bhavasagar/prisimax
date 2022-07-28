@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display+SC:wght@400;700&family=Playfair+Display:wght@400;500;600&family=Raleway:wght@100;200;300;400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bitter&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap');
+:root{
+    --presimax-brand-color:  #ff8c00;
+    --presimax-brand-light-color:  #ff8c00;
+    --presimax-font-1: 'Playfair Display', serif;
+    --presimax-font-2: 'Raleway', sans-serif;    
+    --presimax-font-3: 'Bitter', serif;
+    --link-color: #0099CC;
+    --presimax-silver: #C0C0C0;
+    --presimax-light-white: #DCDCDC;
+    --presimax-black: #0b0704;
+    --presimax-white: #f8f9f5;
+    --product-back-ex: #f8f9f5;
+    --product-back: #fdde6c;
+    --presimax-white-orange: #fdf9ef;
+    --presimax-tag-opacity: .7;
+    --heading-font:'Nunito Sans', sans-serif;
+    --end: -95%;
+}
+.fas,.far,.fa{
+    font-weight: 600;
+}
+.presimax-color{
+    color: var(--presimax-white-orange);
+}
+body{
+    color: var(--presimax-body-color);
+    font-family: var(--presimax-font-2);   
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover; 
+    margin: auto;   
+    background: #F5F5F5; 
+  }
+  input[type=checkbox]:after{
+    background: #ff8c00;
+  }
+  .order-nav{    
+    font-size: 2.6rem;
+    margin-left: auto;
+    margin-right: auto;
+    color: var(--presimax-silver);
+    background: #FFFFFF;
+}
+.large-screen{
+    display: none;
+}
+@media only screen and (min-width: 600px) { 
+  .large-screen{
+    display: inline;
+  }
+  .order-nav{
+    font-size: 3.3rem;    
+}
+}
+main{
+  font-weight: 400;
+}
+</style>
+<div style="margin-bottom:5rem"></div>
+<main>
+<form class="border border-light p-5" method="POST" action="." enctype="multipart/form-data">
+  {% csrf_token %}
+
+  <p class="h4 mb-4">Add Product</p>
+  
+  <div class="row">
+    <div class="col-md-4 mb-1">
+      Title
+    </div>
+    <div class="col-md-4 mb-1">
+      <input type="text" name="title" id="title" class="form-control mb-4" placeholder="Title">
+    </div>
+  </div>
+<hr>  
+  <div class="row">
+    <div class="col-md-4 mb-1">
+      Price
+    </div>
+    <div class="col-md-2 col-sm-4">
+      <input type="number" name="price" id="price" class="form-control mb-4" placeholder="&#8377; 100">
+    </div>
+  </div>
+<hr>
+  <div class="row">
+    <div class="col-md-4 mb-1">
+      Category
+    </div>
+    <div class="col-md-4 mb-1">
+      {{ form.category }}
+    </div>
+  </div>
+<hr>
+  <div class="row">
+    <div class="col-md-4 mb-1">
+      Description
+    </div>
+    <div class="col-md-4 mb-1">
+      {{form.description}}
+    </div>
+  </div>
+<hr>
+  <div class="row">
+    <div class="col-md-4 mb-1">
+      Image
+    </div>
+    <div class="col-md-4 mb-1">
+      <input id="image" name="img" type="file" value="Main picture">
+    </div>
+  </div>
+<hr>
+  <div class="row">
+    <div class="col-md-4 mb-1">
+      More Images (optional)
+    </div>
+    <div class="col-md-4 mb-1">
+      <input id="fileupload" name="imgs" type="file" multiple="multiple">
+      <br>
+      <br>
+      <div id="dvPreview"></div>
+    </div>
+  </div>
+<hr>
+  <div class="row">
+    <div class="col-md-4 mb-1">
+      Weight (in Kilograms (KG) )
+    </div>
+    <div class="col-md-4 mb-1">
+      <input type="number" step="0.1" id="weight" name="weight" class="form-control mb-4" placeholder="0.5">
+    </div>
+  </div>
+<hr>
+  <div class="d-flex justify-content-around">
+      <div>          
+          <div class="custom-control custom-checkbox">
+              <input type="checkbox" name="sizecheck" class="custom-control-input" id="has_size">
+              <label class="custom-control-label" for="has_size">Available with different sizes</label>
+          </div>
+      </div>      
+  </div>
+<hr>
+  <div class="row">
+    <div class="col-md-4 mb-1">
+      Sizes
+    </div>
+    <div class="col-md-4 mb-1">
+      <input type="text" id="size" name="size" class="form-control mb-4" placeholder="S,L,M,XL,XXL">
+    </div>
+  </div>
+
+  <button class="btn btn-block my-4" style="background-color: #ff8c00;color:#fff" type="submit">Save</button>  
+
+</form>
+</main>
+{% endblock content %}
+
+{% block extra_scripts %}
+<script> 
+function preview() {     
+    $('.preview-section').toggle();
+    $('#preview').toggle();    
+}
+</script>
+<script>
+  $(function () {
+    $("#fileupload").change(function () {
+      if (typeof (FileReader) != "undefined") {
+        var dvPreview = $("#dvPreview");
+        dvPreview.html("");
+        var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.jpg|.jpeg|.gif|.png|.bmp)$/;
+        $($(this)[0].files).each(function () {
+          var file = $(this);
+          if (regex.test(file[0].name.toLowerCase())) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+              var img = $("<img />");
+              img.attr("style", "height:100px;width: 100px");
+              img.attr("src", e.target.result);
+              dvPreview.append(img);
+            }
+            reader.readAsDataURL(file[0]);
+          } else {
+            alert(file[0].name + " is not a valid image file.");
+            dvPreview.html("");
+            return false;
+          }
+        });
+      } else {
+        alert("This browser does not support HTML5 FileReader.");
+      }
+    });
+  });
+  function functionx(ths, sno) {
+    $('#ratinginp').val(sno);
+    for (var i = 1; i <= 5; i++) {
+      var cur = document.getElementById("star" + i)
+      cur.className = "fa fa-star"
+    }
+
+    for (var i = 1; i <= sno; i++) {
+      var cur = document.getElementById("star" + i)
+      if (cur.className == "fa fa-star") {
+        cur.className = "fa fa-star checked"
+      }
+    }
+  }
+</script>
+<script>
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+  })
+</script>
+{% endblock extra_scripts %}

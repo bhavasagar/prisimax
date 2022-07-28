@@ -2,7 +2,7 @@ from .base import *
 # from decouple import config
 
 DEBUG = config('DEBUG', cast=bool)
-ALLOWED_HOSTS = ['176.9.233.36','presimax.online','www.presimax.online']
+ALLOWED_HOSTS = ['176.9.233.36','presimax.in','www.presimax.in']
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},

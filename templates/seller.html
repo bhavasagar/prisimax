@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{%load static%}
+{% block extra_head %}
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+{% endblock extra_head%}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/category.css' %}">
+<main>
+<hr>
+<div style="margin-bottom:4.5rem;"></div>
+<div class=" m-2 p-2">  
+  <span data-toggle="modal" data-target="#fullHeightModalRight" class="round-do-btn right-btn"> <span class="bx bx-filter-alt mr-1"></span> Filter</span>
+  <b><strong><p class="heading" style="font-size:1.5rem;">{{ request.user.username }} Store</p></strong></b>
+</div>
+<style>
+    
+</style>
+<!-- great discounts -->
+<div class="great-dis-sec p-3">  
+<div class="great-dis-prods">
+<div class="product-hor">
+    <div class="hor-prod-img">        
+        <a href="{% url 'sellers:AddItem' %}"><span class='bx bx-plus-circle'></span></a>
+    </div>    
+    <div class="hor-prod-details">     
+        <!-- <center> -->
+        <a href="{% url 'sellers:AddItem' %}" class="dark-mode">
+          <p class="h2"> Add item </p>          
+        </a>
+      <!-- </center>    -->
+      </div>
+    </div>
+    {% for item in object_list %}
+    <div data-aos="flip-right" class="product-hor">
+      <div class="hor-prod-img">
+        <img class="c4 gif-img" src="https://media4.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" alt="loading">
+        <a href="{{ item.get_absolute_url }}"><img class="c4" src="{{ item.image.url }}" style="display: none;"
+            alt="prod-image"><a href="{{ item.get_absolute_url }}">
+              <strong><span class="great-tag">{{ item.tag }}</span></strong>
+            <strong><b><span class="discount">{{item.dis_per|floatformat:"0"}}%<br>off</span></b></strong>
+          </a>
+      </div>
+      <div class="hor-prod-details">     
+        <!-- <center> -->
+        <a href="{{ item.get_absolute_url }}" class="dark-mode">
+          <p class="h2">{{item.title|truncatechars:14}}<br> <span style="color:#ff8c00"> &#8377;{% if request.user.userprofile.Isclubmem %}
+            {{ item.club_discount_price|floatformat:"0" }}{% else %}{{item.discount_price|floatformat:"0"}}{% endif %}</span>
+            <span class="ml-2"><del>&#8377;{{ item.price|floatformat:"0" }}</del></span>
+          </p></strong>
+          <p class="button-details">View details <span class='bx bx-chevron-right'></span></p>
+        </a>
+      <!-- </center>    -->
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+<!-- great discounts -->
+<!-- pagination -->
+<nav class="page-nav" style="margin-bottom: 5rem;">
+<style>
+.disable{
+opacity:0.6;
+}
+</style>
+{% if object_list.number %}
+  {% if object_list.has_previous %}
+  <a href="?page={{ object_list.previous_page_number }}"  aria-label="Previous">{% endif %}<span class='bx bx-chevron-left-circle nav-sign {% if not object_list.has_previous %} disable {% endif %} '></span>
+  {% if object_list.has_previous %}</a>{% endif %}   
+  <a href="?page={{ object_list.number }}" class="current-page" >{{ object_list.number }}</a>    
+  {% if object_list.has_next %}
+  <a href="?page={{ object_list.next_page_number }}" aria-label="Next">{% endif %}<span class='bx bx-chevron-right-circle nav-sign {% if not object_list.has_next %} disable {% endif %}'></span>{% if object_list.has_next %}</a>{% endif %}
+{% endif %}
+</nav>
+<!-- pagination -->
+<div style="margin-top: 7rem;"></div>
+</main>
+{% endblock content %}
+{% block extra_scripts %}
+<script>
+  $(document).ready(function () {
+    console.log("ready!");
+    $('img').not('.poster').not('.notif-img').not('.logo-image').toggle();
+  });
+</script>
+<script>
+  {% if pbc %}
+  document.documentElement.style.setProperty('--product-back', '{{ pbc.color }}');
+  document.documentElement.style.setProperty('--presimax-black', '{{ pbc.font_color }}');
+  document.documentElement.style.setProperty('--presimax-white-orange', '{{ pbc.category_font_color }}');
+  {% endif %}
+</script>
+<script>
+  {% if bbi %}
+  $(".bg").css("background-image", "url('{{ bbi.image.url }}')");
+  document.documentElement.style.setProperty('--presimax-body-color', '{{ bbi.font_color }}');
+  {% endif %}
+</script>
+{% endblock extra_scripts %}

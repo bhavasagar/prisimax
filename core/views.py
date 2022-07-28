@@ -25,7 +25,6 @@ from django.core.paginator import Paginator
 from email.message import EmailMessage
 from datetime import datetime, timedelta
 from django.db.models import Q
-from django.db.models.functions import ( ExtractDay, ExtractHour, ExtractMinute, ExtractMonth, ExtractSecond, ExtractWeek, ExtractWeekDay, ExtractYear )
 
 def create_ref_code():
     return ''.join(random.choices(string.ascii_lowercase + string.digits, k=20))
@@ -339,10 +338,7 @@ def orderplaced(request):
     for i in oitms:
         i.ordered = True
         if i.referer:
-            brokrage_income(request,i)
-        myorder = Myorder.objects.create(user=request.user,item=i.item,myordered_date=datetime.now(),mydelivery_date=datetime.now()+timedelta(days=5))
-        myorder.orderitem = i
-        myorder.save()
+            brokrage_income(request,i)        
         i.save()  
     distribute_money(request,amt=amt)
     order.ordered = True
@@ -569,15 +565,15 @@ def ordercallback(request):
                 oitms = qs
                 for i in oitms:
                     i.ordered = True
-                    brokrage_income(request,i)
-                    myorder = Myorder.objects.create(user=cust,item=i.item,myordered_date=datetime.now(),mydelivery_date=datetime.now()+timedelta(days=5))
-                    myorder.orderitem = i
-                    myorder.save()
+                    brokrage_income(request,i)                    
                     i.save()
                 order.ordered = True
-                order.save()
-                up = UserProfile.objects.get(user=cust)
-                cm = ClubJoin.objects.get(user=up)
+                order.save()                
+                try:
+                    up = UserProfile.objects.get(user=cust)
+                    cm = ClubJoin.objects.get(user=up)
+                except:
+                    pass
                 distribute_money(request,amt)
                 msg = "PS"
             return render(request, "ordercallback.html", {"paytm":data_dict, 'user': user, 'msg':msg, 'oid':oid, 'ta':ta})
@@ -1627,6 +1623,8 @@ def downliners(request):
 
 import json
 
+
+
 def auto(request):
     if request.method == 'GET':
         qs = Item.objects.filter(title__icontains = request.GET.get('search'))
@@ -1639,8 +1637,8 @@ def auto(request):
         data = json.dumps(titles[:50])
     else:
         data = 'fail'
-    mimetype = 'application/json'
-    return HttpResponse(data, mimetype)
+        mimetype = 'application/json'
+        return HttpResponse(data, mimetype)
     if request.method == 'POST':
         qs = Item.objects.filter(title__icontains = request.GET.get('search'))
         ns = Item.objects.filter(title__search = request.GET.get('search'))
@@ -1667,3 +1665,11 @@ def error_500(request):
 def error_413(request, exception):
         data = {}
         return render(request,'404error.html', data)        
+
+def word(request):
+    if request.method == "GET":         
+        return render(request, 'word.html')
+        
+def testhome(request):
+    if request.method == "GET":         
+        return render(request, 'testhome.html')        

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- For the Office UI Fabric, go to http://aka.ms/office-ui-fabric to learn more. -->
+        <link rel="stylesheet" href="https://appsforoffice.microsoft.com/fabric/2.1.0/fabric.min.css">
+        <link rel="stylesheet" href="https://appsforoffice.microsoft.com/fabric/2.1.0/fabric.components.min.css">
+        <link rel="stylesheet" href="Styles/index.css">
+
+        <script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.2.1.min.js"></script>
+
+        <!-- Load the Office JavaScript libraries -->        
+        <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js" type="text/javascript"></script>
+
+        
+    </head>
+    <body>
+        <div class="ms-typeramp-dialog"> 
+            <p class="ms-font-m">Please wait for this window to close, before continuing with the add-in ( changed ).</p> 
+        </div>
+        <script>
+        setTimeout(() => {
+          // console.log(office)
+          // Office.context.ui.messageParent("Test");
+          // console.log('sent')
+        
+            // Office.initialize must be called on every page where Office JavaScript is 
+            // called. Other initialization code should go inside it.
+            Office.initialize = function() {        
+                $(document).ready(function () {  
+        
+                    try {                
+                        // Tell the task pane about the outcome.
+                        console.log(Office)
+                        Office.context.ui.messageParent("Some message", { targetOrigin: "*" });
+                        console.log('sent')
+                    }
+                    catch(err) { 
+                        
+                        // Create the outcome message and send it to the task pane.
+                        console.log('failed')
+                        var messageObject = {outcome: "failure", error: err.message};            
+                        var jsonMessage = JSON.stringify(messageObject);
+        
+                        // Tell the task pane about the outcome.
+                        Office.context.ui.messageParent("message to parent " + jsonMessage);
+                        console.log('sent failed') 
+                    }
+                });
+            }
+            
+        }, 10000);
+        </script> 
+    </body>
+</html>

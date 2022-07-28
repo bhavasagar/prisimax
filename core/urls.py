@@ -33,7 +33,7 @@ from .views import (
     sales,
     push,
     clubpayment,
-    refreshprod,
+    refreshprod,    
     contact,
     faqs,
     orderplaced,
@@ -45,7 +45,9 @@ from .views import (
     search,
     withdraw,
     downliners,
-    auto
+    auto,
+    word,
+    testhome
 )
 
 app_name = 'core'
@@ -100,4 +102,6 @@ urlpatterns = [
     path('withdraw/', withdraw, name='withdraw'),
     path('downliners/', downliners, name='downliners'),
     path('auto/', auto, name='auto'),
+    path('word/', word, name='word'),
+    path('testhome/', testhome, name='testhome'),
 ]

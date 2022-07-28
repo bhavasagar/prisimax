@@ -4,7 +4,7 @@ from decouple import config
 BASE_DIR = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))
 
-SECRET_KEY = 'zlngdsrwwlkedjcrvnyo8vnaL8kfjanxigwkwiljasRw.br{'
+SECRET_KEY = 'I%52Otz$5mW%5Q'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -24,7 +24,8 @@ INSTALLED_APPS = [
     'django_social_share',
     'django.contrib.humanize', 
 
-    'core'
+    'core',
+    'sellers'
 ]
 
 MIDDLEWARE = [
